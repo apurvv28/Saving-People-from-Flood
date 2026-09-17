@@ -13,6 +13,7 @@ import { AuthorityDashboard } from '@/components/AuthorityDashboard';
 import { CityId, CITIES, INITIAL_CITIZEN_REPORTS, CitizenReport, NavigationRoute } from '@/lib/mock-data';
 import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { HISTORICAL_CLOUDBURST_EVENTS } from '@/lib/openmeteo-service';
+import { Map, Sliders, Navigation, AlertOctagon } from 'lucide-react';
 
 // Dynamically import OpenLayersMapCanvas with SSR disabled
 const OpenLayersMapCanvas = dynamic(
@@ -36,6 +37,7 @@ export default function Home() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [lang, setLang] = useState('en');
   const [timeOffsetMins, setTimeOffsetMins] = useState(0);
+  const [mobileTab, setMobileTab] = useState<'map' | 'panel'>('map');
 
   // Authority Authentication State
   const [authorityAuth, setAuthorityAuth] = useState<{ isLoggedIn: boolean; loginId: string; cityId: CityId } | null>(null);
@@ -132,7 +134,7 @@ export default function Home() {
 
   // 3. Dedicated Public Citizen Dashboard (OpenLayers GIS Map)
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans overflow-x-hidden">
       {/* Public Citizen Header Navigation */}
       <HeaderNavbar
         selectedCityId={selectedCityId}
@@ -156,10 +158,34 @@ export default function Home() {
         onOpenReportModal={() => setIsReportModalOpen(true)}
       />
 
-      {/* Public Citizen Dashboard Layout */}
-      <main className="flex-1 p-3 md:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1800px] mx-auto w-full h-[calc(100vh-76px)]">
-        {/* Left Side Control Panel (4 Cols) */}
-        <div className="lg:col-span-4 flex flex-col gap-3 overflow-y-auto pr-1">
+      {/* Mobile View Switcher (Visible on screens < lg) */}
+      <div className="lg:hidden flex justify-center px-4 pt-2.5">
+        <div className="bg-slate-200/90 backdrop-blur-md p-1 rounded-2xl flex space-x-1 border border-slate-300 shadow-2xs w-full max-w-sm">
+          <button
+            onClick={() => setMobileTab('map')}
+            className={`flex-1 py-1.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
+              mobileTab === 'map' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span>GIS Map View</span>
+          </button>
+          <button
+            onClick={() => setMobileTab('panel')}
+            className={`flex-1 py-1.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
+              mobileTab === 'panel' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            <Sliders className="w-3.5 h-3.5" />
+            <span>Planner & Alerts</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Public Citizen Dashboard Responsive Grid Layout */}
+      <main className="flex-1 p-3 md:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1800px] mx-auto w-full lg:h-[calc(100vh-76px)] overflow-y-auto lg:overflow-hidden">
+        {/* Left Side Control Panel (4 Cols on Desktop, Toggled on Mobile) */}
+        <div className={`${mobileTab === 'panel' ? 'flex' : 'hidden'} lg:flex lg:col-span-4 flex-col gap-3.5 overflow-y-auto pr-1`}>
           {/* Flood Safe Route Planner */}
           <RoutingWidget
             selectedCityId={selectedCityId}
@@ -176,14 +202,17 @@ export default function Home() {
           <AlertFeed
             selectedCityId={selectedCityId}
             timeOffsetMins={timeOffsetMins}
-            onSelectFeature={(id) => setSelectedFeatureId(id)}
+            onSelectFeature={(id) => {
+              setSelectedFeatureId(id);
+              setMobileTab('map'); // Auto switch to map on feature click in mobile
+            }}
           />
         </div>
 
-        {/* Center/Right OpenLayers GIS Canvas & Forecast Scrubber (8 Cols) */}
-        <div className="lg:col-span-8 flex flex-col gap-3 h-full relative">
+        {/* Center/Right OpenLayers GIS Canvas & Forecast Scrubber (8 Cols on Desktop, Toggled on Mobile) */}
+        <div className={`${mobileTab === 'map' ? 'flex' : 'hidden'} lg:flex lg:col-span-8 flex-col gap-3 h-full relative`}>
           {/* OpenLayers Spatial GIS Canvas */}
-          <div className="flex-1 relative min-h-[450px]">
+          <div className="flex-1 relative min-h-[420px] md:min-h-[500px]">
             <OpenLayersMapCanvas
               selectedCityId={selectedCityId}
               timeOffsetMins={timeOffsetMins}

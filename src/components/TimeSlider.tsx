@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Play, Pause, RotateCcw, Clock, CloudRain } from 'lucide-react';
 import { getRadarPrecipitationForTime } from '@/lib/hydraulic-engine';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface TimeSliderProps {
   timeOffsetMins: number;
@@ -13,6 +14,7 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
   timeOffsetMins,
   setTimeOffsetMins
 }) => {
+  const { t } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
@@ -44,15 +46,15 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
   const presetTimes = [0, 30, 60, 120, 180];
 
   return (
-    <div className="w-full bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+    <div className="w-full bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
       {/* Top Controls Row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           {/* Play / Pause Toggle */}
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="flex items-center justify-center w-9 h-9 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold transition-all active:scale-95 shadow-sm"
-            title={isPlaying ? 'Pause Simulation' : 'Play 0–3h Forecast Simulation'}
+            className="flex items-center justify-center w-9 h-9 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold transition-all active:scale-95 shadow-xs"
+            title={isPlaying ? t.slider.pause : t.slider.play}
           >
             {isPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white ml-0.5" />}
           </button>
@@ -63,28 +65,28 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
               setIsPlaying(false);
               setTimeOffsetMins(0);
             }}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 transition-all"
-            title="Reset to Present Time"
+            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 transition-all active:scale-95"
+            title={t.slider.reset}
           >
             <RotateCcw className="w-4 h-4" />
           </button>
 
           <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-teal-600" />
+            <Clock className="w-4 h-4 text-teal-600 shrink-0" />
             <span className="text-xs font-bold text-slate-700">
-              Forecast Lead Time:
+              {t.landing.metricLeadTimeSub}:
             </span>
-            <span className="text-xs font-mono font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-lg">
-              {timeLabel} ({timeOffsetMins} mins)
+            <span className="text-xs font-mono font-bold text-teal-900 bg-teal-50/90 border border-teal-200/80 px-2.5 py-0.5 rounded-lg shadow-2xs">
+              {timeLabel} ({timeOffsetMins} {t.slider.plusMin})
             </span>
           </div>
         </div>
 
         {/* Live Rainfall Intensity */}
         <div className="hidden sm:flex items-center space-x-2 text-xs">
-          <CloudRain className="w-4 h-4 text-teal-600" />
-          <span className="text-slate-500">Doppler Radar:</span>
-          <span className="font-mono font-bold text-teal-700">{rainIntensity} mm/h</span>
+          <CloudRain className="w-4 h-4 text-teal-600 shrink-0" />
+          <span className="text-slate-500 font-semibold">{t.slider.rainRateLabel}</span>
+          <span className="font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-lg border border-teal-200">{rainIntensity} mm/h</span>
         </div>
       </div>
 
@@ -102,17 +104,17 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
 
         {/* Ticks and preset buttons */}
         <div className="flex justify-between items-center text-[11px] font-mono text-slate-500 pt-2">
-          {presetTimes.map((t) => (
+          {presetTimes.map((presetTime) => (
             <button
-              key={t}
-              onClick={() => setTimeOffsetMins(t)}
-              className={`px-2 py-0.5 rounded-md transition-all ${
-                timeOffsetMins === t
-                  ? 'bg-teal-600 text-white font-bold'
-                  : 'hover:text-slate-900 hover:bg-slate-100'
+              key={presetTime}
+              onClick={() => setTimeOffsetMins(presetTime)}
+              className={`px-2.5 py-0.5 rounded-lg transition-all ${
+                timeOffsetMins === presetTime
+                  ? 'bg-teal-600 text-white font-bold shadow-2xs'
+                  : 'hover:text-slate-900 hover:bg-slate-100 font-medium'
               }`}
             >
-              {t === 0 ? 'NOW (+0m)' : `+${t}m`}
+              {presetTime === 0 ? t.slider.nowLive : `+${presetTime}${t.slider.plusMin}`}
             </button>
           ))}
         </div>

@@ -49,6 +49,7 @@ import {
   ShieldCheck,
   Home
 } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface OpenLayersMapCanvasProps {
   selectedCityId: CityId;
@@ -79,6 +80,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   pinnedDestination,
   onLocationPicked
 }) => {
+  const { t } = useLanguage();
   const mapElementRef = useRef<HTMLDivElement>(null);
   const popupElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -100,18 +102,25 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     setRoutePinModeRef.current = setRoutePinMode;
   }, [setRoutePinMode]);
 
-  // GIS Layer Toggle States
+  // GIS Layer Toggle States - Layers start disabled until requested by user
   const [baseLayerType, setBaseLayerType] = useState<'osm' | 'topo' | 'hot'>('osm');
-  const [showDemLayer, setShowDemLayer] = useState(true);
-  const [showRoadsLayer, setShowRoadsLayer] = useState(true);
-  const [showRouteLayer, setShowRouteLayer] = useState(true);
-  const [showDrainageLayer, setShowDrainageLayer] = useState(true);
-  const [showManholesLayer, setShowManholesLayer] = useState(true);
-  const [showEvacuationLayer, setShowEvacuationLayer] = useState(true);
-  const [showReportsLayer, setShowReportsLayer] = useState(true);
-  const [showHotspotsLayer, setShowHotspotsLayer] = useState(true);
+  const [showDemLayer, setShowDemLayer] = useState(false);
+  const [showRoadsLayer, setShowRoadsLayer] = useState(false);
+  const [showRouteLayer, setShowRouteLayer] = useState(false);
+  const [showDrainageLayer, setShowDrainageLayer] = useState(false);
+  const [showManholesLayer, setShowManholesLayer] = useState(false);
+  const [showEvacuationLayer, setShowEvacuationLayer] = useState(false);
+  const [showReportsLayer, setShowReportsLayer] = useState(false);
+  const [showHotspotsLayer, setShowHotspotsLayer] = useState(false);
   const [showDeluge2005Layer, setShowDeluge2005Layer] = useState(false);
   const [showGroundwaterLayer, setShowGroundwaterLayer] = useState(false);
+
+  // Automatically enable route layer when user calculates a route or deploys evacuation path
+  useEffect(() => {
+    if (activeRoute) {
+      setShowRouteLayer(true);
+    }
+  }, [activeRoute]);
 
   // Unified Drawer & Accordion State
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);

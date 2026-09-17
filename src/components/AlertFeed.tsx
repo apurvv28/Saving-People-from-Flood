@@ -4,6 +4,7 @@ import React from 'react';
 import { AlertOctagon, Flame, MapPin } from 'lucide-react';
 import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { CityId, getCityDataset } from '@/lib/mock-data';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AlertFeedProps {
   selectedCityId: CityId;
@@ -16,6 +17,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
   timeOffsetMins,
   onSelectFeature
 }) => {
+  const { t } = useLanguage();
   const snapshot = getHydraulicSnapshotAtTime(timeOffsetMins, selectedCityId);
   const { roads, nodes } = getCityDataset(selectedCityId);
 
@@ -31,11 +33,11 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
         <div className="flex items-center space-x-2">
           <AlertOctagon className="w-5 h-5 text-red-600" />
           <h2 className="text-sm font-bold text-slate-800 tracking-tight">
-            Live Bottlenecks & Hazards
+            {t.alerts.title}
           </h2>
         </div>
         <span className="flex items-center space-x-1 text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-mono font-bold">
-          <span>{totalAlerts} ACTIVE</span>
+          <span>{totalAlerts} {t.alerts.critical}</span>
         </span>
       </div>
 
@@ -43,6 +45,12 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
         {criticalRoads.map((roadState) => {
           const road = roads.find(r => r.id === roadState.roadId);
           if (!road) return null;
+
+          const getSeverityBadgeText = (sev: string) => {
+            if (sev.toLowerCase().includes('crit')) return t.alerts.critical;
+            if (sev.toLowerCase().includes('warn')) return t.alerts.warning;
+            return t.alerts.advisory;
+          };
 
           return (
             <div
@@ -56,7 +64,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
                   <span className="truncate">{road.name}</span>
                 </div>
                 <p className="text-[11px] text-slate-500">
-                  Borough: {road.borough} • Elevation: {road.demElevationMeters}m
+                  {t.alerts.borough}: {road.borough} • {t.alerts.elevation}: {road.demElevationMeters}m
                 </p>
               </div>
 
@@ -65,7 +73,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
                   {roadState.waterDepthCm} cm
                 </span>
                 <p className="text-[9px] uppercase font-bold text-red-700">
-                  {roadState.severity}
+                  {getSeverityBadgeText(roadState.severity)}
                 </p>
               </div>
             </div>
@@ -88,7 +96,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
                   <span className="truncate">{node.name}</span>
                 </div>
                 <p className="text-[11px] text-slate-600">
-                  Hydraulic Backflow • {node.type}
+                  {t.alerts.hydraulicBackflow} • {node.type}
                 </p>
               </div>
 
@@ -97,7 +105,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
                   {nodeState.surchargePct}%
                 </span>
                 <p className="text-[9px] uppercase font-bold text-red-800">
-                  OVERCAPACITY
+                  {t.alerts.tabSurcharge}
                 </p>
               </div>
             </div>
@@ -113,7 +121,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
             <div className="space-y-0.5">
               <div className="flex items-center space-x-1.5 font-semibold text-orange-950">
                 <MapPin className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                <span className="truncate">{mh.name} Chamber</span>
+                <span className="truncate">{mh.name}</span>
               </div>
               <p className="text-[11px] text-slate-600 truncate max-w-[200px]">
                 {mh.derivedLocationLabel}
@@ -128,7 +136,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
                 +{mh.surfaceOverflowDepthCm} cm
               </span>
               <p className="text-[9px] uppercase font-bold text-red-700">
-                SURFACE SPILL
+                {t.alerts.surfaceSpill}
               </p>
               <span className="text-[9px] font-mono text-orange-700">
                 {mh.hydraulicCapacityPct}% Cap
@@ -139,10 +147,11 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
 
         {totalAlerts === 0 && (
           <div className="p-4 text-center text-slate-500 text-xs">
-            ✨ No critical flood bottlenecks predicted for this time lead.
+            ✨ {t.alerts.noAlerts}
           </div>
         )}
       </div>
     </div>
   );
 };
+

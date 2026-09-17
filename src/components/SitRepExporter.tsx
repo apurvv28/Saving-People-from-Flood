@@ -4,6 +4,7 @@ import React from 'react';
 import { X, Printer, Shield, FileCheck, AlertTriangle } from 'lucide-react';
 import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { CityId, CITIES } from '@/lib/mock-data';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface SitRepExporterProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const SitRepExporter: React.FC<SitRepExporterProps> = ({
   selectedCityId,
   timeOffsetMins
 }) => {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   const city = CITIES[selectedCityId];
@@ -35,7 +37,7 @@ export const SitRepExporter: React.FC<SitRepExporterProps> = ({
           <div className="flex items-center space-x-2 text-teal-800">
             <Shield className="w-5 h-5 text-teal-600" />
             <h3 className="font-bold text-slate-900 text-sm">
-              Automated Situation Report ({city.name} Command Center)
+              {t.sitrep.title} ({city.name})
             </h3>
           </div>
           <div className="flex items-center space-x-2">
@@ -44,7 +46,7 @@ export const SitRepExporter: React.FC<SitRepExporterProps> = ({
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs transition-all"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Print / Save PDF</span>
+              <span>{t.sitrep.generatePdf}</span>
             </button>
             <button
               onClick={onClose}
@@ -60,7 +62,7 @@ export const SitRepExporter: React.FC<SitRepExporterProps> = ({
             <div>
               <h2 className="text-base font-bold text-teal-800">MINISTRY OF EARTH SCIENCES (MoES)</h2>
               <p className="text-slate-600 text-[11px]">National Centre for Medium Range Weather Forecasting (NCMRWF)</p>
-              <p className="text-xs font-bold text-slate-900 mt-1">URBAN FLOOD NOWCASTING SITUATION REPORT ({city.name.toUpperCase()})</p>
+              <p className="text-xs font-bold text-slate-900 mt-1">{t.sitrep.summaryHeading} ({city.name.toUpperCase()})</p>
             </div>
             <div className="text-right text-[10px] text-slate-500">
               <p>Generated: {now}</p>
@@ -70,29 +72,29 @@ export const SitRepExporter: React.FC<SitRepExporterProps> = ({
 
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="p-2.5 rounded-lg bg-white border border-slate-200">
-              <p className="text-slate-500 text-[10px]">Precipitation Rate</p>
+              <p className="text-slate-500 text-[10px]">{t.slider.rainRateLabel}</p>
               <p className="text-sm font-bold text-teal-700">{snapshot.rainfallRateMmHr} mm/h</p>
             </div>
             <div className="p-2.5 rounded-lg bg-white border border-slate-200">
-              <p className="text-slate-500 text-[10px]">Max Inundation Depth</p>
+              <p className="text-slate-500 text-[10px]">{t.nav.maxDepth}</p>
               <p className="text-sm font-bold text-red-600">{snapshot.maxWaterDepthCm} cm</p>
             </div>
             <div className="p-2.5 rounded-lg bg-white border border-slate-200">
-              <p className="text-slate-500 text-[10px]">Surcharging Manholes</p>
-              <p className="text-sm font-bold text-red-600">{snapshot.criticalSurchargeNodesCount} Nodes</p>
+              <p className="text-slate-500 text-[10px]">{t.drainage.criticalNodes}</p>
+              <p className="text-sm font-bold text-red-600">{snapshot.criticalSurchargeNodesCount}</p>
             </div>
           </div>
 
           <div className="space-y-2">
             <p className="font-bold text-slate-800 flex items-center space-x-1.5 text-[11px]">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-              <span>CRITICAL INUNDATED ARTERIAL ROADS</span>
+              <span>{t.sitrep.criticalZones}</span>
             </p>
             <div className="space-y-1.5">
               {snapshot.roadStates.filter(r => r.waterDepthCm >= 15).map(r => (
                 <div key={r.roadId} className="flex justify-between p-2 rounded bg-white border border-slate-200">
                   <span>{r.roadId}</span>
-                  <span className="text-red-600 font-bold">{r.waterDepthCm} cm depth ({r.severity.toUpperCase()})</span>
+                  <span className="text-red-600 font-bold">{r.waterDepthCm} cm ({r.severity.toUpperCase()})</span>
                 </div>
               ))}
             </div>
@@ -101,7 +103,7 @@ export const SitRepExporter: React.FC<SitRepExporterProps> = ({
           <div className="space-y-2">
             <p className="font-bold text-slate-800 flex items-center space-x-1.5 text-[11px]">
               <FileCheck className="w-3.5 h-3.5 text-teal-600" />
-              <span>RECOMMENDED MUNICIPAL INTERVENTIONS</span>
+              <span>RECOMMENDED INTERVENTIONS</span>
             </p>
             <ul className="list-disc list-inside space-y-1 text-slate-700 text-[11px]">
               <li>Deploy high-capacity mobile dewatering pumps at low elevation underpasses.</li>
@@ -114,3 +116,4 @@ export const SitRepExporter: React.FC<SitRepExporterProps> = ({
     </div>
   );
 };
+

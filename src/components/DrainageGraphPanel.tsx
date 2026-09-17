@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Network, Activity, Zap, Waves, AlertTriangle, Gauge, ArrowUpRight } from 'lucide-react';
+import { Network, Waves, AlertTriangle, Gauge } from 'lucide-react';
 import { CityId, getCityDataset, DRAINAGE_PIPES } from '@/lib/mock-data';
 import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { getTopSurchargingManholes } from '@/lib/physics-manhole-engine';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface DrainageGraphPanelProps {
   selectedCityId: CityId;
@@ -15,6 +16,7 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
   selectedCityId,
   timeOffsetMins
 }) => {
+  const { t } = useLanguage();
   const snapshot = getHydraulicSnapshotAtTime(timeOffsetMins, selectedCityId);
   const { nodes } = getCityDataset(selectedCityId);
   const topManholes = getTopSurchargingManholes(selectedCityId, 8, timeOffsetMins);
@@ -31,10 +33,10 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
           <Network className="w-5 h-5 text-teal-700" />
           <div>
             <h2 className="text-sm font-bold text-slate-800 tracking-tight">
-              1D Underground Drainage & Surcharge Telemetry
+              {t.drainage.title}
             </h2>
             <p className="text-[10.5px] text-slate-500">
-              Physics Model: Manning Full-Pipe Capacity + CartoDEM Invert Gradients
+              {t.drainage.undergroundGraph}
             </p>
           </div>
         </div>
@@ -42,12 +44,9 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
           {overflowingCount > 0 && (
             <span className="flex items-center space-x-1 text-[10px] bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded-full font-bold animate-pulse">
               <AlertTriangle className="w-3 h-3" />
-              <span>{overflowingCount} Overflowing</span>
+              <span>{overflowingCount} {t.drainage.criticalNodes}</span>
             </span>
           )}
-          <span className="text-[10px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-full font-mono font-semibold">
-            Manning n=0.013
-          </span>
         </div>
       </div>
 
@@ -62,7 +61,7 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
           }`}
         >
           <Gauge className="w-3.5 h-3.5" />
-          <span>Physics Manholes ({snapshot.physicsManholes?.length || 0})</span>
+          <span>{t.drainage.criticalNodes} ({snapshot.physicsManholes?.length || 0})</span>
         </button>
         <button
           onClick={() => setActiveTab('outfalls_pipes')}
@@ -73,7 +72,7 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
           }`}
         >
           <Waves className="w-3.5 h-3.5" />
-          <span>Trunk Outfalls & Conduits</span>
+          <span>{t.drainage.coupledSurface}</span>
         </button>
       </div>
 
@@ -82,17 +81,17 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
           {/* Summary Banner */}
           <div className="grid grid-cols-3 gap-2 text-center p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs">
             <div>
-              <p className="text-[10px] text-slate-500 font-semibold uppercase">Total Derived MH</p>
+              <p className="text-[10px] text-slate-500 font-semibold uppercase">Nodes</p>
               <p className="text-sm font-bold text-slate-800 font-mono">{snapshot.physicsManholes?.length || 0}</p>
             </div>
             <div>
-              <p className="text-[10px] text-slate-500 font-semibold uppercase">Surface Overflow</p>
+              <p className="text-[10px] text-slate-500 font-semibold uppercase">Overflow</p>
               <p className={`text-sm font-bold font-mono ${overflowingCount > 0 ? 'text-red-600' : 'text-teal-700'}`}>
-                {overflowingCount} Chambers
+                {overflowingCount}
               </p>
             </div>
             <div>
-              <p className="text-[10px] text-slate-500 font-semibold uppercase">Discharge Spill</p>
+              <p className="text-[10px] text-slate-500 font-semibold uppercase">Rate</p>
               <p className={`text-sm font-bold font-mono ${totalOverflowLps > 0 ? 'text-red-600' : 'text-slate-700'}`}>
                 {totalOverflowLps} L/s
               </p>
@@ -123,11 +122,6 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
                     <div>
                       <div className="flex items-center space-x-1.5">
                         <span className="font-bold text-slate-800 text-[11.5px]">{mh.name}</span>
-                        {mh.isGalli && (
-                          <span className="px-1.5 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200 text-[9px] font-bold">
-                            Galli
-                          </span>
-                        )}
                       </div>
                       <p className="text-[10px] text-slate-500 truncate max-w-[190px]">
                         {mh.derivedLocationLabel}
@@ -141,9 +135,6 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
                       >
                         {mh.hydraulicCapacityPct}%
                       </span>
-                      <p className="text-[9px] text-slate-400 font-mono">
-                        Q: {mh.inflowRunoffLps}/{mh.capacityLps} L/s
-                      </p>
                     </div>
                   </div>
 
@@ -155,17 +146,10 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
                     />
                   </div>
 
-                  {/* Chamber Details */}
-                  <div className="flex justify-between items-center text-[10px] text-slate-500 pt-0.5 border-t border-slate-100 font-mono">
-                    <span>Rim: {mh.rimElevationMeters}m MSL</span>
-                    <span>Inv: -{mh.invertDepthMeters}m</span>
-                    <span>Ø{mh.pipeDiameterMm}mm</span>
-                  </div>
-
                   {/* Overflow Alert Tag */}
                   {isOverflowing && (
                     <div className="flex items-center justify-between text-[10px] bg-red-100/70 text-red-800 px-2 py-0.5 rounded font-medium">
-                      <span>⚠️ Street Surcharge</span>
+                      <span>⚠️ {t.alerts.tabSurcharge}</span>
                       <span className="font-bold font-mono">+{mh.surfaceOverflowDepthCm} cm</span>
                     </div>
                   )}
@@ -177,9 +161,8 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           <div className="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center space-x-1">
-              <Activity className="w-3.5 h-3.5 text-teal-600" />
-              <span>Municipal Outfalls ({nodes.length})</span>
+            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+              Outfalls ({nodes.length})
             </span>
 
             <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
@@ -192,52 +175,11 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
                   <div key={node.id} className="p-2 rounded-lg bg-white border border-slate-200 flex items-center justify-between shadow-2xs">
                     <div>
                       <p className="font-semibold text-slate-800 text-[11px]">{node.name}</p>
-                      <p className="text-[10px] text-slate-500">
-                        Invert Depth: {node.invertDepthMeters}m • Cap: {node.capacityLps} L/s
-                      </p>
                     </div>
                     <div className="text-right">
                       <span className={`font-mono font-bold text-xs ${isSurcharging ? 'text-red-600' : 'text-teal-700'}`}>
                         {surcharge}%
                       </span>
-                      {node.pumpActive && (
-                        <p className="text-[9px] text-teal-700 font-bold flex items-center justify-end space-x-0.5">
-                          <Zap className="w-2.5 h-2.5" />
-                          <span>PUMP ON</span>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center space-x-1">
-              <Waves className="w-3.5 h-3.5 text-teal-600" />
-              <span>Conduits & Canals ({DRAINAGE_PIPES.length})</span>
-            </span>
-
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-              {DRAINAGE_PIPES.map((pipe) => {
-                const source = nodes.find(n => n.id === pipe.sourceNodeId);
-                const target = nodes.find(n => n.id === pipe.targetNodeId);
-
-                return (
-                  <div key={pipe.id} className="p-2 rounded-lg bg-white border border-slate-200 space-y-1 shadow-2xs">
-                    <div className="flex justify-between items-center text-[11px] font-semibold text-slate-800">
-                      <span className="truncate">{source?.name.split(' ')[0] || 'Node-A'} ➔ {target?.name.split(' ')[0] || 'Node-B'}</span>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                        pipe.flowDirection === 'reverse_backflow' ? 'bg-red-100 text-red-800' : 'bg-teal-50 text-teal-800'
-                      }`}>
-                        {pipe.flowDirection === 'reverse_backflow' ? 'BACKFLOW' : 'GRAVITY'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                      <span>Dia: {pipe.diameterMm}mm</span>
-                      <span>Length: {pipe.lengthMeters}m</span>
-                      <span>Slope: {pipe.slopePct}%</span>
                     </div>
                   </div>
                 );
@@ -249,3 +191,4 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
     </div>
   );
 };
+

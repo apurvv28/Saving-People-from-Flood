@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Camera, AlertTriangle, Send, CheckCircle2 } from 'lucide-react';
 import { CitizenReport, CityId } from '@/lib/mock-data';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -17,9 +18,10 @@ export const ReportModal: React.FC<ReportModalProps> = ({
   selectedCityId,
   onAddReport
 }) => {
+  const { t } = useLanguage();
   const [locationName, setLocationName] = useState('Central Junction');
   const [waterDepthCm, setWaterDepthCm] = useState(25);
-  const [userNote, setUserNote] = useState('Water rising rapidly near traffic post.');
+  const [userNote, setUserNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
 
@@ -38,7 +40,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
         lng: 72.8450 + (Math.random() - 0.5) * 0.01,
         locationName,
         waterDepthCm,
-        userNote,
+        userNote: userNote || 'Water depth observed',
         verified: true,
         upvotes: 1
       };
@@ -61,7 +63,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           <div className="flex items-center space-x-2 text-teal-800">
             <AlertTriangle className="w-5 h-5 text-teal-600" />
             <h3 className="font-bold text-slate-900 text-sm">
-              Citizen Ground-Truth Water Depth Report
+              {t.reportModal.title}
             </h3>
           </div>
           <button
@@ -75,13 +77,12 @@ export const ReportModal: React.FC<ReportModalProps> = ({
         {submittedSuccess ? (
           <div className="py-8 text-center space-y-2">
             <CheckCircle2 className="w-12 h-12 text-teal-600 mx-auto" />
-            <p className="font-bold text-slate-900 text-sm">Ground-Truth Report Submitted!</p>
-            <p className="text-xs text-slate-500">Thank you for updating real-time flood intelligence.</p>
+            <p className="font-bold text-slate-900 text-sm">{t.reportModal.successToast}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Location / Landmark Name:</label>
+              <label className="block text-slate-700 font-semibold mb-1">{t.reportModal.locationLabel}:</label>
               <input
                 type="text"
                 value={locationName}
@@ -93,7 +94,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-slate-700 font-semibold">Estimated Water Depth:</label>
+                <label className="text-slate-700 font-semibold">{t.reportModal.depthLabel}:</label>
                 <span className="font-mono font-bold text-teal-700 text-sm">{waterDepthCm} cm</span>
               </div>
               <input
@@ -107,10 +108,11 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Observations / Ground Conditions:</label>
+              <label className="block text-slate-700 font-semibold mb-1">{t.reportModal.obsLabel}:</label>
               <textarea
                 value={userNote}
                 onChange={(e) => setUserNote(e.target.value)}
+                placeholder={t.reportModal.obsPlaceholder}
                 rows={2}
                 className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-teal-600"
               />
@@ -119,7 +121,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             {/* Photo Attachment Placeholder */}
             <div className="border border-dashed border-slate-300 p-3 rounded-xl flex items-center justify-center space-x-2 text-slate-500 hover:border-teal-600 cursor-pointer transition-all">
               <Camera className="w-4 h-4 text-teal-600" />
-              <span>Attach Ground Photo (Optional)</span>
+              <span>{t.reportModal.photoLabel}</span>
             </div>
 
             <button
@@ -128,7 +130,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-2"
             >
               <Send className="w-4 h-4" />
-              <span>{isSubmitting ? 'Submitting...' : 'Post Verified Report'}</span>
+              <span>{isSubmitting ? t.reportModal.submitting : t.reportModal.submitBtn}</span>
             </button>
           </form>
         )}
@@ -136,3 +138,4 @@ export const ReportModal: React.FC<ReportModalProps> = ({
     </div>
   );
 };
+

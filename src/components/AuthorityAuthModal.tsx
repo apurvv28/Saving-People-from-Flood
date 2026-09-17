@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Shield, Lock, Mail, Building2, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
-import { CityId, CITIES } from '@/lib/mock-data';
+import { X, Shield, Lock, Mail, Building2, AlertCircle, ArrowRight } from 'lucide-react';
+import { CityId } from '@/lib/mock-data';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AuthorityAuthModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
   defaultCityId = 'mumbai',
   onSuccessLogin
 }) => {
+  const { t } = useLanguage();
   const [authTab, setAuthTab] = useState<'login' | 'signup'>('login');
   const [selectedCity, setSelectedCity] = useState<CityId>(defaultCityId);
   const [loginId, setLoginId] = useState(`${defaultCityId}.aqua.gov.in`);
@@ -42,13 +44,13 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
 
       // Validate login format & password
       if (password !== '12345678') {
-        setErrorMsg('Invalid credentials! Password must be: 12345678');
+        setErrorMsg(t.authModal.invalidCredentials);
         setIsSubmitting(false);
         return;
       }
 
       if (!cleanLogin.endsWith('.aqua.gov.in') && !cleanLogin.includes('aqua.gov.in')) {
-        setErrorMsg('Invalid Authority Login ID format! Must use format: cityname.aqua.gov.in (e.g. mumbai.aqua.gov.in)');
+        setErrorMsg(t.authModal.invalidCredentials);
         setIsSubmitting(false);
         return;
       }
@@ -73,7 +75,7 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
           <div className="flex items-center space-x-2 text-teal-800">
             <Shield className="w-5 h-5 text-teal-600" />
             <h3 className="font-bold text-slate-900 text-sm">
-              Municipal Authority Portal Access
+              {t.authModal.title}
             </h3>
           </div>
           <button
@@ -94,7 +96,7 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Authority Login
+            {t.landing.authorityLoginBtn}
           </button>
           <button
             onClick={() => setAuthTab('signup')}
@@ -104,7 +106,7 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Officer Registration
+            Register
           </button>
         </div>
 
@@ -112,12 +114,12 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
         <div className="p-3 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 space-y-1">
           <div className="flex items-center space-x-1.5 font-bold">
             <Building2 className="w-4 h-4 text-teal-700" />
-            <span>Official Government Credentials Required</span>
+            <span>{t.authModal.demoNote}</span>
           </div>
           <p className="text-[11px] text-slate-600">
-            Login ID: <code className="font-mono text-teal-800 font-bold bg-white px-1 py-0.5 rounded border border-teal-200">{selectedCity}.aqua.gov.in</code>
+            ID: <code className="font-mono text-teal-800 font-bold bg-white px-1 py-0.5 rounded border border-teal-200">{selectedCity}.aqua.gov.in</code>
             <br />
-            Password: <code className="font-mono text-teal-800 font-bold bg-white px-1 py-0.5 rounded border border-teal-200">12345678</code>
+            Passcode: <code className="font-mono text-teal-800 font-bold bg-white px-1 py-0.5 rounded border border-teal-200">12345678</code>
           </p>
         </div>
 
@@ -132,7 +134,7 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
         <form onSubmit={handleAuthSubmit} className="space-y-4 text-xs">
           {/* Target City Selection */}
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">Target Metro Jurisdiction:</label>
+            <label className="block text-slate-700 font-semibold mb-1">{t.nav.selectCity}:</label>
             <select
               value={selectedCity}
               onChange={(e) => handleCityChange(e.target.value as CityId)}
@@ -160,14 +162,14 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
 
           {/* Login ID */}
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">Official Authority Login ID:</label>
+            <label className="block text-slate-700 font-semibold mb-1">{t.authModal.domainLabel}:</label>
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type="text"
                 value={loginId}
                 onChange={(e) => setLoginId(e.target.value)}
-                placeholder="cityname.aqua.gov.in"
+                placeholder={t.authModal.domainPlaceholder}
                 required
                 className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-teal-600"
               />
@@ -176,14 +178,14 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
 
           {/* Password */}
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">Passcode:</label>
+            <label className="block text-slate-700 font-semibold mb-1">{t.authModal.passcodeLabel}:</label>
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t.authModal.passcodePlaceholder}
                 required
                 className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-teal-600"
               />
@@ -196,7 +198,7 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
             disabled={isSubmitting}
             className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center space-x-2 active:scale-95"
           >
-            <span>{isSubmitting ? 'Authenticating...' : authTab === 'login' ? 'Authenticate Authority Access' : 'Register & Log In'}</span>
+            <span>{isSubmitting ? t.authModal.loggingIn : t.authModal.loginBtn}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
@@ -204,3 +206,4 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
     </div>
   );
 };
+

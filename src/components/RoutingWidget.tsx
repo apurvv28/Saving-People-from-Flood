@@ -15,7 +15,6 @@ import {
   Siren,
   LifeBuoy,
   Home,
-  CheckCircle2,
   PhoneCall
 } from 'lucide-react';
 import {
@@ -28,10 +27,11 @@ import {
 import {
   getEvacuationZonesForCity,
   generateEvacuationPlanForZone,
-  SAFE_ASSEMBLY_SHELTERS,
   EvacuationPlan
 } from '@/lib/evacuation-service';
 import { CityId, CITIES, NavigationRoute } from '@/lib/mock-data';
+import { useLanguage } from '@/context/LanguageContext';
+import { EvacuationPlanModal } from '@/components/EvacuationPlanModal';
 
 interface RoutingWidgetProps {
   selectedCityId: CityId;
@@ -54,6 +54,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
   pinnedOrigin,
   pinnedDestination
 }) => {
+  const { t } = useLanguage();
   const city = CITIES[selectedCityId];
 
   // Routing Mode: Standard Vehicle Route Planner vs Emergency Evacuation Mode
@@ -76,6 +77,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
   // Evacuation Mode State
   const [selectedEvacZoneId, setSelectedEvacZoneId] = useState<string>('');
   const [evacuationPlan, setEvacuationPlan] = useState<EvacuationPlan | null>(null);
+  const [isEvacModalOpen, setIsEvacModalOpen] = useState<boolean>(false);
 
   const evacZones = getEvacuationZonesForCity(selectedCityId, timeOffsetMins);
   const activeEvacZones = evacZones.filter(z => z.active);
@@ -152,14 +154,14 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
   };
 
   const vehicleOptions: { type: VehicleType; label: string; icon: React.ReactNode }[] = [
-    { type: 'auto', label: 'Auto (3W)', icon: <Car className="w-3.5 h-3.5" /> },
-    { type: 'hatchback', label: 'Hatchback', icon: <Car className="w-3.5 h-3.5" /> },
-    { type: 'sedan', label: 'Sedan', icon: <Car className="w-3.5 h-3.5" /> },
-    { type: 'suv', label: 'SUV 4x4', icon: <Truck className="w-3.5 h-3.5" /> },
-    { type: 'bus', label: 'Bus', icon: <Truck className="w-3.5 h-3.5" /> },
-    { type: 'ambulance', label: 'Ambulance', icon: <Siren className="w-3.5 h-3.5" /> },
-    { type: 'two_wheeler', label: 'Bike', icon: <Bike className="w-3.5 h-3.5" /> },
-    { type: 'pedestrian', label: 'Foot / Walk', icon: <Footprints className="w-3.5 h-3.5" /> },
+    { type: 'auto', label: t.routing.autoBike, icon: <Car className="w-3.5 h-3.5" /> },
+    { type: 'hatchback', label: t.routing.hatchback, icon: <Car className="w-3.5 h-3.5" /> },
+    { type: 'sedan', label: t.routing.carSedan, icon: <Car className="w-3.5 h-3.5" /> },
+    { type: 'suv', label: t.routing.suv, icon: <Truck className="w-3.5 h-3.5" /> },
+    { type: 'bus', label: t.routing.bus, icon: <Truck className="w-3.5 h-3.5" /> },
+    { type: 'ambulance', label: t.routing.ambulance, icon: <Siren className="w-3.5 h-3.5" /> },
+    { type: 'two_wheeler', label: t.routing.autoBike, icon: <Bike className="w-3.5 h-3.5" /> },
+    { type: 'pedestrian', label: t.routing.pedestrian, icon: <Footprints className="w-3.5 h-3.5" /> },
   ];
 
   const currentProfile = VEHICLE_PROFILES[vehicle];
@@ -178,7 +180,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
             }`}
           >
             <Navigation className="w-3.5 h-3.5 text-teal-600" />
-            <span>Vehicle Route</span>
+            <span>{t.routing.title.split(' ')[0]} {t.routing.title.split(' ')[1]}</span>
           </button>
           <button
             onClick={() => setActiveTab('evacuation_mode')}
@@ -189,7 +191,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
             }`}
           >
             <LifeBuoy className="w-3.5 h-3.5" />
-            <span>Evacuation Mode</span>
+            <span>{t.dashboard.evacRouteBtn.split(' ')[0]}</span>
             {activeEvacZones.length > 0 && (
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
             )}
@@ -213,7 +215,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                 type="text"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
-                placeholder="Origin address or lat, lng..."
+                placeholder={t.routing.originPlaceholder}
                 className="w-full bg-transparent text-slate-800 font-medium focus:outline-none text-xs"
               />
               {setRoutePinMode && (
@@ -228,7 +230,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                   title="Pin origin on map"
                 >
                   <MapPin className="w-3 h-3" />
-                  <span>{routePinMode === 'origin' ? 'Click Map...' : 'Pin Origin'}</span>
+                  <span>{routePinMode === 'origin' ? t.routing.pickLocationPrompt : t.routing.pickOrigin}</span>
                 </button>
               )}
             </div>
@@ -245,7 +247,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                 type="text"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                placeholder="Destination address or lat, lng..."
+                placeholder={t.routing.destPlaceholder}
                 className="w-full bg-transparent text-slate-800 font-medium focus:outline-none text-xs"
               />
               {setRoutePinMode && (
@@ -260,7 +262,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                   title="Pin destination on map"
                 >
                   <MapPin className="w-3 h-3" />
-                  <span>{routePinMode === 'destination' ? 'Click Map...' : 'Pin Dest'}</span>
+                  <span>{routePinMode === 'destination' ? t.routing.pickLocationPrompt : t.routing.pickDest}</span>
                 </button>
               )}
             </div>
@@ -269,8 +271,8 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
           {/* Vehicle Profiles Selector */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] text-slate-500 font-medium">
-              <span>Vehicle Profile & Clearance:</span>
-              <span className="text-teal-700 font-bold font-mono">Max Safe: {currentProfile.maxSafeDepthCm}cm</span>
+              <span>{t.routing.vehicleProfileClearance}</span>
+              <span className="text-teal-700 font-bold font-mono">{t.routing.maxSafe} {currentProfile.maxSafeDepthCm}cm</span>
             </div>
 
             <div className="grid grid-cols-4 gap-1">
@@ -293,17 +295,13 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                 );
               })}
             </div>
-
-            <p className="text-[10px] text-slate-500 leading-tight pt-0.5">
-              💡 {currentProfile.description}
-            </p>
           </div>
 
           <button
             onClick={handleSearch}
             className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-2"
           >
-            <span>Recompute Dynamic Route</span>
+            <span>{t.routing.findRoute}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 
@@ -315,22 +313,11 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                 <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-900 space-y-2">
                   <div className="flex items-center space-x-2 text-red-700 font-bold text-xs">
                     <AlertTriangle className="w-4 h-4 shrink-0" />
-                    <span>NO SAFE ROUTE FOR {currentProfile.name.toUpperCase()}</span>
+                    <span>{t.routing.noSafeRouteFor} {currentProfile.name.toUpperCase()}</span>
                   </div>
                   <p className="text-[11px] text-red-700 leading-relaxed">
-                    {routesResult.safeRoute.blockedReason || `All available corridors exceed ${currentProfile.name} water limit (${currentProfile.maxSafeDepthCm}cm). Water depth along direct path reaches ${routesResult.standardRoute.maxWaterDepthCm}cm.`}
+                    {routesResult.safeRoute.blockedReason || t.routing.noRouteFound}
                   </p>
-                  {routesResult.safeRoute.suggestedAlternativeVehicle && (
-                    <div className="pt-1.5 border-t border-red-200/60 flex items-center justify-between">
-                      <span className="text-[10.5px] text-red-800">Recommendation:</span>
-                      <button
-                        onClick={() => setVehicle(routesResult.safeRoute.suggestedAlternativeVehicle!)}
-                        className="px-2 py-1 rounded bg-red-600 text-white text-[10px] font-bold hover:bg-red-700 transition-all"
-                      >
-                        Switch to {VEHICLE_PROFILES[routesResult.safeRoute.suggestedAlternativeVehicle].name}
-                      </button>
-                    </div>
-                  )}
                 </div>
               ) : (
                 /* Safe Route Card */
@@ -345,57 +332,24 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                   <div className="flex items-center justify-between font-semibold">
                     <div className="flex items-center space-x-1.5 text-emerald-900">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span className="text-xs font-bold">{routesResult.safeRoute.name}</span>
+                      <span className="text-xs font-bold">
+                        {routesResult.safeRoute.name === 'AquaAlert Real Road Flood-Safe Route'
+                          ? t.routing.realRoadSafeRoute
+                          : routesResult.safeRoute.name}
+                      </span>
                     </div>
                     <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                      FLOOD-SAFE
+                      {t.routing.riskSafe}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-[11px] text-slate-600 mt-1.5 font-medium">
-                    <span>{routesResult.safeRoute.distanceKm} km • {routesResult.safeRoute.durationMins} mins</span>
+                    <span>{routesResult.safeRoute.distanceKm} km • {routesResult.safeRoute.durationMins} {t.slider.plusMin}</span>
                     <span className="text-emerald-700 font-mono font-bold">
-                      Max Depth: {routesResult.safeRoute.maxWaterDepthCm} cm
+                      {t.nav.maxDepth}: {routesResult.safeRoute.maxWaterDepthCm} cm
                     </span>
                   </div>
-                  {routesResult.safeRoute.floodDetourKm > 0 && (
-                    <p className="text-[10px] text-emerald-700 mt-1">
-                      ↪️ Includes +{routesResult.safeRoute.floodDetourKm}km elevated detour avoiding submerged underpasses.
-                    </p>
-                  )}
                 </div>
               )}
-
-              {/* Standard Direct Path (Comparison) */}
-              <div
-                onClick={() => setActiveRoute(routesResult.standardRoute)}
-                className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                  activeRoute?.id === routesResult.standardRoute.id
-                    ? 'bg-amber-50/80 border-amber-300 ring-1 ring-amber-300'
-                    : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-center justify-between font-semibold">
-                  <div className="flex items-center space-x-1.5 text-slate-800">
-                    <AlertCircle className="w-4 h-4 text-amber-600" />
-                    <span className="text-xs">{routesResult.standardRoute.name}</span>
-                  </div>
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      routesResult.standardRoute.isSafe
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {routesResult.standardRoute.isSafe ? 'PASSABLE' : 'UNSAFE FLOOD'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-[11px] text-slate-600 mt-1.5 font-medium">
-                  <span>{routesResult.standardRoute.distanceKm} km • {routesResult.standardRoute.durationMins} mins</span>
-                  <span className={`font-mono font-bold ${routesResult.standardRoute.maxWaterDepthCm > currentProfile.maxSafeDepthCm ? 'text-red-600' : 'text-slate-700'}`}>
-                    Max: {routesResult.standardRoute.maxWaterDepthCm} cm
-                  </span>
-                </div>
-              </div>
             </div>
           )}
         </div>
@@ -405,17 +359,17 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
           <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-900">
             <div className="flex items-center space-x-2 font-bold text-xs text-red-800">
               <Siren className="w-4 h-4 text-red-600 animate-pulse" />
-              <span>DEDICATED EVACUATION ROUTING</span>
+              <span>{t.dashboard.evacRouteBtn}</span>
             </div>
             <p className="text-[10.5px] text-red-700 mt-1 leading-relaxed">
-              Auto-detects residents in extreme flood depressions (&gt;40cm depth or surcharging manholes) and charts safest path to high-elevation relief centers.
+              Auto-detects residents in extreme flood depressions and charts safest path to high-elevation relief centers.
             </p>
           </div>
 
           {/* Evacuation Zone Selector */}
           <div className="space-y-1">
             <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
-              Select Flood Hazard Zone:
+              {t.routing.selectHazardZone}
             </span>
             <select
               value={selectedEvacZoneId}
@@ -437,63 +391,56 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
                     <Home className="w-3.5 h-3.5" />
-                    Nearest Safe Assembly Shelter
+                    {t.routing.nearestShelter}
                   </span>
                   <span className="text-[10px] font-mono font-bold bg-emerald-200/70 text-emerald-900 px-1.5 py-0.5 rounded">
-                    +{evacuationPlan.elevationGainMeters}m Elevation Gain
+                    +{evacuationPlan.elevationGainMeters}m Elevation
                   </span>
                 </div>
                 <h4 className="font-bold text-xs text-emerald-900">{evacuationPlan.nearestShelter.name}</h4>
                 <p className="text-[10.5px] text-emerald-800">{evacuationPlan.nearestShelter.address}</p>
-
-                <div className="grid grid-cols-2 gap-2 text-[10.5px] pt-1 border-t border-emerald-200">
-                  <div>
-                    <span className="text-emerald-700">Distance:</span>
-                    <p className="font-bold font-mono">{evacuationPlan.distanceKm} km</p>
-                  </div>
-                  <div>
-                    <span className="text-emerald-700">Est. Walk Time:</span>
-                    <p className="font-bold font-mono text-emerald-800">{evacuationPlan.walkingTimeMins} mins on foot</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-1 text-[10px] text-emerald-700 pt-1">
-                  <PhoneCall className="w-3 h-3 text-emerald-600 shrink-0" />
-                  <span>Helpline: {evacuationPlan.nearestShelter.contactEmergency}</span>
-                </div>
               </div>
 
               {/* Action Buttons to Deploy Evacuation Path */}
+              <button
+                onClick={() => setIsEvacModalOpen(true)}
+                className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs shadow-md shadow-red-600/20 flex items-center justify-center space-x-2 transition-all active:scale-95"
+              >
+                <LifeBuoy className="w-4 h-4 animate-pulse" />
+                <span>{t.evacuationModal.title}</span>
+              </button>
+
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => handleDeployEvacuation('foot')}
                   className="py-2.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center justify-center space-x-1.5 shadow-xs transition-all"
                 >
                   <Footprints className="w-3.5 h-3.5" />
-                  <span>Deploy Foot Route</span>
+                  <span>{t.routing.pedestrian}</span>
                 </button>
                 <button
                   onClick={() => handleDeployEvacuation('vehicle')}
                   className="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-[11px] flex items-center justify-center space-x-1.5 shadow-xs transition-all"
                 >
                   <Truck className="w-3.5 h-3.5" />
-                  <span>Rescue Van Route</span>
+                  <span>{t.routing.rescueVehicleRoute}</span>
                 </button>
-              </div>
-
-              {/* Advisory Guidelines */}
-              <div className="space-y-1 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[10.5px] text-slate-700">
-                <span className="font-bold text-slate-800 block">Civic Evacuation Directives:</span>
-                <ul className="space-y-1 list-disc list-inside text-slate-600">
-                  {evacuationPlan.advisorySteps.map((step, idx) => (
-                    <li key={idx} className="leading-snug">{step}</li>
-                  ))}
-                </ul>
               </div>
             </div>
           )}
         </div>
       )}
+
+      {/* Evacuation Step-by-Step Modal */}
+      <EvacuationPlanModal
+        isOpen={isEvacModalOpen}
+        onClose={() => setIsEvacModalOpen(false)}
+        selectedCityId={selectedCityId}
+        timeOffsetMins={timeOffsetMins}
+        evacuationPlan={evacuationPlan}
+        onDeployMapRoute={(route) => setActiveRoute(route)}
+      />
     </div>
   );
 };
+

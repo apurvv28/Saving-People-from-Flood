@@ -7,10 +7,12 @@ import { DrainageGraphPanel } from '@/components/DrainageGraphPanel';
 import { AlertFeed } from '@/components/AlertFeed';
 import { SitRepExporter } from '@/components/SitRepExporter';
 import { TideWaterbodyWidget } from '@/components/TideWaterbodyWidget';
-import { CityId, CITIES, NavigationRoute } from '@/lib/mock-data';
+import { CityId, CITIES } from '@/lib/mock-data';
 import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { getPumpingStationsForCity } from '@/lib/pumping-station-service';
-import { Shield, Building2, Zap, Activity, FileText, CheckCircle2, AlertOctagon, RefreshCw, Power } from 'lucide-react';
+import { Building2, Zap, FileText, CheckCircle2, Power, Languages, Shield, ArrowLeft, Map, Sliders } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
+import { SupportedLanguage } from '@/lib/i18n/translations';
 
 // Dynamically import OpenLayersMapCanvas with SSR disabled
 const OpenLayersMapCanvas = dynamic(
@@ -45,9 +47,11 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
   authorityAuth,
   onLogoutAuthority
 }) => {
+  const { lang, setLang, t, supportedLanguages } = useLanguage();
   const [timeOffsetMins, setTimeOffsetMins] = useState(0);
   const [isSitRepModalOpen, setIsSitRepModalOpen] = useState(false);
   const [pumpStates, setPumpStates] = useState<Record<string, boolean>>({});
+  const [mobileTab, setMobileTab] = useState<'map' | 'panel'>('map');
 
   const city = CITIES[selectedCityId];
   const snapshot = getHydraulicSnapshotAtTime(timeOffsetMins, selectedCityId, undefined, pumpStates);
@@ -64,79 +68,121 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
-      {/* Authority Command Navbar */}
-      <header className="w-full bg-teal-800 text-white px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3 shadow-md">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans overflow-x-hidden">
+      {/* Authority Command Header (Shadcn Dark Command Bar) */}
+      <header className="w-full bg-slate-950/95 backdrop-blur-xl text-white px-4 md:px-5 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 shadow-md">
         <div className="flex items-center space-x-3">
           <button
             onClick={onGoToLanding}
-            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-teal-900/60 hover:bg-teal-900 text-teal-100 text-xs transition-all border border-teal-700"
-            title="Back to Landing Page"
+            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 text-xs font-bold transition-all border border-slate-700/80 active:scale-95"
+            title={t.nav.backToLanding}
           >
-            <span>← Landing</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Landing</span>
           </button>
 
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-teal-600 text-white">
+          <div className="flex items-center space-x-2.5">
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 text-white shadow-md shadow-teal-500/20">
               <Building2 className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-base font-bold tracking-tight text-white">
-                  Authority Command Portal
+                <h1 className="text-sm md:text-base font-black tracking-tight text-white font-mono">
+                  {t.dashboard.title}
                 </h1>
-                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-teal-900/80 text-teal-200 border border-teal-600">
+                <span className="hidden sm:inline-flex text-[10px] uppercase font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
                   {city.name} Command
                 </span>
               </div>
-              <p className="text-[11px] text-teal-200">Ministry of Earth Sciences / Municipal Disaster Control Room</p>
+              <p className="text-[10.5px] text-slate-400 font-medium">{t.dashboard.subTitle}</p>
             </div>
           </div>
         </div>
 
-        {/* City Selector & Officer Status */}
-        <div className="flex items-center space-x-3">
+        {/* City Selector, Language & Officer Status */}
+        <div className="flex items-center space-x-2.5 flex-wrap">
+          {/* Language Selector */}
+          <div className="relative flex items-center bg-slate-900 border border-slate-700 px-2 py-1 rounded-xl text-xs">
+            <Languages className="w-3.5 h-3.5 text-teal-400 mr-1 shrink-0" />
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value as SupportedLanguage)}
+              className="bg-transparent text-xs text-white focus:outline-none pr-1 cursor-pointer font-bold"
+            >
+              {supportedLanguages.map((l) => (
+                <option key={l.code} value={l.code} className="bg-slate-900 text-white">
+                  {l.flag} {l.nativeName}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* City Selection Dropdown */}
-          <div className="flex items-center bg-teal-900/80 border border-teal-600 px-2.5 py-1 rounded-lg text-xs">
-            <span className="text-teal-300 mr-1.5 font-medium">Jurisdiction:</span>
+          <div className="flex items-center bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-xl text-xs">
+            <span className="hidden sm:inline text-slate-400 mr-1 font-medium">{t.nav.selectCity}:</span>
             <select
               value={selectedCityId}
               onChange={(e) => onSelectCity(e.target.value as CityId)}
               className="bg-transparent font-bold text-white focus:outline-none cursor-pointer pr-1"
             >
-              <option value="mumbai" className="bg-teal-900 text-white">Mumbai Metro</option>
-              <option value="delhi" className="bg-teal-900 text-white">Delhi NCR</option>
-              <option value="chennai" className="bg-teal-900 text-white">Chennai Metro</option>
+              <option value="mumbai" className="bg-slate-900 text-white">Mumbai</option>
+              <option value="delhi" className="bg-slate-900 text-white">Delhi NCR</option>
+              <option value="chennai" className="bg-slate-900 text-white">Chennai</option>
             </select>
           </div>
 
           {/* SitRep Exporter Button */}
           <button
             onClick={() => setIsSitRepModalOpen(true)}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-xs transition-all"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow-md shadow-amber-500/20 transition-all active:scale-95"
           >
-            <FileText className="w-4 h-4" />
-            <span>Generate Executive SitRep</span>
+            <FileText className="w-3.5 h-3.5" />
+            <span>{t.dashboard.exportSitRep}</span>
           </button>
 
           {/* Officer Badge & Logout */}
-          <div className="flex items-center space-x-2 bg-teal-900/90 border border-teal-600 px-3 py-1 rounded-lg text-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-teal-300" />
-            <span className="font-mono font-bold text-teal-100">{authorityAuth.loginId}</span>
+          <div className="flex items-center space-x-1.5 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-xl text-xs">
+            <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+            <span className="font-mono font-bold text-slate-200 text-[11px] truncate max-w-[100px]">{authorityAuth.loginId.split('.')[0]}</span>
             <button
               onClick={onLogoutAuthority}
-              className="ml-2 text-teal-300 hover:text-red-300 font-bold underline transition-colors text-[11px]"
+              className="ml-1 text-slate-400 hover:text-red-400 font-bold text-[11px] transition-colors"
             >
-              Exit Authority Mode
+              Exit
             </button>
           </div>
         </div>
       </header>
 
+      {/* Mobile View Switcher (Visible on screens < lg) */}
+      <div className="lg:hidden flex justify-center px-4 pt-2.5">
+        <div className="bg-slate-200/90 backdrop-blur-md p-1 rounded-2xl flex space-x-1 border border-slate-300 shadow-2xs w-full max-w-sm">
+          <button
+            onClick={() => setMobileTab('map')}
+            className={`flex-1 py-1.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
+              mobileTab === 'map' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span>Command GIS Map</span>
+          </button>
+          <button
+            onClick={() => setMobileTab('panel')}
+            className={`flex-1 py-1.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
+              mobileTab === 'panel' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            <Sliders className="w-3.5 h-3.5" />
+            <span>SCADA & Telemetry</span>
+          </button>
+        </div>
+      </div>
+
       {/* Main Authority Command Workspace */}
-      <main className="flex-1 p-3 md:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1800px] mx-auto w-full h-[calc(100vh-76px)]">
-        {/* Left Side Authority Controls (4 Cols) */}
-        <div className="lg:col-span-4 flex flex-col gap-3 overflow-y-auto pr-1">
+      <main className="flex-1 p-3 md:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1800px] mx-auto w-full lg:h-[calc(100vh-76px)] overflow-y-auto lg:overflow-hidden">
+        {/* Left Side Authority Controls (4 Cols on Desktop, Toggled on Mobile) */}
+        <div className={`${mobileTab === 'panel' ? 'flex' : 'hidden'} lg:flex lg:col-span-4 flex-col gap-3.5 overflow-y-auto pr-1`}>
           {/* Tide & Water-Body Telemetry Widget */}
           <TideWaterbodyWidget
             selectedCityId={selectedCityId}
@@ -145,15 +191,17 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
           />
 
           {/* Dewatering Pump Control Station */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+          <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
             <div className="flex items-center justify-between border-b border-slate-200 pb-2">
               <div className="flex items-center space-x-2">
-                <Zap className="w-5 h-5 text-teal-600" />
-                <h2 className="text-sm font-bold text-slate-800 tracking-tight">
-                  SCADA Dewatering Pumping Complex ({city.name})
+                <div className="p-1.5 rounded-lg bg-teal-50 text-teal-600 border border-teal-200">
+                  <Zap className="w-4 h-4" />
+                </div>
+                <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+                  {t.dashboard.pumpControllerTitle} ({city.name})
                 </h2>
               </div>
-              <span className="text-[10px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-full font-mono font-bold">
+              <span className="text-[10px] bg-teal-50 text-teal-800 px-2.5 py-0.5 rounded-full font-mono font-bold border border-teal-200">
                 {pumpingStations.length} Stations
               </span>
             </div>
@@ -163,25 +211,25 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                 const isActive = pumpStates[pump.id] ?? pump.isOperational;
 
                 return (
-                  <div key={pump.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div key={pump.id} className="p-3 rounded-xl bg-slate-50/90 border border-slate-200 flex items-center justify-between gap-2">
                     <div>
                       <p className="font-bold text-slate-900 text-xs">{pump.name}</p>
                       <p className="text-[11px] text-slate-500 font-mono">
                         Cap: {pump.capacityLps.toLocaleString()} L/s • Pumps: {pump.activePumpsCount}/{pump.totalPumpsCount}
                       </p>
-                      <p className="text-[10px] text-slate-400 truncate max-w-[200px]">{pump.locationName}</p>
+                      <p className="text-[10px] text-slate-400 truncate max-w-[180px]">{pump.locationName}</p>
                     </div>
 
                     <button
                       onClick={() => togglePump(pump.id)}
-                      className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                      className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 active:scale-95 ${
                         isActive
                           ? 'bg-teal-600 text-white shadow-xs'
                           : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                       }`}
                     >
                       <Power className="w-3.5 h-3.5" />
-                      <span>{isActive ? 'SCADA ACTIVE' : 'STANDBY'}</span>
+                      <span>{isActive ? t.dashboard.activatePump : t.dashboard.deactivatePump}</span>
                     </button>
                   </div>
                 );
@@ -199,13 +247,15 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
           <AlertFeed
             selectedCityId={selectedCityId}
             timeOffsetMins={timeOffsetMins}
-            onSelectFeature={() => {}}
+            onSelectFeature={() => {
+              setMobileTab('map');
+            }}
           />
         </div>
 
-        {/* Center/Right OpenLayers Spatial GIS Canvas (8 Cols) */}
-        <div className="lg:col-span-8 flex flex-col gap-3 h-full relative">
-          <div className="flex-1 relative min-h-[450px]">
+        {/* Center/Right OpenLayers Spatial GIS Canvas (8 Cols on Desktop, Toggled on Mobile) */}
+        <div className={`${mobileTab === 'map' ? 'flex' : 'hidden'} lg:flex lg:col-span-8 flex-col gap-3 h-full relative`}>
+          <div className="flex-1 relative min-h-[420px] md:min-h-[500px]">
             <OpenLayersMapCanvas
               selectedCityId={selectedCityId}
               timeOffsetMins={timeOffsetMins}
