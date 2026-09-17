@@ -24,6 +24,7 @@ import {
   Sparkles,
   Smartphone
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useLanguage } from '@/context/LanguageContext';
 import { SupportedLanguage } from '@/lib/i18n/translations';
 
@@ -64,14 +65,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const faqs = t.faqs;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-500 selection:text-white relative overflow-hidden">
-      {/* Background Decorative Radial Light Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-500/10 via-cyan-500/5 to-transparent pointer-events-none z-0" />
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-500 selection:text-white">
 
       {/* Header Bar (Shadcn Glassmorphic Top Nav) */}
-      <header className="w-full bg-white/80 backdrop-blur-xl border-b border-slate-200/80 px-6 py-3.5 flex items-center justify-between shadow-xs sticky top-0 z-50 flex-wrap gap-3">
+      <header className="w-full bg-white border-b border-slate-200 px-5 md:px-8 py-3 flex items-center justify-between sticky top-0 z-50 flex-wrap gap-3">
         <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-600 to-teal-800 text-white shadow-md shadow-teal-700/20 ring-2 ring-teal-600/30">
+          <div className="flex items-center justify-center w-9 h-9 rounded-md bg-slate-950 text-teal-300 border border-teal-400/40">
             <Shield className="w-5 h-5" />
           </div>
           <div>
@@ -79,8 +78,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <h1 className="text-lg font-black tracking-tight text-slate-900 font-mono">
                 {t.nav.brand}
               </h1>
-              <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-teal-100 text-teal-800 border border-teal-200">
-                v2.5 Live
+              <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-slate-100 text-slate-600 border border-slate-200 uppercase tracking-wide">
+                Protocol 02
               </span>
             </div>
             <p className="text-[11px] text-slate-500 font-medium">{t.nav.subTitle}</p>
@@ -104,12 +103,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </select>
           </div>
 
-          <div className="hidden lg:flex items-center space-x-2 text-xs font-semibold text-teal-900 bg-teal-50/90 px-3 py-1.5 rounded-xl border border-teal-200/80 shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="hidden lg:flex items-center space-x-2 text-[10px] font-semibold text-slate-600 px-3 py-1.5 border-l border-slate-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <CloudRain className="w-4 h-4 text-teal-600" />
             <span>MoES / NCMRWF Engine</span>
           </div>
 
+          <ThemeToggle />
           {/* Authority Portal Access Button */}
           {authorityAuth?.isLoggedIn ? (
             <div className="flex items-center space-x-1.5 bg-teal-50 border border-teal-200 text-teal-900 px-3.5 py-2 rounded-xl text-xs font-bold shadow-2xs">

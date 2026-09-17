@@ -13,6 +13,7 @@ import { getPumpingStationsForCity } from '@/lib/pumping-station-service';
 import { Building2, Zap, FileText, CheckCircle2, Power, Languages, Shield, ArrowLeft, Map, Sliders } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { SupportedLanguage } from '@/lib/i18n/translations';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 // Dynamically import OpenLayersMapCanvas with SSR disabled
 const OpenLayersMapCanvas = dynamic(
@@ -102,6 +103,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
 
         {/* City Selector, Language & Officer Status */}
         <div className="flex items-center space-x-2.5 flex-wrap">
+          <ThemeToggle />
           {/* Language Selector */}
           <div className="relative flex items-center bg-slate-900 border border-slate-700 px-2 py-1 rounded-xl text-xs">
             <Languages className="w-3.5 h-3.5 text-teal-400 mr-1 shrink-0" />

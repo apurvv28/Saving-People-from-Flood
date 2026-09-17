@@ -31,6 +31,7 @@ import {
 import { useLanguage } from '@/context/LanguageContext';
 import { SupportedLanguage } from '@/lib/i18n/translations';
 import { INDIAN_EMERGENCY_SERVICES } from '@/lib/emergency-data';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 // Dynamically import OpenLayersMapCanvas with SSR disabled
 const OpenLayersMapCanvas = dynamic(
@@ -164,7 +165,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans overflow-x-hidden">
       {/* Citizen App Header Navbar */}
-      <header className="w-full bg-white/90 backdrop-blur-xl border-b border-slate-200 px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
+      <header className="w-full bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
           <button
             onClick={onGoToLanding}
@@ -196,6 +197,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
 
         {/* Header Controls: Live GPS, Language, City Selector */}
         <div className="flex items-center space-x-2 flex-wrap">
+          <ThemeToggle />
           {/* Live GPS Locate Me Button */}
           <button
             onClick={handleAcquireGpsLocation}

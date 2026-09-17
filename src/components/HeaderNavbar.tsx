@@ -4,6 +4,7 @@ import { CITIES, CityId } from '@/lib/mock-data';
 import { HISTORICAL_CLOUDBURST_EVENTS } from '@/lib/openmeteo-service';
 import { useLanguage } from '@/context/LanguageContext';
 import { SupportedLanguage } from '@/lib/i18n/translations';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 interface HeaderNavbarProps {
   selectedCityId: CityId;
@@ -50,7 +51,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
 
   return (
     <>
-      <header className="w-full bg-white/85 backdrop-blur-xl border-b border-slate-200/80 px-4 py-2.5 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+      <header className="w-full bg-white border-b border-slate-200 px-4 py-2.5 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3">
         {/* Brand & Hamburger Menu Trigger */}
         <div className="flex items-center space-x-2">
           {/* Hamburger Menu Icon Button */}
@@ -160,6 +161,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
 
       {/* Action Controls & Authority Access */}
       <div className="flex items-center space-x-2">
+        <ThemeToggle />
         {/* Language Selector Dropdown */}
         <div className="relative flex items-center bg-slate-100/90 rounded-xl px-2.5 py-1.5 border border-slate-200 shadow-2xs">
           <Languages className="w-3.5 h-3.5 text-teal-600 mr-1.5 shrink-0" />
@@ -415,4 +417,3 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
     </>
   );
 };
-

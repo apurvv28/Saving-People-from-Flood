@@ -702,6 +702,23 @@ export function calculateFloodSafeRoutes(
     return { standardRoute, safeRoute };
   }
 
+  // Sparse city extracts can contain disconnected road fragments.  When the
+  // direct corridor is demonstrably within the selected vehicle's clearance,
+  // keep that usable route instead of presenting a false "no safe route"
+  // state solely because a graph edge could not be joined.
+  if (standardIsSafe) {
+    const fallbackSafeRoute: EnhancedNavigationRoute = {
+      ...standardRoute,
+      id: `route-safe-${cityId}-${vehicleType}-direct-fallback`,
+      name: 'AquaAlert Flood-Clear Direct Route',
+      isSafe: true,
+      isBlocked: false,
+      warnings: ['Flood-clear direct corridor: predicted water remains within the selected vehicle clearance.'],
+      floodDetourKm: 0
+    };
+    return { standardRoute, safeRoute: fallbackSafeRoute };
+  }
+
   // NO-SAFE-ROUTE SCENARIO: All corridors exceed vehicle limit
   let alternativeVehicle: VehicleType | undefined = undefined;
   if (vehicleType === 'two_wheeler') alternativeVehicle = 'car';

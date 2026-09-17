@@ -1,21 +1,49 @@
 @import 'ol/ol.css';
 @import 'leaflet/dist/leaflet.css';
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f7f8fc;
+  --foreground: #111827;
+  --surface: #ffffff;
+  --surface-strong: #ffffff;
+  --line: #d9e1ef;
+  --muted: #55637a;
+  --accent: #14b8a6;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   overflow-x: hidden;
+  letter-spacing: -.02em;
 }
+
+button, input, select, textarea { font-family: inherit; }
+
+/* Protocol-inspired UI: quiet surfaces, precise dividers, and data-led accents. */
+.theme-toggle { color: #0f766e; background: #f0fdfa; border-color: #99f6e4; }
+.theme-toggle:hover { background: #ccfbf1; }
+
+html.theme-dark { color-scheme: dark; }
+.theme-dark body { --background: #09111f; --foreground: #e5edf8; --surface: #101b2d; --surface-strong: #0e1b2d; --line: #243650; --muted: #a2b2c9; color: var(--foreground); background-color: var(--background); }
+
+/* Existing components use Tailwind surface utilities; these semantic overrides keep all views legible in dark mode. */
+.theme-dark [class*="bg-white"] { background-color: var(--surface) !important; }
+.theme-dark [class*="bg-slate-50"], .theme-dark [class*="bg-slate-100"], .theme-dark [class*="bg-slate-200"] { background-color: #101f33 !important; }
+.theme-dark .bg-slate-900 { background-color: #07101d !important; }
+.theme-dark [class*="border-slate-100"], .theme-dark [class*="border-slate-200"], .theme-dark [class*="border-slate-300"] { border-color: var(--line) !important; }
+.theme-dark .text-slate-900, .theme-dark .text-slate-800, .theme-dark .text-slate-700 { color: #e5edf8 !important; }
+.theme-dark .text-slate-600, .theme-dark .text-slate-500, .theme-dark .text-slate-400 { color: #aab8cc !important; }
+.theme-dark select, .theme-dark option { background-color: #101f33; color: #e5edf8; }
+.theme-dark .ol-control, .theme-dark .ol-popup-card { background: #101f33 !important; color: #e5edf8 !important; border-color: #314765 !important; }
+.theme-dark .ol-control button { background: #101f33 !important; color: #67e8f9 !important; }
+.theme-dark .theme-toggle { color: #cffafe; background: #10263b; border-color: #22d3ee; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
 
 /* Clean White Card Styling */
 .white-card {
