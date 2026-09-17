@@ -8,11 +8,11 @@ export interface LanguageOption {
 }
 
 export const SUPPORTED_LANGUAGES: LanguageOption[] = [
-  { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧' },
-  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳' },
-  { code: 'mr', name: 'Marathi', nativeName: 'मराठी', flag: '🇮🇳' },
-  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇮🇳' },
-  { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', flag: '🇮🇳' },
+  { code: 'en', name: 'English', nativeName: 'English', flag: '' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '' },
+  { code: 'mr', name: 'Marathi', nativeName: 'मराठी', flag: '' },
+  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '' },
+  { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', flag: '' },
 ];
 
 export interface TranslationSchema {
@@ -254,6 +254,50 @@ export interface TranslationSchema {
     deployMapBtn: string;
     closeBtn: string;
   };
+  citizenApp: {
+    appTitle: string;
+    appSubtitle: string;
+    tabAlerts: string;
+    tabRoute: string;
+    tabReport: string;
+    useLiveGps: string;
+    gpsAcquired: string;
+    gpsDenied: string;
+    locateMe: string;
+    launchCitizenApp: string;
+    tabEmergency: string;
+  };
+  emergencyServices: {
+    title: string;
+    subTitle: string;
+    callNow: string;
+    tollFree: string;
+    ndrfTitle: string;
+    ndrfDesc: string;
+    national112Title: string;
+    national112Desc: string;
+    municipal1916Title: string;
+    municipal1916Desc: string;
+    ambulance108Title: string;
+    ambulance108Desc: string;
+    fire101Title: string;
+    fire101Desc: string;
+    police100Title: string;
+    police100Desc: string;
+    coastal1093Title: string;
+    coastal1093Desc: string;
+  };
+  voiceNav: {
+    voiceGuide: string;
+    speaking: string;
+    stopVoice: string;
+    inMeters: string;
+    turnLeft: string;
+    turnRight: string;
+    proceedStraight: string;
+    hazardWarning: string;
+    destinationArrived: string;
+  };
 }
 
 export const translations: Record<SupportedLanguage, TranslationSchema> = {
@@ -301,8 +345,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       cloudburst: 'Cloudburst (85 mm/h)',
       predictedDepth: 'Predicted Street Water Depth:',
       underpassLocation: 'at low elevation underpass',
-      capacityExceeded: '⚠️ Drainage pipe capacity exceeded (>100%). Manhole backflow surcharging onto surface.',
-      capacityAdequate: '✅ Drainage network capacity adequate. Water flowing via gravity.',
+      capacityExceeded: 'Drainage pipe capacity exceeded (>100%). Manhole backflow surcharging onto surface.',
+      capacityAdequate: 'Drainage network capacity adequate. Water flowing via gravity.',
       faqTitle: 'Frequently Asked Questions',
       faqBadge: 'Frequently Asked Questions',
       faqMainHeading: 'Everything You Need to Know About AquaAlert',
@@ -517,6 +561,50 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       deployMapBtn: 'Deploy Evacuation Route on GIS Map',
       closeBtn: 'Close Evacuation Plan',
     },
+    citizenApp: {
+      appTitle: 'AquaAlert Citizen Portal',
+      appSubtitle: 'Public Street Flood Hazards, Live GPS Route Avoidance & Water Logging Reporting',
+      tabAlerts: 'Live Hazard Alerts',
+      tabRoute: 'Vehicle Route Avoidance',
+      tabReport: 'Report Water Sump',
+      useLiveGps: 'Use My Live GPS Location',
+      gpsAcquired: 'Live GPS Location Acquired',
+      gpsDenied: 'GPS Permission Denied or Unavailable',
+      locateMe: 'Locate Me',
+      launchCitizenApp: 'Open Citizen Mobile App',
+      tabEmergency: 'Emergency Contacts',
+    },
+    emergencyServices: {
+      title: 'Indian Emergency Helplines',
+      subTitle: '1-Tap Toll-Free Direct Lines for Disaster Response & Medical Triage',
+      callNow: 'Call',
+      tollFree: '24x7 Toll-Free',
+      ndrfTitle: 'NDRF Disaster Response Control Room',
+      ndrfDesc: 'National Disaster Response Force (NDRF) flood rescue, boat evacuation, and heavy cloudburst operations.',
+      national112Title: 'All-India Unified Emergency Line',
+      national112Desc: 'Single emergency response helpline number across all Indian states and Union Territories.',
+      municipal1916Title: 'City Disaster Management Control Room',
+      municipal1916Desc: 'Municipal corporation (BMC/NDMC/GCC) urban flood helpline, tree fall clearance, and dewatering pumps.',
+      ambulance108Title: 'Emergency Medical & Ambulance Service',
+      ambulance108Desc: 'Free emergency medical ambulance, trauma response, and flood triage transport.',
+      fire101Title: 'Fire Brigade & Flood Water Rescue',
+      fire101Desc: 'Submerged underpass vehicle extraction, trapped civilian rescue, and high-water pumping.',
+      police100Title: 'Police Control Room & Traffic Police',
+      police100Desc: 'Emergency law enforcement, flooded highway traffic diversion, and evacuation cordons.',
+      coastal1093Title: 'Coastal Security & High-Tide Patrol',
+      coastal1093Desc: 'Indian Coast Guard & Maritime Board emergency helpline for storm surge and coastal water logging.',
+    },
+    voiceNav: {
+      voiceGuide: 'Voice Navigation',
+      speaking: 'Playing Audio...',
+      stopVoice: 'Stop Voice',
+      inMeters: 'In {distance} meters',
+      turnLeft: 'turn left onto',
+      turnRight: 'turn right onto',
+      proceedStraight: 'proceed straight along',
+      hazardWarning: 'Warning! Submerged underpass ahead. Detour recommended.',
+      destinationArrived: 'You have arrived at your safe high-elevation destination shelter.',
+    },
   },
 
   hi: {
@@ -563,8 +651,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       cloudburst: 'बादल फटना (85 मिमी/घंटा)',
       predictedDepth: 'अनुमानित सड़क जल गहराई:',
       underpassLocation: 'निचले अंडरपास पर',
-      capacityExceeded: '⚠️ ड्रेनेज पाइप क्षमता से अधिक (>100%)। सतह पर ओवरफ़्लो।',
-      capacityAdequate: '✅ ड्रेनेज नेटवर्क क्षमता पर्याप्त है। पानी गुरुत्वाकर्षण द्वारा बह रहा है।',
+      capacityExceeded: 'ड्रेनेज पाइप क्षमता से अधिक (>100%)। सतह पर ओवरफ़्लो।',
+      capacityAdequate: 'ड्रेनेज नेटवर्क क्षमता पर्याप्त है। पानी गुरुत्वाकर्षण द्वारा बह रहा है।',
       faqTitle: 'अक्सर पूछे जाने वाले प्रश्न',
       faqBadge: 'अक्सर पूछे जाने वाले प्रश्न',
       faqMainHeading: 'AquaAlert के बारे में वह सब कुछ जो आपको जानना आवश्यक है',
@@ -779,6 +867,50 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       deployMapBtn: 'जीआईएस मानचित्र पर सुरक्षित मार्ग चालू करें',
       closeBtn: 'योजना बंद करें',
     },
+    citizenApp: {
+      appTitle: 'AquaAlert नागरिक पोर्टल',
+      appSubtitle: 'सड़क जलभराव अलर्ट, लाइव जीपीएस सुरक्षित नेविगेशन एवं रिपोर्टिंग',
+      tabAlerts: 'लाइव आपदा अलर्ट',
+      tabRoute: 'वाहन-सुरक्षित मार्ग',
+      tabReport: 'जलभराव रिपोर्ट दर्ज करें',
+      useLiveGps: 'मेरी लाइव जीपीएस स्थिति का उपयोग करें',
+      gpsAcquired: 'लाइव जीपीएस स्थिति प्राप्त हुई',
+      gpsDenied: 'जीपीएस अनुमति नहीं मिली',
+      locateMe: 'मेरी स्थिति खोजें',
+      launchCitizenApp: 'सिटीजन ऐप खोलें',
+      tabEmergency: 'आपातकालीन संपर्क',
+    },
+    emergencyServices: {
+      title: 'भारतीय आपातकालीन हेल्पलाइन',
+      subTitle: 'आपदा राहत और चिकित्सा सहायता के लिए 1-टैप टोल-फ्री नंबर',
+      callNow: 'कॉल करें',
+      tollFree: '24x7 टोल-फ्री',
+      ndrfTitle: 'एनडीआरएफ आपदा प्रतिक्रिया नियंत्रण कक्ष',
+      ndrfDesc: 'राष्ट्रीय आपदा मोचन बल (NDRF) बाढ़ बचाव, नाव निकासी और क्लाउडबर्स्ट राहत कार्य।',
+      national112Title: 'अखिल भारतीय एकीकृत आपातकालीन नंबर',
+      national112Desc: 'सभी भारतीय राज्यों और केंद्र शासित प्रदेशों के लिए एकल आपातकालीन प्रतिक्रिया नंबर।',
+      municipal1916Title: 'नगर निगम आपदा प्रबंधन नियंत्रण कक्ष',
+      municipal1916Desc: 'नगर निगम (BMC/NDMC/GCC) शहरी बाढ़ हेल्पलाइन, जलभराव और पंप संचालन।',
+      ambulance108Title: 'आपातकालीन चिकित्सा और एम्बुलेंस सेवा',
+      ambulance108Desc: 'निःशुल्क आपातकालीन चिकित्सा एम्बुलेंस, आघात प्रतिक्रिया और बाढ़ रोगी परिवहन।',
+      fire101Title: 'फायर ब्रिगेड और जल बचाव दल',
+      fire101Desc: 'जलमग्न अंडरपास से वाहन निकालना और बाढ़ प्रभावित नागरिकों का बचाव।',
+      police100Title: 'पुलिस नियंत्रण कक्ष और यातायात पुलिस',
+      police100Desc: 'आपातकालीन कानून व्यवस्था, जलभराव वाली सड़कों पर यातायात डायवर्जन।',
+      coastal1093Title: 'तटीय सुरक्षा और उच्च ज्वार गश्त',
+      coastal1093Desc: 'भारतीय तटरक्षक बल और तटीय क्षेत्रों में ज्वारीय बाढ़ आपातकालीन सहायता।',
+    },
+    voiceNav: {
+      voiceGuide: 'वॉइस नेविगेशन',
+      speaking: 'ऑडियो चल रहा है...',
+      stopVoice: 'वॉइस बंद करें',
+      inMeters: '{distance} मीटर में',
+      turnLeft: 'बायें मुड़ें',
+      turnRight: 'दायें मुड़ें',
+      proceedStraight: 'सीधे चलें',
+      hazardWarning: 'चेतावनी! आगे जलमग्न अंडरपास है। वैकल्पिक मार्ग लें।',
+      destinationArrived: 'आप अपने सुरक्षित उच्च-ऊंचाई वाले आश्रय स्थल पर पहुँच गए हैं।',
+    },
   },
 
   mr: {
@@ -825,8 +957,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       cloudburst: 'ढगफुटी (85 मिमी/तास)',
       predictedDepth: 'अंदाजित पाण्याची खोली:',
       underpassLocation: 'सखल सबवे येथे',
-      capacityExceeded: '⚠️ ड्रेनेज क्षमतेपेक्षा जास्त (>100%). रस्त्यावर पाण्याचा फुगवटा.',
-      capacityAdequate: '✅ ड्रेनेज क्षमता पुरेशी आहे.',
+      capacityExceeded: 'ड्रेनेज क्षमतेपेक्षा जास्त (>100%). रस्त्यावर पाण्याचा फुगवटा.',
+      capacityAdequate: 'ड्रेनेज क्षमता पुरेशी आहे.',
       faqTitle: 'सतत विचारले जाणारे प्रश्न',
       faqBadge: 'महत्त्वाचे प्रश्न',
       faqMainHeading: 'AquaAlert बद्दल सर्व काही',
@@ -1041,6 +1173,50 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       deployMapBtn: 'नकाशावर सुरक्षित स्थलांतर मार्ग दाखवा',
       closeBtn: 'योजना बंद करा',
     },
+    citizenApp: {
+      appTitle: 'AquaAlert नागरिक पोर्टल',
+      appSubtitle: 'रस्त्यावरील पाणी साचणे इशारे, लाइव्ह जीपीएस सुरक्षित मार्ग व नोंदणी',
+      tabAlerts: 'लाइव्ह आपत्कालीन इशारे',
+      tabRoute: 'वाहन-सुरक्षित मार्ग',
+      tabReport: 'पाण्याची नोंद करा',
+      useLiveGps: 'माझे लाइव्ह जीपीएस स्थान वापरा',
+      gpsAcquired: 'लाइव्ह जीपीएस स्थान मिळाले',
+      gpsDenied: 'जीपीएस परवानगी नाकारली',
+      locateMe: 'माझे स्थान शोधा',
+      launchCitizenApp: 'सिटीझन ॲप उघडा',
+      tabEmergency: 'तातडीचे संपर्क',
+    },
+    emergencyServices: {
+      title: 'भारतीय आपत्कालीन हेल्पलाइन',
+      subTitle: 'आपत्ती निवारण आणि वैद्यकीय मदतीसाठी १-टॅप टोल-फ्री संपर्क',
+      callNow: 'कॉल करा',
+      tollFree: '२४x७ टोल-फ्री',
+      ndrfTitle: 'एनडीआरएफ आपत्ती प्रतिसाद नियंत्रण कक्ष',
+      ndrfDesc: 'राष्ट्रीय आपत्ती प्रतिसाद दल (NDRF) पूर बचाव, नाव सुटका आणि अतिवृष्टी मदत कार्य.',
+      national112Title: 'सर्व-भारतीय एकत्रित आपत्कालीन क्रमांक',
+      national112Desc: 'सर्व भारतीय राज्ये आणि केंद्रशासित प्रदेशांसाठी एकच आपत्कालीन क्रमांक.',
+      municipal1916Title: 'महानगरपालिका आपत्ती व्यवस्थापन कक्ष',
+      municipal1916Desc: 'महानगरपालिका (BMC/NDMC/GCC) शहर पूर नियंत्रण, पाणी उपसा आणि वृक्ष पडझड मदत.',
+      ambulance108Title: 'तातडीची वैद्यकीय आणि रुग्णवाहिका सेवा',
+      ambulance108Desc: 'मोफत आपत्कालीन रुग्णवाहिका आणि पूर बाधित रुग्णांची सुटका.',
+      fire101Title: 'अग्निशामक दल आणि पूर बचाव कार्य',
+      fire101Desc: 'पाण्यात अडकलेली वाहने बाहेर काढणे आणि नागरिकांची सुटका करणे.',
+      police100Title: 'पोलीस नियंत्रण कक्ष आणि वाहतूक पोलीस',
+      police100Desc: 'वाहतूक वळवणे आणि रस्ते सुरक्षा नियंत्रण कार्य.',
+      coastal1093Title: 'किनारपट्टी सुरक्षा आणि उधाणाची भरती गस्त',
+      coastal1093Desc: 'भारतीय तटरक्षक दल सागरी सुरक्षा आणि भरती पूर मदत.',
+    },
+    voiceNav: {
+      voiceGuide: 'व्हॉइस नेव्हिगेशन',
+      speaking: 'ऑडिओ चालू आहे...',
+      stopVoice: 'व्हॉइस थांबवा',
+      inMeters: '{distance} मीटरमध्ये',
+      turnLeft: 'डावीकडे वळा',
+      turnRight: 'उजवीकडे वळा',
+      proceedStraight: 'सरळ पुढे जा',
+      hazardWarning: 'सावधान! पुढे पाण्यात बुडालेला सबवे आहे. पर्यायी मार्ग वापरा.',
+      destinationArrived: 'तुम्ही तुमच्या सुरक्षित उंच आसरा केंद्रावर पोहोचला आहात.',
+    },
   },
 
   ta: {
@@ -1087,8 +1263,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       cloudburst: 'மேகவெடிப்பு (85 மிமீ/மணி)',
       predictedDepth: 'கணிக்கப்பட்ட நீரின் ஆழம்:',
       underpassLocation: 'தாழ்வான சுரங்கப்பாதையில்',
-      capacityExceeded: '⚠️ வடிகால் கொள்ளளவு தாண்டப்பட்டது (>100%). தெருவில் நீர் வழிதல்.',
-      capacityAdequate: '✅ வடிகால் கொள்ளளவு போதுமானது.',
+      capacityExceeded: 'வடிகால் கொள்ளளவு தாண்டப்பட்டது (>100%). தெருவில் நீர் வழிதல்.',
+      capacityAdequate: 'வடிகால் கொள்ளளவு போதுமானது.',
       faqTitle: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
       faqBadge: 'முக்கிய வினாக்கள்',
       faqMainHeading: 'AquaAlert பற்றி நீங்கள் தெரிந்து கொள்ள வேண்டியவை',
@@ -1303,6 +1479,50 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       deployMapBtn: 'வரைபடத்தில் பாதுகாப்பான வழியைக் காட்டு',
       closeBtn: 'திட்டத்தை மூடு',
     },
+    citizenApp: {
+      appTitle: 'AquaAlert பொதுமக்கள் போர்ட்டல்',
+      appSubtitle: 'தெரு வெள்ள எச்சரிக்கைகள், நேரலை GPS பாதுகாப்பான வழித்தடம் & புகார் பதிவு',
+      tabAlerts: 'நேரலை ஆபத்து எச்சரிக்கைகள்',
+      tabRoute: 'பாதுகாப்பான வழித்தடம்',
+      tabReport: 'வெள்ளத்தைப் புகாரளிக்கவும்',
+      useLiveGps: 'எனது நேரலை GPS இடத்தைப் பயன்படுத்து',
+      gpsAcquired: 'நேரலை GPS இடம் பெறப்பட்டது',
+      gpsDenied: 'GPS அனுமதி மறுக்கப்பட்டது',
+      locateMe: 'என் இடத்தை கண்டறி',
+      launchCitizenApp: 'குடிமகன் செயலியைத் திற',
+      tabEmergency: 'அவசர தொடர்புகள்',
+    },
+    emergencyServices: {
+      title: 'இந்திய அவசர உதவி எண்கள்',
+      subTitle: 'பேரிடர் மீட்பு & மருத்துவ உதவிக்கான 1-டேப் கட்டணமில்லா நேரடி எண்கள்',
+      callNow: 'அழைக்கவும்',
+      tollFree: '24x7 கட்டணமில்லா எண்',
+      ndrfTitle: 'NDRF பேரிடர் மீட்புக் கட்டுப்பாட்டு அறை',
+      ndrfDesc: 'தேசிய பேரிடர் மீட்புப் படை (NDRF) வெள்ள மீட்பு மற்றும் படகு வெளியேற்றப் பணிகள்.',
+      national112Title: 'அகில இந்திய ஒருங்கிணைந்த அவசர எண்',
+      national112Desc: 'அனைத்து இந்திய மாநிலங்களுக்கும் ஒன்றியப் பிரதேசங்களுக்கும் ஒரே அவசர உதவி எண்.',
+      municipal1916Title: 'மாநகராட்சி பேரிடர் மேலாண்மைக் கட்டுப்பாட்டு அறை',
+      municipal1916Desc: 'மாநகராட்சி (BMC/NDMC/GCC) நகர்ப்புற வெள்ள உதவி மையம் மற்றும் நீர் இறைக்கும் பம்புகள்.',
+      ambulance108Title: 'அவசர மருத்துவ & ஆம்புலன்ஸ் சேவை',
+      ambulance108Desc: 'இலவச அவசர மருத்துவ ஆம்புலன்ஸ் மற்றும் வெள்ள மீட்பு நோயாளி போக்குவரத்து.',
+      fire101Title: 'தீயணைப்பு & வெள்ள மீட்புப் படை',
+      fire101Desc: 'நீரில் மூழ்கிய சுரங்கப்பாதை வாகன மீட்பு மற்றும் வெள்ளத்தில் சிக்கியோரை மீட்கும் பணி.',
+      police100Title: 'காவல் கட்டுப்பாட்டு அறை & போக்குவரத்து காவல்',
+      police100Desc: 'அவசர சட்ட ஒழுங்கு பாதுகாப்பு மற்றும் வெள்ளப் பாதைகளில் போக்குவரத்து மாற்றம்.',
+      coastal1093Title: 'கடலோரப் பாதுகாப்பு & கடலலை ரோந்து',
+      coastal1093Desc: 'இந்திய கடலோரக் காவல் படை வெள்ள எச்சரிக்கை மற்றும் கடற்கரை அவசர உதவி.',
+    },
+    voiceNav: {
+      voiceGuide: 'குரல் வழிசெலுத்தல்',
+      speaking: 'ஒலி இயங்குகிறது...',
+      stopVoice: 'குரலை நிறுத்து',
+      inMeters: '{distance} மீட்டரில்',
+      turnLeft: 'இடதுபுறம் திரும்பவும்',
+      turnRight: 'வலதுபுறம் திரும்பவும்',
+      proceedStraight: 'நேராகச் செல்லவும்',
+      hazardWarning: 'எச்சரிக்கை! முன்னால் நீரில் மூழ்கிய சுரங்கப்பாதை உள்ளது. மாற்றுப் பாதையைப் பயன்படுத்தவும்.',
+      destinationArrived: 'நீங்கள் பாதுகாப்பான உயர் நில தங்குமிடத்திற்கு வந்து சேர்ந்தீர்கள்.',
+    },
   },
 
   te: {
@@ -1349,8 +1569,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       cloudburst: 'మేఘ విస్ఫోటనం (85 మిమీ/గం)',
       predictedDepth: 'అంచనా వేసిన నీటి లోతు:',
       underpassLocation: 'దిగువ అండర్‌పాస్ వద్ద',
-      capacityExceeded: '⚠️ డ్రైనేజీ సామర్థ్యం మించిపోయింది (>100%). వీధి పైకి నీరు.',
-      capacityAdequate: '✅ డ్రైనేజీ సామర్థ్యం సరిపోతుంది.',
+      capacityExceeded: 'డ్రైనేజీ సామర్థ్యం మించిపోయింది (>100%). వీధి పైకి నీరు.',
+      capacityAdequate: 'డ్రైనేజీ సామర్థ్యం సరిపోతుంది.',
       faqTitle: 'తరచుగా అడిగే ప్రశ్నలు',
       faqBadge: 'ముఖ్యమైన ప్రశ్నలు',
       faqMainHeading: 'AquaAlert గురించి మీరు తెలుసుకోవాల్సిన విషయాలు',
@@ -1564,6 +1784,50 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       step4Title: 'దశ 4: పునరావాస కేంద్రానికి చేరుకోవడం & నమోదు',
       deployMapBtn: 'మ్యాప్‌పై సురక్షిత మార్గాన్ని చూడండి',
       closeBtn: 'ప్రణాళికను మూసివేయి',
+    },
+    citizenApp: {
+      appTitle: 'AquaAlert పౌరుల పోర్టల్',
+      appSubtitle: 'వీధి నీటి ముంపు హెచ్చరికలు, లైవ్ GPS సురక్షిత నావిగేషన్ & నివేదికలు',
+      tabAlerts: 'లైవ్ విపత్తు హెచ్చరికలు',
+      tabRoute: 'వాహన సురక్షిత మార్గం',
+      tabReport: 'నీటి ముంపు నివేదిక నమోదు',
+      useLiveGps: 'నా లైవ్ GPS స్థానాన్ని ఉపయోగించండి',
+      gpsAcquired: 'లైవ్ GPS స్థానం పొందింది',
+      gpsDenied: 'GPS అనుమతి నిరాకరించబడింది',
+      locateMe: 'నా స్థానాన్ని గుర్తించు',
+      launchCitizenApp: 'సిటిజన్ యాప్ తెరవండి',
+      tabEmergency: 'అత్యవసర పరిచయాలు',
+    },
+    emergencyServices: {
+      title: 'భారతీయ అత్యవసర హెల్ప్‌లైన్లు',
+      subTitle: 'విపత్తు సహాయం మరియు వైద్య సహాయం కోసం 1-ట్యాప్ టోల్-ఫ్రీ నంబర్లు',
+      callNow: 'కాల్ చేయండి',
+      tollFree: '24x7 టోల్-ఫ్రీ',
+      ndrfTitle: 'NDRF విపత్తు సహాయ నియంత్రణ గది',
+      ndrfDesc: 'జాతీయ విపత్తు ప్రతిస్పందన దళం (NDRF) వరద రక్షణ, పడవల ద్వారా తరలింపు మరియు భారీ వర్ష సహాయ చర్యలు.',
+      national112Title: 'అఖిల భారత సమగ్ర అత్యవసర సంఖ్య',
+      national112Desc: 'అన్ని భారతీయ రాష్ట్రాలు మరియు కేంద్రపాలిత ప్రాంతాల కోసం ఒకే అత్యవసర హెల్ప్‌లైన్ నంబర్.',
+      municipal1916Title: 'మున్సిపల్ కార్పొరేషన్ విపత్తు నిర్వహణ గది',
+      municipal1916Desc: 'మున్సిపల్ కార్పొరేషన్ (BMC/NDMC/GCC) పట్టణ వరద హెల్ప్‌లైన్ మరియు నీటి తోడే పంపుల నిర్వహణ.',
+      ambulance108Title: 'అత్యవసర వైద్య మరియు ఆంబులెన్స్ సేవలు',
+      ambulance108Desc: 'ఉచిత అత్యవసర వైద్య ఆంబులెన్స్ మరియు వరద బాధితుల రవాణా సేవలు.',
+      fire101Title: 'ఫైర్ బ్రిగేడ్ మరియు వరద నీటి రక్షణ దళం',
+      fire101Desc: 'నీటిలో చిక్కుకున్న వాహనాల వెలికితీత మరియు ప్రజల సురక్షిత తరలింపు.',
+      police100Title: 'పోలీస్ కంట్రోల్ రూమ్ మరియు ట్రాఫిక్ పోలీస్',
+      police100Desc: 'అత్యవసర రక్షణ మరియు వరద ప్రభావిత రహదారుల్లో ట్రాఫిక్ మళ్లింపు.',
+      coastal1093Title: 'కోస్టల్ సెక్యూరిటీ మరియు అలల పర్యవేక్షణ',
+      coastal1093Desc: 'భారతీయ తీర రక్షణ దళం తుఫాను హెచ్చరికలు మరియు తీర ప్రాంత వరద సహాయం.',
+    },
+    voiceNav: {
+      voiceGuide: 'వాయిస్ నావిగేషన్',
+      speaking: 'ఆడియో రన్ అవుతోంది...',
+      stopVoice: 'వాయిస్ ఆపు',
+      inMeters: '{distance} మీటర్లలో',
+      turnLeft: 'ఎడమవైపు తిరగండి',
+      turnRight: 'కుడివైపు తిరగండి',
+      proceedStraight: 'నేరుగా ముందుకు వెళ్లండి',
+      hazardWarning: 'హెచ్చరిక! ముందు నీటిలో మునిగిన అండర్‌పాస్ ఉంది. ప్రత్యామ్నాయ మార్గం తీసుకోండి.',
+      destinationArrived: 'మీరు సురక్షితమైన ఎత్తైన ఆశ్రయ కేంద్రానికి చేరుకున్నారు.',
     },
   },
 };

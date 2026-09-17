@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AlertOctagon, Flame, MapPin } from 'lucide-react';
+import { AlertOctagon, Flame, MapPin, CheckCircle2 } from 'lucide-react';
 import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { CityId, getCityDataset } from '@/lib/mock-data';
 import { useLanguage } from '@/context/LanguageContext';
@@ -28,7 +28,7 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
   const totalAlerts = criticalRoads.length + surchargingManholes.length + physicsOverflows.length;
 
   return (
-    <div className="w-full bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+    <div className="w-full bg-white p-4 rounded-2xl border border-[#dadce0] shadow-md space-y-3">
       <div className="flex items-center justify-between border-b border-slate-200 pb-2">
         <div className="flex items-center space-x-2">
           <AlertOctagon className="w-5 h-5 text-red-600" />
@@ -146,8 +146,9 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
         ))}
 
         {totalAlerts === 0 && (
-          <div className="p-4 text-center text-slate-500 text-xs">
-            ✨ {t.alerts.noAlerts}
+          <div className="p-4 text-center text-slate-500 text-xs flex items-center justify-center space-x-1.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{t.alerts.noAlerts}</span>
           </div>
         )}
       </div>

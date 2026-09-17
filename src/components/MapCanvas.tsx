@@ -102,7 +102,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               <Popup>
                 <div className="p-2 space-y-1.5 min-w-[210px] text-slate-800">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-teal-800">{isGalli ? '🏘️' : '🛣️'} {road.name}</span>
+                    <span className="font-bold text-sm text-teal-800">{road.name}</span>
                     <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono">
                       {road.borough}
                     </span>

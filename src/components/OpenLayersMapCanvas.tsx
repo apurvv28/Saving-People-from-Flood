@@ -103,7 +103,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   }, [setRoutePinMode]);
 
   // GIS Layer Toggle States - Layers start disabled until requested by user
-  const [baseLayerType, setBaseLayerType] = useState<'osm' | 'topo' | 'hot'>('osm');
+  const [baseLayerType, setBaseLayerType] = useState<'osm' | 'topo' | 'hot' | 'satellite'>('osm');
   const [showDemLayer, setShowDemLayer] = useState(false);
   const [showRoadsLayer, setShowRoadsLayer] = useState(false);
   const [showRouteLayer, setShowRouteLayer] = useState(false);
@@ -202,6 +202,16 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     })
   );
 
+  const esriSatLayerRef = useRef<TileLayer<XYZ>>(
+    new TileLayer({
+      source: new XYZ({
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attributions: 'Tiles &copy; Esri World Imagery'
+      }),
+      visible: false
+    })
+  );
+
   // Vector Sources
   const demVectorSourceRef = useRef(new VectorSource());
   const roadsVectorSourceRef = useRef(new VectorSource());
@@ -294,7 +304,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                   stroke: new Stroke({ color: '#ffffff', width: 2 })
                 }),
                 text: new Text({
-                  text: `⚠️ +${mh.surfaceOverflowDepthCm}cm`,
+                  text: `+${mh.surfaceOverflowDepthCm}cm`,
                   font: 'bold 9.5px sans-serif',
                   fill: new Fill({ color: '#991b1b' }),
                   stroke: new Stroke({ color: '#ffffff', width: 3 }),
@@ -471,6 +481,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         osmStandardLayerRef.current,
         openTopoLayerRef.current,
         osmHotLayerRef.current,
+        esriSatLayerRef.current,
         demVectorLayer,
         groundwaterVectorLayer,
         drainageVectorLayer,
@@ -561,7 +572,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               else if (isWarning) statusColor = 'text-amber-600 font-bold';
 
               setPopupContent({
-                title: `${props.isGalli ? '🕳️' : '⚙️'} ${props.name}`,
+                title: props.name,
                 subtitle: props.derivedLocationLabel,
                 badge: {
                   text: props.isGalli ? 'Galli Catchpit' : 'Roadway Manhole',
@@ -578,7 +589,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                   { label: 'Hydraulic Load', value: `${props.hydraulicCapacityPct}%`, color: statusColor },
                   {
                     label: 'Surcharge Status',
-                    value: isOverflowing ? `⚠️ +${props.surfaceOverflowDepthCm} cm (STREET OVERFLOW)` : '0 cm (Contained)',
+                    value: isOverflowing ? `+${props.surfaceOverflowDepthCm} cm (STREET OVERFLOW)` : '0 cm (Contained)',
                     color: isOverflowing ? 'text-red-600 font-bold' : 'text-emerald-700'
                   },
                   { label: 'Backpressure Coeff', value: `${Math.round(props.backpressureFactor * 100)}% resistance` }
@@ -591,7 +602,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             if (props.type === 'report') {
               featureFound = true;
               setPopupContent({
-                title: '📢 Citizen Ground-Truth Report',
+                title: 'Citizen Ground-Truth Report',
                 subtitle: props.locationName,
                 badge: { text: 'Verified', color: 'bg-amber-100 text-amber-800' },
                 details: [
@@ -614,7 +625,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           const isGalli = props.isGalli || props.highwayCategory === 'Galli / Local Lane';
 
           setPopupContent({
-            title: `${isGalli ? '🏘️' : '🛣️'} ${props.name}`,
+            title: props.name,
             subtitle: `Borough: ${props.borough} • Alt: ${props.demElevationMeters}m MSL`,
             badge: {
               text: isGalli ? 'Galli / Local Lane' : (props.highwayCategory || 'Arterial Corridor'),
@@ -642,7 +653,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'real_waterway') {
           featureFound = true;
           setPopupContent({
-            title: `🌊 ${props.name}`,
+            title: props.name,
             subtitle: props.description,
             badge: { text: props.category.replace('_', ' ').toUpperCase(), color: 'bg-blue-100 text-blue-800' },
             details: [
@@ -656,7 +667,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'pumping_station') {
           featureFound = true;
           setPopupContent({
-            title: `⚡ ${props.name}`,
+            title: props.name,
             subtitle: `Municipal Dewatering SCADA Station (${props.locationName})`,
             badge: { text: props.isOperational ? 'OPERATIONAL' : 'STANDBY', color: props.isOperational ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-800' },
             details: [
@@ -670,7 +681,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'evacuation_zone') {
           featureFound = true;
           setPopupContent({
-            title: `🚨 ${props.name}`,
+            title: props.name,
             subtitle: `Borough: ${props.borough} • Municipal Inundation Catchment`,
             badge: {
               text: props.severity === 'severe' ? 'CRITICAL EVACUATION' : 'ELEVATED ADVISORY',
@@ -687,7 +698,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'safe_shelter') {
           featureFound = true;
           setPopupContent({
-            title: `🏛️ ${props.name}`,
+            title: props.name,
             subtitle: props.address,
             badge: { text: 'HIGH-GROUND REFUGE', color: 'bg-emerald-600 text-white' },
             details: [
@@ -701,7 +712,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'route_segment') {
           featureFound = true;
           setPopupContent({
-            title: `🛣️ ${props.roadName}`,
+            title: props.roadName,
             subtitle: `Corridor Category: ${props.highwayCategory}`,
             badge: {
               text: props.riskSeverity.toUpperCase(),
@@ -717,7 +728,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'flood_hotspot') {
           featureFound = true;
           setPopupContent({
-            title: `${props.category === 'subway' ? '🚇' : '⚠️'} ${props.name}`,
+            title: props.name,
             subtitle: `Location: ${props.location || 'BMC Designated Spot'} • Ward ${props.ward || 'N/A'}`,
             badge: {
               text: (props.categoryLabel || 'Hotspot').toUpperCase(),
@@ -733,7 +744,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'deluge_2005') {
           featureFound = true;
           setPopupContent({
-            title: `🌊 26 July 2005 Extreme Deluge Benchmark`,
+            title: '26 July 2005 Extreme Deluge Benchmark',
             subtitle: props.name,
             badge: { text: '944mm HISTORIC HIGH WATER', color: 'bg-amber-600 text-white' },
             details: [
@@ -745,7 +756,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'groundwater_ward') {
           featureFound = true;
           setPopupContent({
-            title: `💧 Ward Groundwater Depth`,
+            title: 'Ward Groundwater Depth',
             subtitle: props.wardName,
             badge: { text: (props.category || 'Monitored').toUpperCase(), color: 'bg-emerald-100 text-emerald-800' },
             details: [
@@ -757,7 +768,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'groundwater_well') {
           featureFound = true;
           setPopupContent({
-            title: `📍 CGWB Hydrograph Monitoring Well`,
+            title: 'CGWB Hydrograph Monitoring Well',
             subtitle: props.name,
             badge: { text: 'CGWB STATION', color: 'bg-slate-100 text-slate-800' },
             details: [
@@ -770,7 +781,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         } else if (props.type === 'route') {
           featureFound = true;
           setPopupContent({
-            title: `🚀 ${props.name}`,
+            title: props.name,
             subtitle: 'Flood-Safe Evacuation Corridor',
             badge: { text: props.isSafe ? 'Clear Path' : 'Hazard Warning', color: props.isSafe ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' },
             details: [
@@ -809,6 +820,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     osmStandardLayerRef.current.setVisible(baseLayerType === 'osm');
     openTopoLayerRef.current.setVisible(baseLayerType === 'topo');
     osmHotLayerRef.current.setVisible(baseLayerType === 'hot');
+    esriSatLayerRef.current.setVisible(baseLayerType === 'satellite');
   }, [baseLayerType]);
 
   // Update DEM Surface Model Layer Features
@@ -979,7 +991,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             stroke: new Stroke({ color: '#ffffff', width: 2.5 })
           }),
           text: new Text({
-            text: `⚡ ${st.name.split(' ')[0]}`,
+            text: st.name.split(' ')[0],
             font: 'bold 9.5px sans-serif',
             fill: new Fill({ color: '#0f172a' }),
             stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
@@ -1134,7 +1146,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             color: isExtreme ? 'rgba(239, 68, 68, 0.18)' : 'rgba(249, 115, 22, 0.14)'
           }),
           text: new Text({
-            text: `🚨 ${zone.name}\nDepth: ${zone.waterDepthCm}cm • At-Risk: ${zone.evacueePopulation.toLocaleString()}`,
+            text: `${zone.name}\nDepth: ${zone.waterDepthCm}cm • At-Risk: ${zone.evacueePopulation.toLocaleString()}`,
             font: 'bold 9.5px sans-serif',
             fill: new Fill({ color: isExtreme ? '#991b1b' : '#9a3412' }),
             stroke: new Stroke({ color: '#ffffff', width: 3 }),
@@ -1184,7 +1196,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             stroke: new Stroke({ color: '#ffffff', width: 2 })
           }),
           text: new Text({
-            text: `🏛️ ${shelter.name.split(' ')[0]} (+${shelter.elevationMeters}m)`,
+            text: `${shelter.name.split(' ')[0]} (+${shelter.elevationMeters}m)`,
             font: 'bold 9.5px sans-serif',
             fill: new Fill({ color: '#064e3b' }),
             stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
@@ -1245,7 +1257,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 stroke: new Stroke({ color: '#ffffff', width: 2 })
               }),
               text: new Text({
-                text: `${category === 'subway' ? '🚇' : '⚠️'} ${props.name || label}`,
+                text: props.name || label,
                 font: 'bold 9.5px sans-serif',
                 fill: new Fill({ color: '#0f172a' }),
                 stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
@@ -1301,7 +1313,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 stroke: new Stroke({ color: '#78350f', width: 2 })
               }),
               text: new Text({
-                text: `🌊 2005: ${props.depth_label || 'High Water'}`,
+                text: `2005: ${props.depth_label || 'High Water'}`,
                 font: 'bold 9.5px sans-serif',
                 fill: new Fill({ color: '#78350f' }),
                 stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
@@ -1509,7 +1521,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             stroke: new Stroke({ color: '#ffffff', width: 2 })
           }),
           text: new Text({
-            text: '🚩 START',
+            text: 'START',
             font: 'bold 9px sans-serif',
             fill: new Fill({ color: '#064e3b' }),
             stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
@@ -1533,7 +1545,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             stroke: new Stroke({ color: '#ffffff', width: 2 })
           }),
           text: new Text({
-            text: isEvacuation ? '🏛️ REFUGE' : '🎯 DEST',
+            text: isEvacuation ? 'REFUGE' : 'DEST',
             font: 'bold 9px sans-serif',
             fill: new Fill({ color: isEvacuation ? '#064e3b' : '#1e3a8a' }),
             stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
@@ -1593,7 +1605,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             stroke: new Stroke({ color: '#ffffff', width: 2.5 })
           }),
           text: new Text({
-            text: '📍 START (A)',
+            text: 'START (A)',
             font: 'bold 10px sans-serif',
             fill: new Fill({ color: '#064e3b' }),
             stroke: new Stroke({ color: '#ffffff', width: 3 }),
@@ -1627,7 +1639,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             stroke: new Stroke({ color: '#ffffff', width: 2.5 })
           }),
           text: new Text({
-            text: '🎯 DEST (B)',
+            text: 'DEST (B)',
             font: 'bold 10px sans-serif',
             fill: new Fill({ color: '#7f1d1d' }),
             stroke: new Stroke({ color: '#ffffff', width: 3 }),
@@ -1657,7 +1669,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         else if (isWarning) statusColor = 'text-amber-600 font-bold';
 
         setPopupContent({
-          title: `${mh.isGalli ? '🕳️' : '⚙️'} ${mh.name}`,
+          title: mh.name,
           subtitle: mh.derivedLocationLabel,
           badge: {
             text: mh.isGalli ? 'Galli Catchpit' : 'Roadway Manhole',
@@ -1672,7 +1684,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             { label: 'Hydraulic Load', value: `${mh.hydraulicCapacityPct}%`, color: statusColor },
             {
               label: 'Surcharge Status',
-              value: isOverflowing ? `⚠️ +${mh.surfaceOverflowDepthCm} cm (STREET OVERFLOW)` : '0 cm (Contained)',
+              value: isOverflowing ? `+${mh.surfaceOverflowDepthCm} cm (STREET OVERFLOW)` : '0 cm (Contained)',
               color: isOverflowing ? 'text-red-600 font-bold' : 'text-emerald-700'
             }
           ]
@@ -1696,7 +1708,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         const isGalli = road.highwayCategory === 'Galli / Local Lane' || road.id.startsWith('galli-');
 
         setPopupContent({
-          title: `${isGalli ? '🏘️' : '🛣️'} ${road.name}`,
+          title: road.name,
           subtitle: `Borough: ${road.borough} • DEM Alt: ${road.demElevationMeters}m MSL`,
           badge: {
             text: isGalli ? 'Galli / Local Lane' : (road.highwayCategory || 'Arterial Corridor'),
@@ -1803,34 +1815,34 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             </span>
             {activeEvacZones.length > 0 && (
               <span className="hidden md:inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-red-700 text-white text-[9.5px] font-extrabold uppercase tracking-wider animate-pulse shadow-sm">
-                <span>🚨 {activeEvacZones.length} EVACUATION {activeEvacZones.length === 1 ? 'ZONE' : 'ZONES'}</span>
+                <span>{activeEvacZones.length} EVACUATION {activeEvacZones.length === 1 ? 'ZONE' : 'ZONES'}</span>
               </span>
             )}
           </div>
 
           {/* Quick Glancing Metrics */}
           <div className="hidden sm:flex items-center space-x-2 border-l border-slate-300/60 pl-2.5 text-[11px] font-mono">
-            <span className="text-slate-600">🌧️ {snapshot.rainfallRateMmHr} mm/h</span>
+            <span className="text-slate-600">{snapshot.rainfallRateMmHr} mm/h</span>
             <span className="text-slate-300">•</span>
             <span className={overflowingCount > 0 ? 'text-red-600 font-bold' : 'text-slate-600'}>
-              🕳️ {overflowingCount} Overflow
+              {overflowingCount} Overflow
             </span>
             <span className="text-slate-300">•</span>
             {activeEvacZones.length > 0 ? (
               <span className="text-red-700 font-bold truncate max-w-[140px]">
-                ⚠️ {activeEvacZones[0].name.split(' ')[0]} Evac
+                {activeEvacZones[0].name.split(' ')[0]} Evac
               </span>
             ) : (
               <span className={maxDepth >= 20 ? 'text-red-600 font-bold' : 'text-slate-600'}>
-                🌊 Max: {maxDepth}cm
+                Max: {maxDepth}cm
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* 3. Collapsible Side Drawer Trigger Button (Top Right) */}
-      {!isDrawerOpen && (
+      {/* 3. Collapsible Side Drawer Trigger Button (Authority Only) */}
+      {!isDrawerOpen && personaMode === 'authority' && (
         <button
           onClick={() => setIsDrawerOpen(true)}
           className="absolute top-3 right-3 z-20 flex items-center space-x-2 px-3 py-2 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 text-teal-800 font-bold text-xs shadow-md hover:bg-slate-50 transition-all group"
@@ -1846,7 +1858,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
       )}
 
       {/* 4. Unified Slide-Out Sidebar Drawer (Layers & Interactive Legend) */}
-      {isDrawerOpen && (
+      {isDrawerOpen && personaMode === 'authority' && (
         <div className="absolute top-3 right-3 z-30 w-80 md:w-84 max-h-[calc(100%-24px)] flex flex-col bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-2xl overflow-hidden transition-all animate-in fade-in slide-in-from-right-3 duration-200">
           {/* Drawer Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200/80 bg-slate-50/70 shrink-0">
@@ -1875,10 +1887,10 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block">
                 Base Map Source
               </span>
-              <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl">
+              <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl">
                 <button
                   onClick={() => setBaseLayerType('osm')}
-                  className={`py-1 px-2 rounded-lg font-bold text-[11px] transition-all ${
+                  className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
                     baseLayerType === 'osm'
                       ? 'bg-white text-teal-800 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
@@ -1888,7 +1900,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </button>
                 <button
                   onClick={() => setBaseLayerType('topo')}
-                  className={`py-1 px-2 rounded-lg font-bold text-[11px] transition-all ${
+                  className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
                     baseLayerType === 'topo'
                       ? 'bg-white text-teal-800 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
@@ -1898,13 +1910,23 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </button>
                 <button
                   onClick={() => setBaseLayerType('hot')}
-                  className={`py-1 px-2 rounded-lg font-bold text-[11px] transition-all ${
+                  className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
                     baseLayerType === 'hot'
                       ? 'bg-white text-teal-800 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  Humanitarian
+                  HOT
+                </button>
+                <button
+                  onClick={() => setBaseLayerType('satellite')}
+                  className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
+                    baseLayerType === 'satellite'
+                      ? 'bg-white text-teal-800 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Satellite
                 </button>
               </div>
             </div>
@@ -2170,7 +2192,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                       </div>
                     </div>
                     <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60">
-                      💡 <span className="font-semibold">Clustering Active:</span> Nodes cluster by worst severity at zoom-out. Click badge to zoom into cluster.
+                      <span className="font-semibold">Clustering Active:</span> Nodes cluster by worst severity at zoom-out. Click badge to zoom into cluster.
                     </div>
                   </div>
                 )}
@@ -2376,8 +2398,8 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                       </div>
                     </div>
                     <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 flex items-center justify-between">
-                      <span>🚩 Start Departure</span>
-                      <span>🏛️ High-Elevation Refuge</span>
+                      <span>Start Departure</span>
+                      <span>High-Elevation Refuge</span>
                     </div>
                   </div>
                 )}

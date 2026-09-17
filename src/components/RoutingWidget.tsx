@@ -167,19 +167,19 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
   const currentProfile = VEHICLE_PROFILES[vehicle];
 
   return (
-    <div className="w-full bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3.5">
+    <div className="w-full bg-white p-4.5 rounded-2xl border border-[#dadce0] shadow-md space-y-3.5 text-xs">
       {/* Tab Switcher: Flood-Safe Navigation vs Emergency Evacuation Mode */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-        <div className="flex space-x-1 bg-slate-100 p-1 rounded-xl w-full">
+        <div className="flex space-x-1 bg-slate-100 p-1 rounded-xl w-full border border-[#dadce0]">
           <button
             onClick={() => setActiveTab('vehicle_routing')}
             className={`flex-1 py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'vehicle_routing'
-                ? 'bg-white text-teal-800 shadow-xs'
+                ? 'bg-[#1a73e8] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Navigation className="w-3.5 h-3.5 text-teal-600" />
+            <Navigation className="w-3.5 h-3.5 text-white" />
             <span>{t.routing.title.split(' ')[0]} {t.routing.title.split(' ')[1]}</span>
           </button>
           <button
@@ -284,7 +284,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                     onClick={() => setVehicle(v.type)}
                     className={`flex flex-col items-center justify-center p-1.5 rounded-xl border text-center transition-all ${
                       isSelected
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-xs font-bold'
+                        ? 'bg-[#1a73e8] text-white border-[#1a73e8] shadow-xs font-bold'
                         : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 font-medium'
                     }`}
                     title={`${v.label} (Clearance: ${VEHICLE_PROFILES[v.type].maxSafeDepthCm}cm)`}
@@ -299,7 +299,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
 
           <button
             onClick={handleSearch}
-            className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-2"
+            className="w-full py-2.5 rounded-xl bg-[#1a73e8] hover:bg-[#1557b0] text-white font-extrabold text-xs shadow-md shadow-[#1a73e8]/20 transition-all flex items-center justify-center space-x-2 active:scale-95"
           >
             <span>{t.routing.findRoute}</span>
             <ArrowRight className="w-4 h-4" />
@@ -378,7 +378,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
             >
               {evacZones.map((z) => (
                 <option key={z.id} value={z.id}>
-                  {z.active ? '🔴 ' : '🟡 '} {z.name} ({z.waterDepthCm}cm)
+                  {z.active ? '[Active] ' : '[Advisory] '} {z.name} ({z.waterDepthCm}cm)
                 </option>
               ))}
             </select>

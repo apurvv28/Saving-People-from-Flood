@@ -149,7 +149,7 @@ export const DrainageGraphPanel: React.FC<DrainageGraphPanelProps> = ({
                   {/* Overflow Alert Tag */}
                   {isOverflowing && (
                     <div className="flex items-center justify-between text-[10px] bg-red-100/70 text-red-800 px-2 py-0.5 rounded font-medium">
-                      <span>⚠️ {t.alerts.tabSurcharge}</span>
+                      <span>{t.alerts.tabSurcharge}</span>
                       <span className="font-bold font-mono">+{mh.surfaceOverflowDepthCm} cm</span>
                     </div>
                   )}

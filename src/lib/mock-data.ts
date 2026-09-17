@@ -64,6 +64,10 @@ export interface CitizenReport {
   userNote: string;
   verified: boolean;
   upvotes: number;
+  coordinates?: [number, number];
+  timestampMinsAgo?: number;
+  status?: string;
+  photoUrl?: string;
 }
 
 export interface NavigationRoute {

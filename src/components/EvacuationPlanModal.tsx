@@ -235,7 +235,7 @@ STEP-BY-STEP EVACUATION PLAN:
                   Confirm vehicle clearance threshold ({vehicleProfile.maxSafeDepthCm}cm) against local zone depth ({activePlan.zone.waterDepthCm}cm).
                   {activePlan.zone.waterDepthCm > vehicleProfile.maxSafeDepthCm && (
                     <span className="text-red-600 font-bold block mt-1">
-                      ⚠️ Zone flood depth exceeds {vehicleProfile.name} clearance limit. Switching to foot/walking high-ground route is recommended!
+                      Zone flood depth exceeds {vehicleProfile.name} clearance limit. Switching to foot/walking high-ground route is recommended!
                     </span>
                   )}
                 </p>

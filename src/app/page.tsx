@@ -31,8 +31,24 @@ const OpenLayersMapCanvas = dynamic(
   }
 );
 
+// Dynamically import CitizenAppView with SSR disabled
+const CitizenAppView = dynamic(
+  () => import('@/components/CitizenAppView').then((mod) => mod.CitizenAppView),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-screen bg-slate-50 flex flex-col items-center justify-center space-y-3">
+        <div className="w-9 h-9 border-3 border-teal-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-teal-800 font-mono font-bold">
+          Loading AquaAlert Citizen App...
+        </p>
+      </div>
+    )
+  }
+);
+
 export default function Home() {
-  const [viewMode, setViewMode] = useState<'landing' | 'citizen_dashboard' | 'authority_dashboard'>('landing');
+  const [viewMode, setViewMode] = useState<'landing' | 'citizen_app' | 'citizen_dashboard' | 'authority_dashboard'>('landing');
   const [selectedCityId, setSelectedCityId] = useState<CityId>('mumbai');
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [lang, setLang] = useState('en');
@@ -102,6 +118,7 @@ export default function Home() {
       <>
         <LandingPage
           onSelectCity={handleSelectCityFromLanding}
+          onGoToCitizenApp={() => setViewMode('citizen_app')}
           onOpenAuthModal={handleOpenAuthModal}
           authorityAuth={authorityAuth}
         />
@@ -112,6 +129,20 @@ export default function Home() {
           onSuccessLogin={handleSuccessLogin}
         />
       </>
+    );
+  }
+
+  // 2. Dedicated Mobile-First Citizen Web App View
+  if (viewMode === 'citizen_app') {
+    return (
+      <CitizenAppView
+        selectedCityId={selectedCityId}
+        onSelectCity={(cityId) => setSelectedCityId(cityId)}
+        onGoToLanding={() => setViewMode('landing')}
+        onOpenAuthModal={() => handleOpenAuthModal(selectedCityId)}
+        citizenReports={citizenReports}
+        onAddReport={handleAddReport}
+      />
     );
   }
 
@@ -143,6 +174,7 @@ export default function Home() {
           setSelectedEventId(null);
         }}
         onGoToLanding={() => setViewMode('landing')}
+        onGoToCitizenApp={() => setViewMode('citizen_app')}
         authorityAuth={authorityAuth}
         onOpenAuthModal={() => handleOpenAuthModal(selectedCityId)}
         onLogoutAuthority={handleLogoutAuthority}
