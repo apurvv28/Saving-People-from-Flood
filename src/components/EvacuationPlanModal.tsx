@@ -54,10 +54,10 @@ export const EvacuationPlanModal: React.FC<EvacuationPlanModalProps> = ({
   const currentCity = CITIES[selectedCityId];
   const vehicleProfile = VEHICLE_PROFILES[selectedVehicle];
 
-  // Dynamically calculate dynamic safe route for the chosen vehicle
+  // Dynamically calculate dynamic safe route for the chosen vehicle using exact coordinates
   const dynamicRouteResult = calculateFloodSafeRoutes(
-    activePlan.zone.name,
-    activePlan.nearestShelter.name,
+    `${activePlan.zone.centroid[0]}, ${activePlan.zone.centroid[1]}`,
+    `${activePlan.nearestShelter.coordinates[0]}, ${activePlan.nearestShelter.coordinates[1]}`,
     selectedVehicle,
     timeOffsetMins,
     selectedCityId

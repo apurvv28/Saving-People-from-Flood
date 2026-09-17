@@ -122,9 +122,6 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
     } else {
       const plan = generateEvacuationPlanForZone(selectedEvacZoneId, selectedCityId, timeOffsetMins);
       setEvacuationPlan(plan);
-      if (plan) {
-        setActiveRoute(plan.footRoute);
-      }
     }
     return () => {
       isMounted = false;

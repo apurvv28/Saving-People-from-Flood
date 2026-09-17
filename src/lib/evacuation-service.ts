@@ -377,23 +377,28 @@ export function generateEvacuationPlanForZone(
     }
   });
 
+  const zoneOriginStr = `${zone.centroid[0]}, ${zone.centroid[1]}`;
+  const shelterDestStr = `${nearestShelter.coordinates[0]}, ${nearestShelter.coordinates[1]}`;
+
   // Calculate Foot Evacuation Route (primary)
   const { safeRoute: footRoute } = calculateFloodSafeRoutes(
-    zone.name,
-    nearestShelter.name,
+    zoneOriginStr,
+    shelterDestStr,
     'pedestrian',
     timeOffsetMins,
     cityId
   );
+  footRoute.name = `Evacuation Path: ${zone.name} to ${nearestShelter.name}`;
 
   // Calculate Vehicle Evacuation Route (secondary emergency rescue van/truck)
   const { safeRoute: vehicleRoute } = calculateFloodSafeRoutes(
-    zone.name,
-    nearestShelter.name,
+    zoneOriginStr,
+    shelterDestStr,
     'heavy_truck',
     timeOffsetMins,
     cityId
   );
+  vehicleRoute.name = `Rescue Truck Route: ${zone.name} to ${nearestShelter.name}`;
 
   const elevationGain = Math.max(1.0, Math.round((nearestShelter.elevationMeters - (zone.severity === 'severe' ? 1.8 : 2.5)) * 10) / 10);
 
