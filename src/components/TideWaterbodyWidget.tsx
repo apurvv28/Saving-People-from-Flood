@@ -27,42 +27,42 @@ export const TideWaterbodyWidget: React.FC<TideWaterbodyWidgetProps> = ({
   const pumpEfficiencyPct = Math.round((activeDischargeLps / maxCapacityLps) * 100);
 
   const getBackpressureColor = (coeff: number) => {
-    if (coeff >= 0.7) return 'text-red-600 bg-red-50 border-red-200';
-    if (coeff >= 0.35) return 'text-amber-600 bg-amber-50 border-amber-200';
-    return 'text-teal-600 bg-teal-50 border-teal-200';
+    if (coeff >= 0.7) return 'text-orange-600 bg-orange-50 border-orange-200';
+    if (coeff >= 0.35) return 'text-orange-600 bg-orange-50 border-orange-200';
+    return 'text-blue-600 bg-blue-50 border-blue-200';
   };
 
   const getTideBadge = (state: string) => {
     switch (state) {
       case 'high_tide':
-        return { label: 'HIGH TIDE', bg: 'bg-red-600 text-white' };
+        return { label: 'HIGH TIDE', bg: 'bg-orange-600 text-white' };
       case 'rising_flood':
-        return { label: 'RISING STAGE', bg: 'bg-amber-500 text-slate-950' };
+        return { label: 'RISING STAGE', bg: 'bg-orange-500 text-gray-950' };
       case 'ebbing_discharge':
-        return { label: 'GRAVITY DISCHARGE', bg: 'bg-teal-600 text-white' };
+        return { label: 'GRAVITY DISCHARGE', bg: 'bg-blue-600 text-white' };
       default:
-        return { label: 'NORMAL STAGE', bg: 'bg-slate-700 text-white' };
+        return { label: 'NORMAL STAGE', bg: 'bg-gray-700 text-white' };
     }
   };
 
   const badge = getTideBadge(tideData.tideState);
 
   return (
-    <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200 p-4 shadow-sm space-y-4">
+    <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200 p-4 shadow-sm space-y-4">
       {/* Header Title Bar */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
         <div className="flex items-center space-x-2.5">
           <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-700">
             <Waves className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 text-sm tracking-tight flex items-center gap-1.5">
+            <h3 className="font-bold text-gray-800 text-sm tracking-tight flex items-center gap-1.5">
               <span>{t.tide.title}</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-slate-100 text-slate-700">
+              <span className="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-gray-100 text-gray-700">
                 {city.name}
               </span>
             </h3>
-            <p className="text-[11px] text-slate-500 truncate max-w-[280px]">
+            <p className="text-[11px] text-gray-500 truncate max-w-[280px]">
               {tideData.stationName}
             </p>
           </div>
@@ -76,18 +76,18 @@ export const TideWaterbodyWidget: React.FC<TideWaterbodyWidgetProps> = ({
       {/* Grid KPI Cards */}
       <div className="grid grid-cols-3 gap-2.5">
         {/* Tide Level / River Stage Height */}
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
-          <div className="flex items-center justify-between text-[11px] text-slate-500">
+        <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-1">
+          <div className="flex items-center justify-between text-[11px] text-gray-500">
             <span className="font-semibold flex items-center gap-1">
               <Anchor className="w-3.5 h-3.5 text-sky-600" />
               {selectedCityId === 'delhi' ? 'River Stage' : t.tide.seaLevel}
             </span>
           </div>
           <div className="flex items-baseline justify-between">
-            <p className="text-lg font-bold font-mono text-slate-900">
-              {tideData.currentHeightMeters} <span className="text-xs font-semibold text-slate-500">m</span>
+            <p className="text-lg font-bold font-mono text-gray-900">
+              {tideData.currentHeightMeters} <span className="text-xs font-semibold text-gray-500">m</span>
             </p>
-            <span className="text-[10px] text-slate-500 font-mono">
+            <span className="text-[10px] text-gray-500 font-mono">
               Peak: {tideData.highTidePeakHeightMeters}m
             </span>
           </div>
@@ -110,17 +110,17 @@ export const TideWaterbodyWidget: React.FC<TideWaterbodyWidgetProps> = ({
         </div>
 
         {/* SCADA Dewatering Pumping Discharge */}
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
-          <div className="flex items-center justify-between text-[11px] text-slate-500">
+        <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-1">
+          <div className="flex items-center justify-between text-[11px] text-gray-500">
             <span className="font-semibold flex items-center gap-1">
-              <Zap className="w-3.5 h-3.5 text-teal-600" />
+              <Zap className="w-3.5 h-3.5 text-blue-600" />
               Pumps
             </span>
-            <span className="font-mono text-[10px] text-teal-700 font-bold">{pumpEfficiencyPct}%</span>
+            <span className="font-mono text-[10px] text-blue-700 font-bold">{pumpEfficiencyPct}%</span>
           </div>
           <div className="flex items-baseline justify-between">
-            <p className="text-lg font-bold font-mono text-slate-900">
-              {(activeDischargeLps / 1000).toFixed(1)}k <span className="text-xs font-semibold text-slate-500">L/s</span>
+            <p className="text-lg font-bold font-mono text-gray-900">
+              {(activeDischargeLps / 1000).toFixed(1)}k <span className="text-xs font-semibold text-gray-500">L/s</span>
             </p>
           </div>
         </div>

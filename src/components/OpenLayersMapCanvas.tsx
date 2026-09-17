@@ -104,11 +104,11 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
 
   // GIS Layer Toggle States - Layers start disabled until requested by user
   const [baseLayerType, setBaseLayerType] = useState<'osm' | 'topo' | 'hot' | 'satellite'>('osm');
-  const [showDemLayer, setShowDemLayer] = useState(false);
+  const [showDemLayer, setShowDemLayer] = useState(true);
   const [showRoadsLayer, setShowRoadsLayer] = useState(false);
   const [showRouteLayer, setShowRouteLayer] = useState(false);
   const [showDrainageLayer, setShowDrainageLayer] = useState(false);
-  const [showManholesLayer, setShowManholesLayer] = useState(false);
+  const [showManholesLayer, setShowManholesLayer] = useState(true);
   const [showEvacuationLayer, setShowEvacuationLayer] = useState(false);
   const [showReportsLayer, setShowReportsLayer] = useState(false);
   const [showHotspotsLayer, setShowHotspotsLayer] = useState(false);
@@ -314,7 +314,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             ];
           }
 
-          let pinColor = isGalli ? '#0284c7' : '#059669'; // Galli blue vs main road emerald
+          let pinColor = isGalli ? '#0284c7' : '#059669'; // Galli blue vs main road green
           let pinRadius = isGalli ? 5 : 5.5;
 
           if (isSurcharging) {
@@ -567,19 +567,19 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               featureFound = true;
               const isOverflowing = props.surfaceOverflowDepthCm > 0;
               const isWarning = props.hydraulicCapacityPct >= 70;
-              let statusColor = 'text-emerald-700';
-              if (isOverflowing) statusColor = 'text-red-600 font-bold';
-              else if (isWarning) statusColor = 'text-amber-600 font-bold';
+              let statusColor = 'text-green-700';
+              if (isOverflowing) statusColor = 'text-orange-600 font-bold';
+              else if (isWarning) statusColor = 'text-orange-600 font-bold';
 
               setPopupContent({
                 title: props.name,
                 subtitle: props.derivedLocationLabel,
                 badge: {
                   text: props.isGalli ? 'Galli Catchpit' : 'Roadway Manhole',
-                  color: props.isGalli ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-800'
+                  color: props.isGalli ? 'bg-sky-100 text-sky-800' : 'bg-gray-100 text-gray-800'
                 },
                 details: [
-                  { label: 'Road / Galli', value: props.roadName, color: 'text-slate-800 font-semibold' },
+                  { label: 'Road / Galli', value: props.roadName, color: 'text-gray-800 font-semibold' },
                   { label: 'Corridor Category', value: props.highwayCategory || (props.isGalli ? 'Galli / Local Lane' : 'Municipal Thoroughfare') },
                   { label: 'Rim Alt (z_rim)', value: `${props.rimElevationMeters} m MSL` },
                   { label: 'Invert Depth', value: `${props.invertDepthMeters} m` },
@@ -590,7 +590,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                   {
                     label: 'Surcharge Status',
                     value: isOverflowing ? `+${props.surfaceOverflowDepthCm} cm (STREET OVERFLOW)` : '0 cm (Contained)',
-                    color: isOverflowing ? 'text-red-600 font-bold' : 'text-emerald-700'
+                    color: isOverflowing ? 'text-orange-600 font-bold' : 'text-green-700'
                   },
                   { label: 'Backpressure Coeff', value: `${Math.round(props.backpressureFactor * 100)}% resistance` }
                 ]
@@ -604,9 +604,9 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               setPopupContent({
                 title: 'Citizen Ground-Truth Report',
                 subtitle: props.locationName,
-                badge: { text: 'Verified', color: 'bg-amber-100 text-amber-800' },
+                badge: { text: 'Verified', color: 'bg-orange-100 text-orange-800' },
                 details: [
-                  { label: 'Observed Depth', value: `${props.waterDepthCm} cm`, color: 'text-amber-700 font-bold' },
+                  { label: 'Observed Depth', value: `${props.waterDepthCm} cm`, color: 'text-orange-700 font-bold' },
                   { label: 'User Note', value: `"${props.userNote}"` }
                 ]
               });
@@ -629,18 +629,18 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             subtitle: `Borough: ${props.borough} • Alt: ${props.demElevationMeters}m MSL`,
             badge: {
               text: isGalli ? 'Galli / Local Lane' : (props.highwayCategory || 'Arterial Corridor'),
-              color: isGalli ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-800'
+              color: isGalli ? 'bg-sky-100 text-sky-800' : 'bg-gray-100 text-gray-800'
             },
             details: [
               {
                 label: 'Water Depth',
                 value: `${props.waterDepthCm} cm`,
-                color: isCritical ? 'text-red-600 font-bold' : isWarning ? 'text-amber-600 font-bold' : 'text-emerald-700'
+                color: isCritical ? 'text-orange-600 font-bold' : isWarning ? 'text-orange-600 font-bold' : 'text-green-700'
               },
               {
                 label: 'Severity Level',
                 value: props.severity.toUpperCase(),
-                color: isCritical ? 'text-red-600 font-bold' : isWarning ? 'text-amber-600 font-bold' : 'text-emerald-700'
+                color: isCritical ? 'text-orange-600 font-bold' : isWarning ? 'text-orange-600 font-bold' : 'text-green-700'
               },
               {
                 label: 'Corridor Passability',
@@ -659,7 +659,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             details: [
               { label: 'Channel Width', value: `${props.widthMeters} meters` },
               { label: 'Discharge Flow', value: `${props.currentFlowLps} L/s` },
-              { label: 'Capacity Load', value: `${props.surchargePct}%`, color: props.surchargePct >= 100 ? 'text-red-600 font-bold' : 'text-emerald-700' },
+              { label: 'Capacity Load', value: `${props.surchargePct}%`, color: props.surchargePct >= 100 ? 'text-orange-600 font-bold' : 'text-green-700' },
               { label: 'Data Source', value: 'Authentic OpenStreetMap GIS Vectors' }
             ]
           });
@@ -669,10 +669,10 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           setPopupContent({
             title: props.name,
             subtitle: `Municipal Dewatering SCADA Station (${props.locationName})`,
-            badge: { text: props.isOperational ? 'OPERATIONAL' : 'STANDBY', color: props.isOperational ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-800' },
+            badge: { text: props.isOperational ? 'OPERATIONAL' : 'STANDBY', color: props.isOperational ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' },
             details: [
               { label: 'Pumping Capacity', value: `${props.capacityLps} L/s` },
-              { label: 'Current Discharge', value: `${props.currentDischargeLps} L/s`, color: 'text-emerald-700 font-bold' },
+              { label: 'Current Discharge', value: `${props.currentDischargeLps} L/s`, color: 'text-green-700 font-bold' },
               { label: 'Active Units', value: `${props.activePumpsCount} / ${props.totalPumpsCount}` },
               { label: 'Power Source', value: props.powerStatus === 'grid_active' ? 'Grid Power' : 'Diesel Generator' }
             ]
@@ -685,13 +685,13 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             subtitle: `Borough: ${props.borough} • Municipal Inundation Catchment`,
             badge: {
               text: props.severity === 'severe' ? 'CRITICAL EVACUATION' : 'ELEVATED ADVISORY',
-              color: 'bg-red-600 text-white'
+              color: 'bg-orange-600 text-white'
             },
             details: [
-              { label: 'Surface Water Depth', value: `${props.waterDepthCm} cm`, color: 'text-red-600 font-bold' },
+              { label: 'Surface Water Depth', value: `${props.waterDepthCm} cm`, color: 'text-orange-600 font-bold' },
               { label: 'At-Risk Population', value: `${props.evacueePopulation?.toLocaleString()} residents` },
               { label: 'Overflowing Catchpits', value: `${props.overflowingManholesCount} active surcharge` },
-              { label: 'Evacuation Protocol', value: 'High-Ground Foot Refuge', color: 'text-emerald-700 font-bold' }
+              { label: 'Evacuation Protocol', value: 'High-Ground Foot Refuge', color: 'text-green-700 font-bold' }
             ]
           });
           overlay.setPosition(evt.coordinate);
@@ -700,9 +700,9 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           setPopupContent({
             title: props.name,
             subtitle: props.address,
-            badge: { text: 'HIGH-GROUND REFUGE', color: 'bg-emerald-600 text-white' },
+            badge: { text: 'HIGH-GROUND REFUGE', color: 'bg-green-600 text-white' },
             details: [
-              { label: 'Elevation Above MSL', value: `${props.elevationMeters} m`, color: 'text-emerald-700 font-bold' },
+              { label: 'Elevation Above MSL', value: `${props.elevationMeters} m`, color: 'text-green-700 font-bold' },
               { label: 'Refuge Capacity', value: `${props.capacityPersons?.toLocaleString()} persons` },
               { label: 'Relief Facilities', value: (props.facilities || []).slice(0, 2).join(', ') },
               { label: 'Emergency Helpline', value: props.contactEmergency }
@@ -716,11 +716,11 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             subtitle: `Corridor Category: ${props.highwayCategory}`,
             badge: {
               text: props.riskSeverity.toUpperCase(),
-              color: props.riskSeverity === 'safe' ? 'bg-emerald-100 text-emerald-800' :
-                     props.riskSeverity === 'warning' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+              color: props.riskSeverity === 'safe' ? 'bg-green-100 text-green-800' :
+                     props.riskSeverity === 'warning' ? 'bg-orange-100 text-orange-800' : 'bg-orange-100 text-orange-800'
             },
             details: [
-              { label: 'Segment Flood Depth', value: `${props.waterDepthCm} cm`, color: props.waterDepthCm >= 20 ? 'text-red-600 font-bold' : 'text-emerald-700 font-bold' },
+              { label: 'Segment Flood Depth', value: `${props.waterDepthCm} cm`, color: props.waterDepthCm >= 20 ? 'text-orange-600 font-bold' : 'text-green-700 font-bold' },
               { label: 'Wading Status', value: props.isPassable ? 'PASSABLE / CLEAR' : 'IMPASSABLE / BLOCKED' }
             ]
           });
@@ -732,7 +732,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             subtitle: `Location: ${props.location || 'BMC Designated Spot'} • Ward ${props.ward || 'N/A'}`,
             badge: {
               text: (props.categoryLabel || 'Hotspot').toUpperCase(),
-              color: props.category === 'chronic_spot' ? 'bg-red-600 text-white' : props.category === 'subway' ? 'bg-blue-600 text-white' : 'bg-orange-600 text-white'
+              color: props.category === 'chronic_spot' ? 'bg-orange-600 text-white' : props.category === 'subway' ? 'bg-blue-600 text-white' : 'bg-orange-600 text-white'
             },
             details: [
               { label: 'Official Register', value: 'BMC Disaster Management Spot Directory' },
@@ -746,9 +746,9 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           setPopupContent({
             title: '26 July 2005 Extreme Deluge Benchmark',
             subtitle: props.name,
-            badge: { text: '944mm HISTORIC HIGH WATER', color: 'bg-amber-600 text-white' },
+            badge: { text: '944mm HISTORIC HIGH WATER', color: 'bg-orange-600 text-white' },
             details: [
-              { label: 'Recorded Depth', value: props.depthLabel || 'High Inundation', color: 'text-amber-800 font-bold' },
+              { label: 'Recorded Depth', value: props.depthLabel || 'High Inundation', color: 'text-orange-800 font-bold' },
               { label: 'Historical Context', value: props.note || 'BMC 26 July 2005 Disaster Log' }
             ]
           });
@@ -758,9 +758,9 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           setPopupContent({
             title: 'Ward Groundwater Depth',
             subtitle: props.wardName,
-            badge: { text: (props.category || 'Monitored').toUpperCase(), color: 'bg-emerald-100 text-emerald-800' },
+            badge: { text: (props.category || 'Monitored').toUpperCase(), color: 'bg-green-100 text-green-800' },
             details: [
-              { label: 'Interpolated Water Table', value: props.depthM != null ? `${props.depthM} m below ground level` : 'No Depth Data', color: 'text-emerald-700 font-bold' },
+              { label: 'Interpolated Water Table', value: props.depthM != null ? `${props.depthM} m below ground level` : 'No Depth Data', color: 'text-green-700 font-bold' },
               { label: 'Methodology', value: 'Ward IDW Surface from CGWB Year Book Wells' }
             ]
           });
@@ -770,9 +770,9 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           setPopupContent({
             title: 'CGWB Hydrograph Monitoring Well',
             subtitle: props.name,
-            badge: { text: 'CGWB STATION', color: 'bg-slate-100 text-slate-800' },
+            badge: { text: 'CGWB STATION', color: 'bg-gray-100 text-gray-800' },
             details: [
-              { label: 'Depth to Water Table', value: `${props.depthMeters} m bgl`, color: 'text-slate-800 font-bold' },
+              { label: 'Depth to Water Table', value: `${props.depthMeters} m bgl`, color: 'text-gray-800 font-bold' },
               { label: 'Reading Period', value: props.readingDate || 'Recent Survey' },
               { label: 'Agency', value: 'Central Ground Water Board (CGWB) Maharashtra' }
             ]
@@ -783,7 +783,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           setPopupContent({
             title: props.name,
             subtitle: 'Flood-Safe Evacuation Corridor',
-            badge: { text: props.isSafe ? 'Clear Path' : 'Hazard Warning', color: props.isSafe ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' },
+            badge: { text: props.isSafe ? 'Clear Path' : 'Hazard Warning', color: props.isSafe ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800' },
             details: [
               { label: 'Max Water Depth', value: `${props.maxDepthCm || 0} cm` },
               { label: 'Clearance Status', value: props.isSafe ? 'Passable for Vehicle' : 'Avoid Route' }
@@ -1233,7 +1233,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           let label = 'Flooding Spot';
 
           if (category === 'chronic_spot') {
-            color = '#dc2626'; // chronic red
+            color = '#dc2626'; // chronic orange
             label = 'Chronic Flood Spot';
           } else if (category === 'subway') {
             color = '#2563eb'; // subway blue
@@ -1664,19 +1664,19 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         mapRef.current.getView().animate({ center: coord, zoom: 17, duration: 600 });
         const isOverflowing = mh.surfaceOverflowDepthCm > 0;
         const isWarning = mh.hydraulicCapacityPct >= 70;
-        let statusColor = 'text-emerald-700';
-        if (isOverflowing) statusColor = 'text-red-600 font-bold';
-        else if (isWarning) statusColor = 'text-amber-600 font-bold';
+        let statusColor = 'text-green-700';
+        if (isOverflowing) statusColor = 'text-orange-600 font-bold';
+        else if (isWarning) statusColor = 'text-orange-600 font-bold';
 
         setPopupContent({
           title: mh.name,
           subtitle: mh.derivedLocationLabel,
           badge: {
             text: mh.isGalli ? 'Galli Catchpit' : 'Roadway Manhole',
-            color: mh.isGalli ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-800'
+            color: mh.isGalli ? 'bg-sky-100 text-sky-800' : 'bg-gray-100 text-gray-800'
           },
           details: [
-            { label: 'Road / Galli', value: mh.roadName, color: 'text-slate-800 font-semibold' },
+            { label: 'Road / Galli', value: mh.roadName, color: 'text-gray-800 font-semibold' },
             { label: 'Rim Alt (z_rim)', value: `${mh.rimElevationMeters} m MSL` },
             { label: 'Pipe Diameter', value: `Ø${mh.pipeDiameterMm}mm (${mh.pipeSlopePct}% slope)` },
             { label: 'Hydraulic Capacity', value: `${mh.capacityLps} L/s` },
@@ -1685,7 +1685,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             {
               label: 'Surcharge Status',
               value: isOverflowing ? `+${mh.surfaceOverflowDepthCm} cm (STREET OVERFLOW)` : '0 cm (Contained)',
-              color: isOverflowing ? 'text-red-600 font-bold' : 'text-emerald-700'
+              color: isOverflowing ? 'text-orange-600 font-bold' : 'text-green-700'
             }
           ]
         });
@@ -1712,18 +1712,18 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           subtitle: `Borough: ${road.borough} • DEM Alt: ${road.demElevationMeters}m MSL`,
           badge: {
             text: isGalli ? 'Galli / Local Lane' : (road.highwayCategory || 'Arterial Corridor'),
-            color: isGalli ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-800'
+            color: isGalli ? 'bg-sky-100 text-sky-800' : 'bg-gray-100 text-gray-800'
           },
           details: [
             {
               label: 'Water Depth',
               value: `${depthCm} cm`,
-              color: isCritical ? 'text-red-600 font-bold' : isWarning ? 'text-amber-600 font-bold' : 'text-emerald-700'
+              color: isCritical ? 'text-orange-600 font-bold' : isWarning ? 'text-orange-600 font-bold' : 'text-green-700'
             },
             {
               label: 'Severity Level',
               value: severity.toUpperCase(),
-              color: isCritical ? 'text-red-600 font-bold' : isWarning ? 'text-amber-600 font-bold' : 'text-emerald-700'
+              color: isCritical ? 'text-orange-600 font-bold' : isWarning ? 'text-orange-600 font-bold' : 'text-green-700'
             },
             {
               label: 'Corridor Passability',
@@ -1739,27 +1739,27 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   // Overall Status Bar Color Classes
   const statusStyles = {
     severe: {
-      dot: 'bg-red-500 animate-ping',
-      border: 'border-red-300 bg-red-50/90 text-red-900',
-      badge: 'bg-red-600 text-white',
+      dot: 'bg-orange-500 animate-ping',
+      border: 'border-orange-300 dark:border-orange-700 bg-orange-50/90 dark:bg-gray-900/90 text-orange-900 dark:text-orange-300',
+      badge: 'bg-orange-600 text-white',
       label: 'SEVERE FLOOD EMERGENCY'
     },
     critical: {
       dot: 'bg-orange-500 animate-pulse',
-      border: 'border-orange-300 bg-orange-50/90 text-orange-950',
+      border: 'border-orange-300 dark:border-orange-700 bg-orange-50/90 dark:bg-gray-900/90 text-orange-950 dark:text-orange-300',
       badge: 'bg-orange-600 text-white',
       label: 'CRITICAL INUNDATION WATCH'
     },
     warning: {
-      dot: 'bg-amber-500',
-      border: 'border-amber-300 bg-amber-50/90 text-amber-950',
-      badge: 'bg-amber-500 text-white',
+      dot: 'bg-orange-500',
+      border: 'border-orange-300 dark:border-orange-700 bg-orange-50/90 dark:bg-gray-900/90 text-orange-950 dark:text-orange-300',
+      badge: 'bg-orange-500 text-white',
       label: 'ELEVATED FLOOD ADVISORY'
     },
     normal: {
-      dot: 'bg-emerald-500',
-      border: 'border-emerald-200 bg-white/95 text-slate-800',
-      badge: 'bg-emerald-600 text-white',
+      dot: 'bg-green-500',
+      border: 'border-green-200 dark:border-green-800 bg-white/95 dark:bg-gray-900/95 text-gray-800 dark:text-gray-200',
+      badge: 'bg-green-600 text-white',
       label: 'FLOOD RISK NORMAL'
     }
   }[overallRisk];
@@ -1769,21 +1769,21 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   };
 
   return (
-    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-slate-200 shadow-xs select-none">
+    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-gray-200 shadow-xs select-none">
       {/* 1. OpenLayers Map Canvas Element */}
-      <div ref={mapElementRef} className="w-full h-full z-0 bg-slate-100" />
+      <div ref={mapElementRef} className="w-full h-full z-0 bg-gray-100" />
 
       {/* Active Pin Picker Mode Notification Banner */}
       {routePinMode !== 'none' && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-teal-500/50 flex items-center space-x-3 animate-pulse">
-          <MapPin className={`w-5 h-5 ${routePinMode === 'origin' ? 'text-emerald-400' : 'text-red-400'}`} />
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-gray-900/90 text-white backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-blue-500/50 flex items-center space-x-3 animate-pulse">
+          <MapPin className={`w-5 h-5 ${routePinMode === 'origin' ? 'text-green-400' : 'text-orange-400'}`} />
           <span className="text-xs font-bold">
             Click anywhere on the map to set{' '}
             <span
               className={
                 routePinMode === 'origin'
-                  ? 'text-emerald-400 font-mono font-extrabold underline'
-                  : 'text-red-400 font-mono font-extrabold underline'
+                  ? 'text-green-400 font-mono font-extrabold underline'
+                  : 'text-orange-400 font-mono font-extrabold underline'
               }
             >
               {routePinMode === 'origin' ? 'Start Origin (A)' : 'Destination Refuge (B)'}
@@ -1791,7 +1791,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           </span>
           <button
             onClick={() => setRoutePinMode && setRoutePinMode('none')}
-            className="p-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all ml-1"
+            className="p-1 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all ml-1"
             title="Cancel Pin Mode"
           >
             <X className="w-4 h-4" />
@@ -1801,39 +1801,39 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
 
       {/* 2. Primary At-a-Glance Flood Risk Status Bar (Top Center) */}
       <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 max-w-[94vw] pointer-events-auto">
-        <div className={`flex items-center gap-2 md:gap-3 px-3.5 py-1.5 rounded-full backdrop-blur-md border shadow-lg transition-all ${statusStyles.border}`}>
+        <div className={`flex items-center gap-2 md:gap-3 px-3.5 py-1.5 rounded-full backdrop-blur-md border shadow-lg transition-all whitespace-nowrap overflow-hidden ${statusStyles.border}`}>
           <div className="flex items-center space-x-2 shrink-0">
             <span className="relative flex h-2.5 w-2.5">
               <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${statusStyles.dot}`} />
-              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${overallRisk === 'severe' ? 'bg-red-600' : overallRisk === 'critical' ? 'bg-orange-600' : overallRisk === 'warning' ? 'bg-amber-500' : 'bg-emerald-600'}`} />
+              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${overallRisk === 'severe' ? 'bg-orange-600' : overallRisk === 'critical' ? 'bg-orange-600' : overallRisk === 'warning' ? 'bg-orange-500' : 'bg-green-600'}`} />
             </span>
-            <span className="font-extrabold text-xs tracking-tight text-slate-800">
+            <span className="font-extrabold text-xs tracking-tight text-gray-800 dark:text-gray-100">
               {city.name}
             </span>
             <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${statusStyles.badge}`}>
               {statusStyles.label}
             </span>
             {activeEvacZones.length > 0 && (
-              <span className="hidden md:inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-red-700 text-white text-[9.5px] font-extrabold uppercase tracking-wider animate-pulse shadow-sm">
+              <span className="hidden md:inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-orange-700 text-white text-[9.5px] font-extrabold uppercase tracking-wider animate-pulse shadow-sm">
                 <span>{activeEvacZones.length} EVACUATION {activeEvacZones.length === 1 ? 'ZONE' : 'ZONES'}</span>
               </span>
             )}
           </div>
 
           {/* Quick Glancing Metrics */}
-          <div className="hidden sm:flex items-center space-x-2 border-l border-slate-300/60 pl-2.5 text-[11px] font-mono">
-            <span className="text-slate-600">{snapshot.rainfallRateMmHr} mm/h</span>
-            <span className="text-slate-300">•</span>
-            <span className={overflowingCount > 0 ? 'text-red-600 font-bold' : 'text-slate-600'}>
+          <div className="hidden sm:flex items-center space-x-2 border-l border-gray-300/60 dark:border-gray-700 pl-2.5 text-[11px] font-mono shrink-0 whitespace-nowrap">
+            <span className="text-gray-600 dark:text-gray-300">{snapshot.rainfallRateMmHr} mm/h</span>
+            <span className="text-gray-300 dark:text-gray-600">•</span>
+            <span className={overflowingCount > 0 ? 'text-orange-600 font-bold' : 'text-gray-600 dark:text-gray-300'}>
               {overflowingCount} Overflow
             </span>
-            <span className="text-slate-300">•</span>
+            <span className="text-gray-300 dark:text-gray-600">•</span>
             {activeEvacZones.length > 0 ? (
-              <span className="text-red-700 font-bold truncate max-w-[140px]">
+              <span className="text-orange-700 dark:text-orange-500 font-bold truncate max-w-[140px]">
                 {activeEvacZones[0].name.split(' ')[0]} Evac
               </span>
             ) : (
-              <span className={maxDepth >= 20 ? 'text-red-600 font-bold' : 'text-slate-600'}>
+              <span className={maxDepth >= 20 ? 'text-orange-600 dark:text-orange-500 font-bold' : 'text-gray-600 dark:text-gray-300'}>
                 Max: {maxDepth}cm
               </span>
             )}
@@ -1841,38 +1841,38 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         </div>
       </div>
 
-      {/* 3. Collapsible Side Drawer Trigger Button (Authority Only) */}
-      {!isDrawerOpen && personaMode === 'authority' && (
+      {/* 3. Collapsible Side Drawer Trigger Button */}
+      {!isDrawerOpen && (
         <button
           onClick={() => setIsDrawerOpen(true)}
-          className="absolute top-3 right-3 z-20 flex items-center space-x-2 px-3 py-2 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 text-teal-800 font-bold text-xs shadow-md hover:bg-slate-50 transition-all group"
+          className="absolute top-3 right-3 z-20 flex items-center space-x-2 px-3 py-2 rounded-2xl bg-white/95 backdrop-blur-md border border-gray-200 text-blue-800 font-bold text-xs shadow-md hover:bg-gray-50 transition-all group"
           title="Open GIS Layers & Legend Manager"
         >
-          <Layers className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform" />
+          <Layers className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
           <span className="hidden sm:inline">Layers & Legend</span>
-          <span className="px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 font-mono text-[10px] font-bold">
+          <span className="px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-mono text-[10px] font-bold">
             {activeLayersCount}/7
           </span>
-          <ChevronLeft className="w-3.5 h-3.5 text-slate-400" />
+          <ChevronLeft className="w-3.5 h-3.5 text-gray-400" />
         </button>
       )}
 
       {/* 4. Unified Slide-Out Sidebar Drawer (Layers & Interactive Legend) */}
-      {isDrawerOpen && personaMode === 'authority' && (
-        <div className="absolute top-3 right-3 z-30 w-80 md:w-84 max-h-[calc(100%-24px)] flex flex-col bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-2xl overflow-hidden transition-all animate-in fade-in slide-in-from-right-3 duration-200">
+      {isDrawerOpen && (
+        <div className="absolute top-3 right-3 z-30 w-80 md:w-84 max-h-[calc(100%-24px)] flex flex-col bg-white/95 backdrop-blur-xl border border-gray-200/90 rounded-2xl shadow-2xl overflow-hidden transition-all animate-in fade-in slide-in-from-right-3 duration-200">
           {/* Drawer Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200/80 bg-slate-50/70 shrink-0">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200/80 bg-gray-50/70 shrink-0">
             <div className="flex items-center space-x-2">
-              <Layers className="w-4 h-4 text-teal-600" />
-              <span className="font-bold text-slate-800 text-xs">Layers & Legend</span>
+              <Layers className="w-4 h-4 text-blue-600" />
+              <span className="font-bold text-gray-800 text-xs">Layers & Legend</span>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-[10px] font-mono px-2 py-0.5 bg-teal-50 text-teal-700 font-bold rounded-full border border-teal-200">
+              <span className="text-[10px] font-mono px-2 py-0.5 bg-blue-50 text-blue-700 font-bold rounded-full border border-blue-200">
                 {activeLayersCount}/7 Active
               </span>
               <button
                 onClick={() => setIsDrawerOpen(false)}
-                className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-lg transition-all"
+                className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-200/60 rounded-lg transition-all"
                 title="Close drawer"
               >
                 <X className="w-4 h-4" />
@@ -1884,16 +1884,16 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           <div className="p-3.5 space-y-3 overflow-y-auto flex-1 text-xs">
             {/* Base Map Selector (Segmented Control) */}
             <div className="space-y-1.5">
-              <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block">
+              <span className="text-[10.5px] font-bold text-gray-500 uppercase tracking-wider block">
                 Base Map Source
               </span>
-              <div className="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl">
+              <div className="grid grid-cols-4 gap-1 bg-gray-100 p-1 rounded-xl">
                 <button
                   onClick={() => setBaseLayerType('osm')}
                   className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
                     baseLayerType === 'osm'
-                      ? 'bg-white text-teal-800 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-white text-blue-800 shadow-xs'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   OSM
@@ -1902,8 +1902,8 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                   onClick={() => setBaseLayerType('topo')}
                   className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
                     baseLayerType === 'topo'
-                      ? 'bg-white text-teal-800 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-white text-blue-800 shadow-xs'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   Topo
@@ -1912,8 +1912,8 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                   onClick={() => setBaseLayerType('hot')}
                   className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
                     baseLayerType === 'hot'
-                      ? 'bg-white text-teal-800 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-white text-blue-800 shadow-xs'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   HOT
@@ -1922,8 +1922,8 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                   onClick={() => setBaseLayerType('satellite')}
                   className={`py-1 px-1.5 rounded-lg font-bold text-[10.5px] transition-all ${
                     baseLayerType === 'satellite'
-                      ? 'bg-white text-teal-800 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-white text-blue-800 shadow-xs'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   Satellite
@@ -1933,27 +1933,27 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
 
             {/* Unified Layer Rows with Inline Accordion Legends */}
             <div className="space-y-2 pt-1">
-              <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block">
+              <span className="text-[10.5px] font-bold text-gray-500 uppercase tracking-wider block">
                 Map Layers & Legends
               </span>
 
               {/* 0. BMC Chronic Flood Hotspots & Subways */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Chronic Spots & Subways</span>
+                    <AlertTriangle className="w-4 h-4 text-orange-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Chronic Spots & Subways</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showHotspotsLayer}
                       onChange={(e) => setShowHotspotsLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('hotspots')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'hotspots' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -1965,22 +1965,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'hotspots' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-2 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-2 text-[10.5px]">
                     <div className="grid grid-cols-2 gap-1.5">
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-red-600 shrink-0" />
-                        <span className="text-slate-600">Chronic Spot</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-orange-600 shrink-0" />
+                        <span className="text-gray-600">Chronic Spot</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0" />
-                        <span className="text-slate-600">Flood Subway</span>
+                        <span className="text-gray-600">Flood Subway</span>
                       </div>
                       <div className="flex items-center space-x-1.5 col-span-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-orange-600 shrink-0" />
-                        <span className="text-slate-600">Other Monitored Hotspot</span>
+                        <span className="text-gray-600">Other Monitored Hotspot</span>
                       </div>
                     </div>
-                    <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 font-mono">
+                    <div className="text-[10px] text-gray-500 pt-1 border-t border-gray-200/60 font-mono">
                       BMC Official Disaster Management Spot Register
                     </div>
                   </div>
@@ -1988,22 +1988,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 0b. 26 July 2005 Extreme Deluge Benchmark */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <Waves className="w-4 h-4 text-amber-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">2005 Deluge Benchmark</span>
+                    <Waves className="w-4 h-4 text-orange-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">2005 Deluge Benchmark</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showDeluge2005Layer}
                       onChange={(e) => setShowDeluge2005Layer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('deluge2005')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'deluge2005' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2015,12 +2015,12 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'deluge2005' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-2 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-2 text-[10.5px]">
                     <div className="flex items-center space-x-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500 border border-amber-800 shrink-0" />
-                      <span className="text-amber-900 font-bold">26 July 2005 Historic High Water Marks</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-orange-500 border border-orange-800 shrink-0" />
+                      <span className="text-orange-900 font-bold">26 July 2005 Historic High Water Marks</span>
                     </div>
-                    <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 font-mono">
+                    <div className="text-[10px] text-gray-500 pt-1 border-t border-gray-200/60 font-mono">
                       944mm single-day extreme cloudburst benchmark data
                     </div>
                   </div>
@@ -2028,22 +2028,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 0c. CGWB Groundwater Wards & Wells */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <Mountain className="w-4 h-4 text-emerald-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Groundwater Depth & Wells</span>
+                    <Mountain className="w-4 h-4 text-green-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Groundwater Depth & Wells</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showGroundwaterLayer}
                       onChange={(e) => setShowGroundwaterLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('groundwater')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'groundwater' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2055,34 +2055,34 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'groundwater' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-2 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-2 text-[10.5px]">
                     <div className="grid grid-cols-2 gap-1.5">
                       <div className="flex items-center space-x-1.5">
                         <span className="w-2.5 h-2.5 rounded-sm bg-green-500 shrink-0" />
-                        <span className="text-slate-600">0-3m Healthy</span>
+                        <span className="text-gray-600">0-3m Healthy</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-2.5 h-2.5 rounded-sm bg-lime-500 shrink-0" />
-                        <span className="text-slate-600">3-6m Moderate</span>
+                        <span className="text-gray-600">3-6m Moderate</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-2.5 h-2.5 rounded-sm bg-yellow-500 shrink-0" />
-                        <span className="text-slate-600">6-10m Declining</span>
+                        <span className="text-gray-600">6-10m Declining</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-2.5 h-2.5 rounded-sm bg-orange-500 shrink-0" />
-                        <span className="text-slate-600">10-15m Stressed</span>
+                        <span className="text-gray-600">10-15m Stressed</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-red-500 shrink-0" />
-                        <span className="text-slate-600">15-25m Critical</span>
+                        <span className="w-2.5 h-2.5 rounded-sm bg-orange-500 shrink-0" />
+                        <span className="text-gray-600">15-25m Critical</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-red-900 shrink-0" />
-                        <span className="text-slate-600">&gt;25m Crisis</span>
+                        <span className="w-2.5 h-2.5 rounded-sm bg-orange-900 shrink-0" />
+                        <span className="text-gray-600">&gt;25m Crisis</span>
                       </div>
                     </div>
-                    <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 font-mono">
+                    <div className="text-[10px] text-gray-500 pt-1 border-t border-gray-200/60 font-mono">
                       Ward IDW surface estimate from CGWB Year Book wells
                     </div>
                   </div>
@@ -2090,22 +2090,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 1. Road Inundation Layer */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <Route className="w-4 h-4 text-slate-700" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Road Inundation</span>
+                    <Route className="w-4 h-4 text-gray-700" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Road Inundation</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showRoadsLayer}
                       onChange={(e) => setShowRoadsLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('roads')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'roads' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2117,26 +2117,26 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'roads' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-2 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-2 text-[10.5px]">
                     <div className="grid grid-cols-2 gap-1.5">
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-emerald-600 shrink-0" />
-                        <span className="text-slate-600">&lt;8cm Safe</span>
-                      </div>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                        <span className="text-slate-600">8-20cm Warning</span>
+                        <span className="w-3 h-1.5 rounded-full bg-green-600 shrink-0" />
+                        <span className="text-gray-600">&lt;8cm Safe</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-3 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                        <span className="text-slate-600">20-40cm Critical</span>
+                        <span className="text-gray-600">8-20cm Warning</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-red-600 shrink-0" />
-                        <span className="text-red-600 font-bold">&gt;40cm Impassable</span>
+                        <span className="w-3 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                        <span className="text-gray-600">20-40cm Critical</span>
+                      </div>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-3 h-1.5 rounded-full bg-orange-600 shrink-0" />
+                        <span className="text-orange-600 font-bold">&gt;40cm Impassable</span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 font-mono">
+                    <div className="flex items-center justify-between text-[10px] text-gray-500 pt-1 border-t border-gray-200/60 font-mono">
                       <span>Solid line: Highway</span>
                       <span>Dashed line: Local Galli</span>
                     </div>
@@ -2145,22 +2145,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 2. Physics Manhole & Galli Graph Layer */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <Activity className="w-4 h-4 text-amber-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Underground Manholes</span>
+                    <Activity className="w-4 h-4 text-orange-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Underground Manholes</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showManholesLayer}
                       onChange={(e) => setShowManholesLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('manholes')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'manholes' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2172,26 +2172,26 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'manholes' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-2 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-2 text-[10.5px]">
                     <div className="grid grid-cols-2 gap-1.5">
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
-                        <span className="text-slate-600">&lt;70% Contained</span>
-                      </div>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
-                        <span className="text-slate-600">70-99% Warning</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-green-600 shrink-0" />
+                        <span className="text-gray-600">&lt;70% Contained</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-orange-500 shrink-0" />
-                        <span className="text-slate-600">100-120% Surcharge</span>
+                        <span className="text-gray-600">70-99% Warning</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-red-600 shrink-0 border border-red-300" />
-                        <span className="text-red-600 font-bold">&gt;120% Overflow</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-orange-500 shrink-0" />
+                        <span className="text-gray-600">100-120% Surcharge</span>
+                      </div>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-orange-600 shrink-0 border border-orange-300" />
+                        <span className="text-orange-600 font-bold">&gt;120% Overflow</span>
                       </div>
                     </div>
-                    <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60">
+                    <div className="text-[10px] text-gray-500 pt-1 border-t border-gray-200/60">
                       <span className="font-semibold">Clustering Active:</span> Nodes cluster by worst severity at zoom-out. Click badge to zoom into cluster.
                     </div>
                   </div>
@@ -2199,22 +2199,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 3. Real Rivers & Drainage Canals Layer */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
                     <Waves className="w-4 h-4 text-sky-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Rivers & Drainage Canals</span>
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Rivers & Drainage Canals</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showDrainageLayer}
                       onChange={(e) => setShowDrainageLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('drainage')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'drainage' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2226,25 +2226,25 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'drainage' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-1.5 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-1.5 text-[10.5px]">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <span className="w-4 h-2 bg-sky-700 rounded-full" />
-                        <span className="font-semibold text-slate-700">Major River Spine</span>
+                        <span className="font-semibold text-gray-700">Major River Spine</span>
                       </div>
-                      <span className="text-slate-500 font-mono text-[10px]">Mithi / Yamuna / Adyar</span>
+                      <span className="text-gray-500 font-mono text-[10px]">Mithi / Yamuna / Adyar</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <span className="w-4 h-1.5 bg-teal-600 rounded-full" />
-                        <span className="font-semibold text-slate-700">Drainage Nallah</span>
+                        <span className="w-4 h-1.5 bg-blue-600 rounded-full" />
+                        <span className="font-semibold text-gray-700">Drainage Nallah</span>
                       </div>
-                      <span className="text-emerald-700 font-mono text-[10px]">Normal Discharge</span>
+                      <span className="text-green-700 font-mono text-[10px]">Normal Discharge</span>
                     </div>
-                    <div className="flex items-center space-x-2 pt-0.5 text-[10px] text-slate-500">
+                    <div className="flex items-center space-x-2 pt-0.5 text-[10px] text-gray-500">
                       <span className="w-2 h-2 rounded-full bg-indigo-900" />
                       <span>Sluice Outfall Gate Pin</span>
-                      <span className="w-2 h-2 rounded-full bg-emerald-600 ml-2" />
+                      <span className="w-2 h-2 rounded-full bg-green-600 ml-2" />
                       <span>SCADA Pump Station</span>
                     </div>
                   </div>
@@ -2252,22 +2252,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 4. CartoDEM v3 Elevation Layer */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
                     <Mountain className="w-4 h-4 text-indigo-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">CartoDEM v3 Elevation</span>
+                    <span className="font-semibold text-gray-800 text-[11.5px]">CartoDEM v3 Elevation</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showDemLayer}
                       onChange={(e) => setShowDemLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('dem')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'dem' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2279,7 +2279,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'dem' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-1 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-1 text-[10.5px]">
                     {DEM_LEGEND.map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between text-[10px]">
                         <div className="flex items-center space-x-2">
@@ -2287,9 +2287,9 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                             className="w-3 h-3 rounded-xs border border-black/10 shrink-0"
                             style={{ backgroundColor: item.color }}
                           />
-                          <span className="font-semibold text-slate-700">{item.label}</span>
+                          <span className="font-semibold text-gray-700">{item.label}</span>
                         </div>
-                        <span className="text-slate-500 font-mono text-[9.5px]">{item.description}</span>
+                        <span className="text-gray-500 font-mono text-[9.5px]">{item.description}</span>
                       </div>
                     ))}
                   </div>
@@ -2297,22 +2297,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 5. Evacuation Zones & Safe Shelters Layer */}
-              <div className="border border-red-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-red-50/50 transition-colors">
+              <div className="border border-orange-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-orange-50/50 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <ShieldAlert className="w-4 h-4 text-red-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Evacuation Zones & Shelters</span>
+                    <ShieldAlert className="w-4 h-4 text-orange-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Evacuation Zones & Shelters</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showEvacuationLayer}
                       onChange={(e) => setShowEvacuationLayer(e.target.checked)}
-                      className="accent-red-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-orange-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('evac')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'evac' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2324,49 +2324,49 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'evac' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-red-100 bg-red-50/30 space-y-1.5 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-orange-100 bg-orange-50/30 space-y-1.5 text-[10.5px]">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <span className="w-4 h-2 border border-dashed border-red-600 bg-red-200/60 rounded-xs" />
-                        <span className="font-semibold text-slate-700">Evacuation Basin Polygon</span>
+                        <span className="w-4 h-2 border border-dashed border-orange-600 bg-orange-200/60 rounded-xs" />
+                        <span className="font-semibold text-gray-700">Evacuation Basin Polygon</span>
                       </div>
-                      <span className="text-red-600 font-mono text-[10px] font-bold">&gt;25-40cm Sump</span>
+                      <span className="text-orange-600 font-mono text-[10px] font-bold">&gt;25-40cm Sump</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 border border-emerald-300" />
-                        <span className="font-semibold text-slate-700">Safe Assembly Shelter</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-green-600 border border-green-300" />
+                        <span className="font-semibold text-gray-700">Safe Assembly Shelter</span>
                       </div>
-                      <span className="text-emerald-700 font-mono text-[10px] font-bold">&gt;6m MSL Refuge</span>
+                      <span className="text-green-700 font-mono text-[10px] font-bold">&gt;6m MSL Refuge</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <span className="w-4 h-1.5 bg-emerald-500 rounded-full" />
-                        <span className="font-semibold text-slate-700">Foot Evacuation Galli Corridor</span>
+                        <span className="w-4 h-1.5 bg-green-500 rounded-full" />
+                        <span className="font-semibold text-gray-700">Foot Evacuation Galli Corridor</span>
                       </div>
-                      <span className="text-slate-500 font-mono text-[10px]">Zero Stalling</span>
+                      <span className="text-gray-500 font-mono text-[10px]">Zero Stalling</span>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* 6. Vehicle Flood-Safe Routing & Segment Risk Layer */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <Navigation className="w-4 h-4 text-teal-600" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Vehicle Navigation Route</span>
+                    <Navigation className="w-4 h-4 text-blue-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Vehicle Navigation Route</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showRouteLayer}
                       onChange={(e) => setShowRouteLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('route')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'route' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2378,26 +2378,26 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'route' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-1.5 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-1.5 text-[10.5px]">
                     <div className="grid grid-cols-2 gap-1">
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-emerald-600 shrink-0" />
-                        <span className="text-slate-700 font-medium">Safe Corridor</span>
-                      </div>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                        <span className="text-slate-700 font-medium">Warning (8-20cm)</span>
+                        <span className="w-3 h-1.5 rounded-full bg-green-600 shrink-0" />
+                        <span className="text-gray-700 font-medium">Safe Corridor</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-3 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                        <span className="text-slate-700 font-medium">Critical (20-40cm)</span>
+                        <span className="text-gray-700 font-medium">Warning (8-20cm)</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-red-600 shrink-0 border border-red-300" />
-                        <span className="text-red-600 font-bold">Impassable / Block</span>
+                        <span className="w-3 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                        <span className="text-gray-700 font-medium">Critical (20-40cm)</span>
+                      </div>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-3 h-1.5 rounded-full bg-orange-600 shrink-0 border border-orange-300" />
+                        <span className="text-orange-600 font-bold">Impassable / Block</span>
                       </div>
                     </div>
-                    <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 flex items-center justify-between">
+                    <div className="text-[10px] text-gray-500 pt-1 border-t border-gray-200/60 flex items-center justify-between">
                       <span>Start Departure</span>
                       <span>High-Elevation Refuge</span>
                     </div>
@@ -2406,22 +2406,22 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
               </div>
 
               {/* 6. Citizen Ground-Truth Reports Layer */}
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                <div className="flex items-center justify-between p-2.5 hover:bg-slate-50/80 transition-colors">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4 text-amber-500" />
-                    <span className="font-semibold text-slate-800 text-[11.5px]">Citizen Ground-Truth</span>
+                    <MapPin className="w-4 h-4 text-orange-500" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Citizen Ground-Truth</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={showReportsLayer}
                       onChange={(e) => setShowReportsLayer(e.target.checked)}
-                      className="accent-teal-600 w-4 h-4 rounded cursor-pointer"
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
                     />
                     <button
                       onClick={() => toggleAccordion('reports')}
-                      className="text-slate-400 hover:text-slate-700 p-0.5"
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
                     >
                       {expandedAccordion === 'reports' ? (
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -2433,10 +2433,10 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 </div>
 
                 {expandedAccordion === 'reports' && (
-                  <div className="px-3 pb-3 pt-1 border-t border-slate-100 bg-slate-50/50 space-y-1 text-[10.5px]">
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-1 text-[10.5px]">
                     <div className="flex items-center space-x-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500 border border-white shrink-0" />
-                      <span className="text-slate-700">Crowdsourced waterlogged depth pin</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-orange-500 border border-white shrink-0" />
+                      <span className="text-gray-700">Crowdsourced waterlogged depth pin</span>
                     </div>
                   </div>
                 )}
@@ -2447,33 +2447,33 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
       )}
 
       {/* 5. Minimal Coordinate & Elevation Floating Glass Chip (Bottom Left) */}
-      <div className="absolute bottom-3 left-3 z-10 bg-slate-900/85 backdrop-blur-md border border-slate-700/60 px-3 py-1.5 rounded-full text-[11px] font-mono text-slate-200 shadow-xl flex items-center space-x-2.5">
-        <Compass className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+      <div className="absolute bottom-3 left-3 z-10 bg-gray-900/85 backdrop-blur-md border border-gray-700/60 px-3 py-1.5 rounded-full text-[11px] font-mono text-gray-200 shadow-xl flex items-center space-x-2.5">
+        <Compass className="w-3.5 h-3.5 text-blue-400 shrink-0" />
         <span>{cursorCoords.lat}° N, {cursorCoords.lng}° E</span>
-        <span className="w-1 h-1 rounded-full bg-slate-500" />
-        <span className="font-bold text-teal-300">
+        <span className="w-1 h-1 rounded-full bg-gray-500" />
+        <span className="font-bold text-blue-300">
           {cursorCoords.elev} m MSL
         </span>
       </div>
 
       {/* 6. Feature Inspection Popup Card */}
-      <div ref={popupElementRef} className="ol-popup-card min-w-[220px] max-w-[280px]">
+      <div ref={popupElementRef} className="ol-popup-card">
         {popupContent && (
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between gap-1.5">
-              <h4 className="font-bold text-teal-900 text-xs truncate">{popupContent.title}</h4>
+            <div className="flex items-start justify-between gap-2">
+              <h4 className="font-bold text-blue-700 dark:text-blue-400 text-xs leading-tight">{popupContent.title}</h4>
               {popupContent.badge && (
-                <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0 ${popupContent.badge.color}`}>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold shrink-0 whitespace-nowrap ${popupContent.badge.color}`}>
                   {popupContent.badge.text}
                 </span>
               )}
             </div>
-            <p className="text-[10px] text-slate-500 font-medium leading-tight">{popupContent.subtitle}</p>
-            <div className="border-t border-slate-200 pt-1.5 space-y-1 text-[11px]">
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium leading-tight">{popupContent.subtitle}</p>
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-1.5 space-y-1">
               {popupContent.details.map((d, idx) => (
-                <div key={idx} className="flex justify-between items-center">
-                  <span className="text-slate-500 text-[10.5px]">{d.label}:</span>
-                  <span className={`font-bold font-mono text-[10.5px] ${d.color || 'text-slate-800'}`}>
+                <div key={idx} className="flex justify-between items-center gap-2">
+                  <span className="text-[10.5px] text-gray-500 dark:text-gray-400 shrink-0">{d.label}:</span>
+                  <span className={`font-bold font-mono text-[10.5px] text-right ${d.color || 'text-gray-800 dark:text-gray-200'}`}>
                     {d.value}
                   </span>
                 </div>

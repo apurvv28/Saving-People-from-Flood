@@ -28,15 +28,15 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
   const totalAlerts = criticalRoads.length + surchargingManholes.length + physicsOverflows.length;
 
   return (
-    <div className="w-full bg-white p-4 rounded-2xl border border-[#dadce0] shadow-md space-y-3">
-      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+    <div className="w-full bg-white dark:bg-gray-900 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-md space-y-3 text-gray-900 dark:text-gray-100">
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-2">
         <div className="flex items-center space-x-2">
-          <AlertOctagon className="w-5 h-5 text-red-600" />
-          <h2 className="text-sm font-bold text-slate-800 tracking-tight">
+          <AlertOctagon className="w-5 h-5 text-orange-600" />
+          <h2 className="text-sm font-bold text-gray-800 dark:text-gray-100 tracking-tight">
             {t.alerts.title}
           </h2>
         </div>
-        <span className="flex items-center space-x-1 text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-mono font-bold">
+        <span className="flex items-center space-x-1 text-[10px] bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 px-2 py-0.5 rounded-full font-mono font-bold">
           <span>{totalAlerts} {t.alerts.critical}</span>
         </span>
       </div>
@@ -56,23 +56,23 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
             <div
               key={road.id}
               onClick={() => onSelectFeature(road.id)}
-              className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition-all cursor-pointer flex items-start justify-between space-x-2"
+              className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all cursor-pointer flex items-start justify-between space-x-2"
             >
               <div className="space-y-0.5">
-                <div className="flex items-center space-x-1.5 font-semibold text-slate-800">
-                  <Flame className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                <div className="flex items-center space-x-1.5 font-semibold text-gray-800 dark:text-gray-200">
+                  <Flame className="w-3.5 h-3.5 text-orange-600 shrink-0" />
                   <span className="truncate">{road.name}</span>
                 </div>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-gray-500 dark:text-gray-400">
                   {t.alerts.borough}: {road.borough} • {t.alerts.elevation}: {road.demElevationMeters}m
                 </p>
               </div>
 
               <div className="text-right shrink-0">
-                <span className="text-sm font-mono font-bold text-red-600">
+                <span className="text-sm font-mono font-bold text-orange-600 dark:text-orange-500">
                   {roadState.waterDepthCm} cm
                 </span>
-                <p className="text-[9px] uppercase font-bold text-red-700">
+                <p className="text-[9px] uppercase font-bold text-orange-700 dark:text-orange-500">
                   {getSeverityBadgeText(roadState.severity)}
                 </p>
               </div>
@@ -88,23 +88,23 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
             <div
               key={node.id}
               onClick={() => onSelectFeature(node.id)}
-              className="p-2.5 rounded-xl bg-red-50 border border-red-200 hover:border-red-300 transition-all cursor-pointer flex items-start justify-between space-x-2"
+              className="p-2.5 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 hover:border-orange-300 dark:hover:border-orange-700 transition-all cursor-pointer flex items-start justify-between space-x-2"
             >
               <div className="space-y-0.5">
-                <div className="flex items-center space-x-1.5 font-semibold text-red-900">
-                  <MapPin className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                <div className="flex items-center space-x-1.5 font-semibold text-orange-900 dark:text-orange-300">
+                  <MapPin className="w-3.5 h-3.5 text-orange-600 shrink-0" />
                   <span className="truncate">{node.name}</span>
                 </div>
-                <p className="text-[11px] text-slate-600">
+                <p className="text-[11px] text-gray-600 dark:text-gray-400">
                   {t.alerts.hydraulicBackflow} • {node.type}
                 </p>
               </div>
 
               <div className="text-right shrink-0">
-                <span className="text-sm font-mono font-bold text-red-700">
+                <span className="text-sm font-mono font-bold text-orange-700 dark:text-orange-400">
                   {nodeState.surchargePct}%
                 </span>
-                <p className="text-[9px] uppercase font-bold text-red-800">
+                <p className="text-[9px] uppercase font-bold text-orange-800 dark:text-orange-500">
                   {t.alerts.tabSurcharge}
                 </p>
               </div>
@@ -116,29 +116,29 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
           <div
             key={mh.id}
             onClick={() => onSelectFeature(mh.id)}
-            className="p-2.5 rounded-xl bg-orange-50/80 border border-orange-200 hover:border-orange-300 transition-all cursor-pointer flex items-start justify-between space-x-2"
+            className="p-2.5 rounded-xl bg-orange-50/80 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 hover:border-orange-300 dark:hover:border-orange-700 transition-all cursor-pointer flex items-start justify-between space-x-2"
           >
             <div className="space-y-0.5">
-              <div className="flex items-center space-x-1.5 font-semibold text-orange-950">
+              <div className="flex items-center space-x-1.5 font-semibold text-orange-950 dark:text-orange-300">
                 <MapPin className="w-3.5 h-3.5 text-orange-600 shrink-0" />
                 <span className="truncate">{mh.name}</span>
               </div>
-              <p className="text-[11px] text-slate-600 truncate max-w-[200px]">
+              <p className="text-[11px] text-gray-600 dark:text-gray-400 truncate max-w-[200px]">
                 {mh.derivedLocationLabel}
               </p>
-              <p className="text-[10px] text-slate-500 font-mono">
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">
                 Rim: {mh.rimElevationMeters}m • Q_in: {mh.inflowRunoffLps} L/s
               </p>
             </div>
 
             <div className="text-right shrink-0">
-              <span className="text-sm font-mono font-bold text-red-600">
+              <span className="text-sm font-mono font-bold text-orange-600 dark:text-orange-400">
                 +{mh.surfaceOverflowDepthCm} cm
               </span>
-              <p className="text-[9px] uppercase font-bold text-red-700">
+              <p className="text-[9px] uppercase font-bold text-orange-700 dark:text-orange-500">
                 {t.alerts.surfaceSpill}
               </p>
-              <span className="text-[9px] font-mono text-orange-700">
+              <span className="text-[9px] font-mono text-orange-700 dark:text-orange-500">
                 {mh.hydraulicCapacityPct}% Cap
               </span>
             </div>
@@ -146,8 +146,8 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
         ))}
 
         {totalAlerts === 0 && (
-          <div className="p-4 text-center text-slate-500 text-xs flex items-center justify-center space-x-1.5">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-xs flex items-center justify-center space-x-1.5">
+            <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
             <span>{t.alerts.noAlerts}</span>
           </div>
         )}
@@ -155,4 +155,3 @@ export const AlertFeed: React.FC<AlertFeedProps> = ({
     </div>
   );
 };
-

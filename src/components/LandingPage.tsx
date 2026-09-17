@@ -1,29 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { CITIES, CityId } from '@/lib/mock-data';
-import {
-  Shield,
-  ArrowRight,
-  CloudRain,
-  ChevronDown,
-  ChevronUp,
-  Building2,
-  HelpCircle,
-  Sliders,
-  CheckCircle2,
-  Languages,
-  Clock,
-  Layers,
-  Crosshair,
-  Navigation,
-  Activity,
-  Waves,
-  Compass,
-  FileSpreadsheet,
-  Sparkles,
-  Smartphone
-} from 'lucide-react';
+import { Building2, Languages, ArrowRight } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useLanguage } from '@/context/LanguageContext';
 import { SupportedLanguage } from '@/lib/i18n/translations';
@@ -44,419 +23,100 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const { lang, setLang, t, supportedLanguages } = useLanguage();
   const cityList = Object.values(CITIES);
 
-  // Interactive FAQ Accordion state
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-
-  // Interactive Live Rain Simulator state
-  const [simRainRate, setSimRainRate] = useState<number>(65); // mm/h
-
-  const toggleFaq = (index: number) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index);
-  };
-
-  const getSimInundationDepth = (rain: number) => {
-    if (rain >= 80) return { depth: 55, severity: t.routing.riskHigh, color: 'text-red-600', bg: 'bg-red-50/80 border-red-200' };
-    if (rain >= 50) return { depth: 32, severity: t.routing.riskModerate, color: 'text-orange-600', bg: 'bg-orange-50/80 border-orange-200' };
-    if (rain >= 25) return { depth: 14, severity: t.routing.riskModerate, color: 'text-amber-600', bg: 'bg-amber-50/80 border-amber-200' };
-    return { depth: 3, severity: t.routing.riskSafe, color: 'text-teal-700', bg: 'bg-teal-50/80 border-teal-200' };
-  };
-
-  const simResult = getSimInundationDepth(simRainRate);
-  const faqs = t.faqs;
-
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-500 selection:text-white">
-
-      {/* Header Bar (Shadcn Glassmorphic Top Nav) */}
-      <header className="w-full bg-white border-b border-slate-200 px-5 md:px-8 py-3 flex items-center justify-between sticky top-0 z-50 flex-wrap gap-3">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-9 h-9 rounded-md bg-slate-950 text-teal-300 border border-teal-400/40">
-            <Shield className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="text-lg font-black tracking-tight text-slate-900 font-mono">
-                {t.nav.brand}
-              </h1>
-              <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-slate-100 text-slate-600 border border-slate-200 uppercase tracking-wide">
-                Protocol 02
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium">{t.nav.subTitle}</p>
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col font-sans transition-colors duration-200">
+      {/* Top Header Bar */}
+      <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-5 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div>
+          <h1 className="text-xl font-black tracking-tight text-gray-950 dark:text-gray-100">
+            VRISHTI
+          </h1>
         </div>
 
-        <div className="flex items-center space-x-3">
-          {/* Language Selector (Shadcn Styled Pill Dropdown) */}
-          <div className="relative flex items-center bg-slate-100/90 rounded-xl px-2.5 py-1.5 border border-slate-200 shadow-2xs hover:border-slate-300 transition-all">
-            <Languages className="w-3.5 h-3.5 text-teal-600 mr-1.5 shrink-0" />
+        <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          
+          {/* Language Selector */}
+          <div className="flex items-center bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-xl">
+            <Languages className="w-4 h-4 text-blue-600 mr-2" />
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value as SupportedLanguage)}
-              className="bg-transparent text-xs text-slate-800 focus:outline-none pr-1 cursor-pointer font-bold"
+              className="bg-transparent text-sm font-bold text-gray-900 dark:text-gray-100 focus:outline-none cursor-pointer"
             >
               {supportedLanguages.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.nativeName} ({l.name})
+                <option key={l.code} value={l.code} className="bg-white dark:bg-gray-900">
+                  {l.nativeName}
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="hidden lg:flex items-center space-x-2 text-[10px] font-semibold text-slate-600 px-3 py-1.5 border-l border-slate-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <CloudRain className="w-4 h-4 text-teal-600" />
-            <span>MoES / NCMRWF Engine</span>
-          </div>
-
-          <ThemeToggle />
-          {/* Authority Portal Access Button */}
+          {/* Authority Auth Status / Login */}
           {authorityAuth?.isLoggedIn ? (
-            <div className="flex items-center space-x-1.5 bg-teal-50 border border-teal-200 text-teal-900 px-3.5 py-2 rounded-xl text-xs font-bold shadow-2xs">
-              <CheckCircle2 className="w-4 h-4 text-teal-600" />
-              <span>Officer: {authorityAuth.loginId}</span>
-            </div>
+            <button
+              onClick={() => onSelectCity(authorityAuth.cityId)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl flex items-center space-x-2 transition-colors"
+            >
+              <Building2 className="w-4 h-4" />
+              <span>Enter Command ({authorityAuth.cityId})</span>
+            </button>
           ) : (
             <button
               onClick={() => onOpenAuthModal()}
-              className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm transition-all active:scale-[0.98] ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+              className="px-4 py-2 bg-gray-900 dark:bg-gray-800 hover:bg-gray-800 dark:hover:bg-gray-700 text-white text-sm font-bold rounded-xl flex items-center space-x-2 transition-colors"
             >
-              <Building2 className="w-4 h-4 text-teal-400" />
-              <span>{t.landing.authorityLoginBtn}</span>
+              <Building2 className="w-4 h-4" />
+              <span>Authority Login</span>
             </button>
           )}
         </div>
       </header>
 
-      <main className="flex-1 z-10 space-y-12 pb-12">
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col items-center pt-24 pb-16 px-5 max-w-5xl mx-auto w-full">
         {/* Hero Section */}
-        <section className="px-6 pt-14 pb-6 max-w-6xl mx-auto text-center space-y-6">
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-teal-500/10 text-teal-800 border border-teal-500/20 text-xs font-bold shadow-2xs backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-teal-600" />
-            <span>{t.landing.leadTimeBadge}</span>
-          </div>
-
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight max-w-4xl mx-auto leading-[1.15]">
-            {t.landing.heroTitle.split(' ').map((word, i) => (
-              <span key={i} className={i % 3 === 1 ? "text-transparent bg-clip-text bg-gradient-to-r from-teal-700 via-cyan-600 to-blue-800" : ""}>
-                {word}{' '}
-              </span>
-            ))}
+        <div className="text-center mb-16 space-y-4 max-w-3xl">
+          <h2 className="text-5xl md:text-6xl font-black tracking-tight leading-tight text-gray-950 dark:text-gray-100">
+            Real-time flood intelligence for Indian metros
           </h2>
-
-          <p className="text-slate-600 max-w-2xl mx-auto text-sm md:text-base leading-relaxed font-medium">
-            {t.landing.heroSubtitle}
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-medium">
+            Select your city to open the operations hub. Monitor street-level inundation, route citizens to safety, and manage municipal drainage.
           </p>
+        </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            {onGoToCitizenApp && (
-              <button
-                onClick={onGoToCitizenApp}
-                className="px-6 py-3 rounded-xl bg-gradient-to-br from-teal-600 to-teal-800 hover:from-teal-700 hover:to-teal-900 text-white font-extrabold text-xs shadow-md shadow-teal-700/20 transition-all flex items-center space-x-2 active:scale-95"
-              >
-                <Smartphone className="w-4 h-4 text-white" />
-                <span>{t.citizenApp?.appTitle || 'Launch Citizen App'}</span>
+        {/* City Selection Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+          {cityList.map(city => (
+            <div 
+              key={city.id}
+              onClick={() => onSelectCity(city.id)}
+              className="group card bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-blue-500 hover:shadow-blue cursor-pointer transition-all p-6 flex flex-col justify-between min-h-[220px]"
+            >
+              <div>
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-2xl flex items-center justify-center mb-4 border border-blue-200 dark:border-blue-800/50">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                  {city.name}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                  {city.description}
+                </p>
+              </div>
+              
+              <div className="mt-6 flex items-center justify-between text-blue-600 font-bold text-sm group-hover:translate-x-1 transition-transform">
+                <span>Enter Operations Hub</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
-            <a
-              href="#select-city"
-              className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center space-x-2 active:scale-95"
-            >
-              <span>{t.landing.selectCityTitle}</span>
-              <ArrowRight className="w-4 h-4 text-teal-400" />
-            </a>
-            <button
-              onClick={() => onOpenAuthModal()}
-              className="px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs border border-slate-200 shadow-2xs transition-all flex items-center space-x-2 active:scale-95"
-            >
-              <Building2 className="w-4 h-4 text-teal-600" />
-              <span>{t.landing.authorityLoginBtn}</span>
-            </button>
-          </div>
-        </section>
-
-        {/* Shadcn UI Metric Impact Bar */}
-        <section className="px-6 max-w-5xl mx-auto w-full">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: t.landing.metricLeadTimeSub, val: t.landing.metricLeadTime, icon: Clock, color: 'text-teal-600 bg-teal-50 border-teal-200' },
-              { label: t.landing.metricHydraulicsSub, val: t.landing.metricHydraulics, icon: Layers, color: 'text-blue-600 bg-blue-50 border-blue-200' },
-              { label: t.landing.metricPrecisionSub, val: t.landing.metricPrecision, icon: Crosshair, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-              { label: t.landing.metricDetoursSub, val: t.landing.metricDetours, icon: Navigation, color: 'text-purple-600 bg-purple-50 border-purple-200' },
-            ].map((metric, idx) => {
-              const Icon = metric.icon;
-              return (
-                <div
-                  key={idx}
-                  className="bg-white/90 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-teal-500/40 transition-all duration-300 flex items-center space-x-3.5 group"
-                >
-                  <div className={`p-2.5 rounded-xl border ${metric.color} shrink-0 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xl md:text-2xl font-black text-slate-900 tracking-tight font-mono">
-                      {metric.val}
-                    </p>
-                    <p className="text-[11px] text-slate-500 font-semibold">{metric.label}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Feature Highlights Section (Shadcn Feature Cards) */}
-        <section className="px-6 max-w-5xl mx-auto w-full space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[
-              {
-                title: t.landing.feature1Title,
-                sub: t.landing.feature1Sub,
-                icon: Waves,
-                color: 'from-teal-500 to-cyan-600'
-              },
-              {
-                title: t.landing.feature2Title,
-                sub: t.landing.feature2Sub,
-                icon: Compass,
-                color: 'from-blue-500 to-indigo-600'
-              },
-              {
-                title: t.landing.feature3Title,
-                sub: t.landing.feature3Sub,
-                icon: FileSpreadsheet,
-                color: 'from-purple-500 to-pink-600'
-              }
-            ].map((feat, i) => {
-              const Icon = feat.icon;
-              return (
-                <div
-                  key={i}
-                  className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md hover:border-teal-400/50 transition-all duration-300 space-y-2.5"
-                >
-                  <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${feat.color} text-white flex items-center justify-center shadow-sm`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm">{feat.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">{feat.sub}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Metro City Selection Cards (Shadcn UI Card Design) */}
-        <section id="select-city" className="px-6 max-w-6xl mx-auto w-full space-y-6">
-          <div className="text-center space-y-1.5">
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              {t.landing.selectCityTitle}
-            </h3>
-            <p className="text-xs text-slate-500 font-medium">{t.landing.selectCitySub}</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {cityList.map((city) => (
-              <div
-                key={city.id}
-                className="bg-white rounded-2xl border border-slate-200 hover:border-teal-500/50 border-t-4 border-t-teal-600 p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group space-y-5"
-              >
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shadow-2xs group-hover:bg-teal-50 transition-colors">
-                        <Building2 className="w-5 h-5 text-teal-600" />
-                      </div>
-                      <div>
-                        <h4 className="text-base font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
-                          {city.name}
-                        </h4>
-                        <p className="text-[11px] text-slate-500 font-medium">{city.state}</p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 font-mono font-bold border border-teal-200 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      {t.landing.liveRadar}
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                    {city.description}
-                  </p>
-
-                  <div className="space-y-1.5 pt-2 border-t border-slate-100 text-xs">
-                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{t.landing.highRiskHotspots}</span>
-                    <div className="flex flex-wrap gap-1">
-                      {city.highRiskZones.map((zone) => (
-                        <span key={zone} className="text-[10.5px] px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 font-medium">
-                          {zone}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 flex justify-between items-center font-mono">
-                    <span className="text-slate-400">{t.landing.authorityLoginDomain}</span>
-                    <span className="font-bold text-teal-800">{city.id}.aqua.gov.in</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2 pt-2">
-                  <button
-                    onClick={() => onSelectCity(city.id)}
-                    className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-2 group-hover:shadow-md active:scale-95"
-                  >
-                    <span>{t.landing.launchDashboard} ({city.name})</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={() => onOpenAuthModal(city.id)}
-                    className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition-all flex items-center justify-center space-x-1.5 active:scale-95"
-                  >
-                    <Building2 className="w-3.5 h-3.5 text-teal-600" />
-                    <span>{t.landing.authorityLoginBtn} ({city.id}.aqua.gov.in)</span>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Interactive Hydraulic Rain Simulator (Shadcn Card Component) */}
-        <section className="px-6 max-w-5xl mx-auto w-full">
-          <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-2">
-              <div className="flex items-center space-x-2.5">
-                <div className="p-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-200">
-                  <Sliders className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-extrabold text-slate-900">
-                    {t.landing.simTitle}
-                  </h3>
-                  <p className="text-xs text-slate-500 font-medium">{t.landing.simSub}</p>
-                </div>
-              </div>
-              <span className="text-xs font-mono font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-teal-600 animate-pulse" />
-                Live Hydrologic Gauge
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-              {/* Control Slider */}
-              <div className="md:col-span-6 space-y-3.5 text-xs">
-                <div className="flex justify-between items-center font-bold">
-                  <span className="text-slate-700">{t.landing.simRainRate}</span>
-                  <span className="font-mono text-teal-700 text-sm px-2.5 py-0.5 rounded-lg bg-teal-50 border border-teal-200">
-                    {simRainRate} mm/h
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={5}
-                  max={100}
-                  step={5}
-                  value={simRainRate}
-                  onChange={(e) => setSimRainRate(parseInt(e.target.value, 10))}
-                  className="w-full h-2 bg-slate-200 rounded-lg cursor-pointer"
-                />
-
-                {/* Rain Preset Buttons */}
-                <div className="flex space-x-2 pt-1">
-                  {[
-                    { label: t.landing.moderate, val: 15 },
-                    { label: t.landing.heavy, val: 45 },
-                    { label: t.landing.cloudburst, val: 85 }
-                  ].map((preset) => (
-                    <button
-                      key={preset.val}
-                      onClick={() => setSimRainRate(preset.val)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
-                        simRainRate === preset.val
-                          ? 'bg-teal-600 text-white border-teal-600 shadow-xs font-bold'
-                          : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Calculated Output Card */}
-              <div className="md:col-span-6">
-                <div className={`p-4 rounded-xl border ${simResult.bg} space-y-2`}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">{t.landing.predictedDepth}</span>
-                    <span className={`text-xs uppercase font-extrabold px-2 py-0.5 rounded-full ${simResult.color} bg-white/70 border border-current`}>
-                      {simResult.severity}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className={`text-3xl font-mono font-black ${simResult.color}`}>{simResult.depth} cm</span>
-                    <span className="text-xs text-slate-600 font-medium">{t.landing.underpassLocation}</span>
-                  </div>
-                  <p className="text-[11.5px] text-slate-700 pt-2 border-t border-slate-200/80 leading-relaxed">
-                    {simRainRate >= 50
-                      ? t.landing.capacityExceeded
-                      : t.landing.capacityAdequate}
-                  </p>
-                </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Interactive FAQ Accordion (Shadcn Accordion Style) */}
-        <section className="px-6 max-w-4xl mx-auto w-full space-y-6">
-          <div className="text-center space-y-1.5">
-            <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
-              <HelpCircle className="w-3.5 h-3.5 text-teal-600" />
-              <span>{t.landing.faqBadge}</span>
-            </div>
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              {t.landing.faqMainHeading}
-            </h3>
-          </div>
-
-          <div className="space-y-3">
-            {faqs.map((faq, index) => {
-              const isOpen = openFaqIndex === index;
-              return (
-                <div
-                  key={index}
-                  className="bg-white/90 backdrop-blur-sm rounded-xl border border-slate-200 overflow-hidden transition-all shadow-2xs hover:border-slate-300"
-                >
-                  <button
-                    onClick={() => toggleFaq(index)}
-                    className="w-full p-4 text-left font-bold text-slate-900 text-sm flex items-center justify-between hover:text-teal-700 transition-colors"
-                  >
-                    <span>{faq.q}</span>
-                    {isOpen ? (
-                      <ChevronUp className="w-4 h-4 text-teal-600 shrink-0 ml-2" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 ml-2" />
-                    )}
-                  </button>
-
-                  {isOpen && (
-                    <div className="px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3 bg-slate-50/50 font-medium">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
+          ))}
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-slate-200/80 py-6 text-center text-xs text-slate-500 bg-white/80 backdrop-blur-md space-y-1 z-10">
-        <p className="font-bold text-slate-800">{t.landing.footerTitle}</p>
-        <p>{t.landing.footerSub}</p>
+      <footer className="py-6 border-t border-gray-200 dark:border-gray-800 text-center text-sm text-gray-500 dark:text-gray-400">
+        VRISHTI — Municipal Flood Intelligence & Management Platform
       </footer>
     </div>
   );

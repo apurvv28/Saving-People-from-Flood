@@ -59,7 +59,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   };
 
   return (
-    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-slate-200 shadow-xs">
+    <div className="w-full h-full relative rounded-2xl overflow-hidden border border-gray-200 shadow-xs">
       <MapContainer
         center={city.center}
         zoom={city.zoom}
@@ -100,30 +100,30 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               }}
             >
               <Popup>
-                <div className="p-2 space-y-1.5 min-w-[210px] text-slate-800">
+                <div className="p-2 space-y-1.5 min-w-[210px] text-gray-800">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-teal-800">{road.name}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono">
+                    <span className="font-bold text-sm text-blue-800">{road.name}</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-700 font-mono">
                       {road.borough}
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-500 font-semibold">
-                    Category: <span className="text-teal-700">{road.highwayCategory || (isGalli ? 'Galli / Local Lane' : 'Corridor')}</span>
+                  <div className="text-[11px] text-gray-500 font-semibold">
+                    Category: <span className="text-blue-700">{road.highwayCategory || (isGalli ? 'Galli / Local Lane' : 'Corridor')}</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-200">
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-gray-200">
                     <div>
-                      <span className="text-slate-500">DEM Height:</span>
-                      <p className="font-semibold text-slate-700">{road.demElevationMeters}m</p>
+                      <span className="text-gray-500">DEM Height:</span>
+                      <p className="font-semibold text-gray-700">{road.demElevationMeters}m</p>
                     </div>
                     <div>
-                      <span className="text-slate-500">Predicted Depth:</span>
-                      <p className={`font-bold ${depthCm >= 20 ? 'text-red-600' : 'text-amber-700'}`}>
+                      <span className="text-gray-500">Predicted Depth:</span>
+                      <p className={`font-bold ${depthCm >= 20 ? 'text-orange-600' : 'text-orange-700'}`}>
                         {depthCm} cm
                       </p>
                     </div>
                   </div>
-                  <p className="text-[11px] text-slate-500 pt-1">
-                    Drainage Node Ref: <span className="font-mono text-teal-700 font-bold">{road.drainNodeId}</span>
+                  <p className="text-[11px] text-gray-500 pt-1">
+                    Drainage Node Ref: <span className="font-mono text-blue-700 font-bold">{road.drainNodeId}</span>
                   </p>
                 </div>
               </Popup>
@@ -151,26 +151,26 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               }}
             >
               <Popup>
-                <div className="p-2 space-y-1.5 min-w-[210px] text-slate-800">
+                <div className="p-2 space-y-1.5 min-w-[210px] text-gray-800">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-teal-800">{node.name}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-50 text-teal-800 font-mono font-bold">
+                    <span className="font-bold text-xs text-blue-800">{node.name}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-800 font-mono font-bold">
                       {node.type}
                     </span>
                   </div>
-                  <div className="text-xs space-y-1 border-t border-slate-200 pt-1.5">
+                  <div className="text-xs space-y-1 border-t border-gray-200 pt-1.5">
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Capacity Load:</span>
-                      <span className={`font-mono font-bold ${surchargePct > 100 ? 'text-red-600' : 'text-teal-700'}`}>
+                      <span className="text-gray-500">Capacity Load:</span>
+                      <span className={`font-mono font-bold ${surchargePct > 100 ? 'text-orange-600' : 'text-blue-700'}`}>
                         {surchargePct}%
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Invert Depth:</span>
-                      <span className="font-mono text-slate-700">{node.invertDepthMeters}m</span>
+                      <span className="text-gray-500">Invert Depth:</span>
+                      <span className="font-mono text-gray-700">{node.invertDepthMeters}m</span>
                     </div>
                     {node.pumpActive && (
-                      <p className="text-[11px] text-teal-700 font-bold pt-1">
+                      <p className="text-[11px] text-blue-700 font-bold pt-1">
                         High-Capacity Outfall Pump ACTIVE
                       </p>
                     )}
@@ -207,14 +207,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             }}
           >
             <Popup>
-              <div className="p-2 space-y-1 text-xs text-slate-800">
-                <div className="flex items-center space-x-1 text-amber-700 font-bold">
+              <div className="p-2 space-y-1 text-xs text-gray-800">
+                <div className="flex items-center space-x-1 text-orange-700 font-bold">
                   <span>Ground Truth Report</span>
                 </div>
-                <p className="font-semibold text-slate-800">{report.locationName}</p>
-                <p className="text-amber-800 font-mono font-bold">Depth: {report.waterDepthCm} cm</p>
-                <p className="text-slate-600 italic text-[11px]">"{report.userNote}"</p>
-                <p className="text-[10px] text-slate-500 pt-1">{report.timestamp} • Verified</p>
+                <p className="font-semibold text-gray-800">{report.locationName}</p>
+                <p className="text-orange-800 font-mono font-bold">Depth: {report.waterDepthCm} cm</p>
+                <p className="text-gray-600 italic text-[11px]">"{report.userNote}"</p>
+                <p className="text-[10px] text-gray-500 pt-1">{report.timestamp} • Verified</p>
               </div>
             </Popup>
           </CircleMarker>

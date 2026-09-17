@@ -1,139 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600;700;800;900&display=swap');
 @import 'ol/ol.css';
 @import 'leaflet/dist/leaflet.css';
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design Tokens ─── */
 :root {
-  --background: #f7f8fc;
-  --foreground: #111827;
-  --surface: #ffffff;
-  --surface-strong: #ffffff;
-  --line: #d9e1ef;
-  --muted: #55637a;
-  --accent: #14b8a6;
+  --bg: #ffffff;
+  --fg: #0a0a0a;
+  --surface: #f9fafb;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --orange: #ea580c;
+  --orange-dark: #c2410c;
+  --green: #16a34a;
+  --green-dark: #15803d;
+}
+
+html.dark, .dark {
+  --bg: #030712;
+  --fg: #f9fafb;
+  --surface: #111827;
+  --border: #1f2937;
+  --muted: #9ca3af;
+}
+
+/* ─── Base ─── */
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: 'Lexend Deca', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--fg);
+  background-color: var(--bg);
   overflow-x: hidden;
-  letter-spacing: -.02em;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-button, input, select, textarea { font-family: inherit; }
-
-/* Protocol-inspired UI: quiet surfaces, precise dividers, and data-led accents. */
-.theme-toggle { color: #0f766e; background: #f0fdfa; border-color: #99f6e4; }
-.theme-toggle:hover { background: #ccfbf1; }
-
-html.theme-dark { color-scheme: dark; }
-.theme-dark body { --background: #09111f; --foreground: #e5edf8; --surface: #101b2d; --surface-strong: #0e1b2d; --line: #243650; --muted: #a2b2c9; color: var(--foreground); background-color: var(--background); }
-
-/* Existing components use Tailwind surface utilities; these semantic overrides keep all views legible in dark mode. */
-.theme-dark [class*="bg-white"] { background-color: var(--surface) !important; }
-.theme-dark [class*="bg-slate-50"], .theme-dark [class*="bg-slate-100"], .theme-dark [class*="bg-slate-200"] { background-color: #101f33 !important; }
-.theme-dark .bg-slate-900 { background-color: #07101d !important; }
-.theme-dark [class*="border-slate-100"], .theme-dark [class*="border-slate-200"], .theme-dark [class*="border-slate-300"] { border-color: var(--line) !important; }
-.theme-dark .text-slate-900, .theme-dark .text-slate-800, .theme-dark .text-slate-700 { color: #e5edf8 !important; }
-.theme-dark .text-slate-600, .theme-dark .text-slate-500, .theme-dark .text-slate-400 { color: #aab8cc !important; }
-.theme-dark select, .theme-dark option { background-color: #101f33; color: #e5edf8; }
-.theme-dark .ol-control, .theme-dark .ol-popup-card { background: #101f33 !important; color: #e5edf8 !important; border-color: #314765 !important; }
-.theme-dark .ol-control button { background: #101f33 !important; color: #67e8f9 !important; }
-.theme-dark .theme-toggle { color: #cffafe; background: #10263b; border-color: #22d3ee; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
-
-/* Clean White Card Styling */
-.white-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+/* Force minimum 15px on tiny Tailwind overrides */
+[class*="text-[9"], [class*="text-[10"], [class*="text-[11"],
+[class*="text-[12"], [class*="text-[13"], [class*="text-[14"] {
+  font-size: 15px !important;
 }
 
-.white-card-turquoise {
-  background: #f0fdfa;
-  border: 1px solid #99f6e4;
+button, input, select, textarea, p, span, div, a, label {
+  font-family: inherit;
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-::-webkit-scrollbar-thumb {
-  background: #0d9488;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #0f766e;
+/* ─── Card & Panel components ─── */
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 6px;
 }
 
-/* OpenLayers GIS Map Styling */
-.ol-viewport {
-  border-radius: 1rem;
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 6px;
 }
+
+.dark .card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .panel {
+  background: #0f172a;
+  border-color: var(--border);
+}
+
+/* ─── Badge ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 2px;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ─── OpenLayers Popup Card ─── */
+.ol-popup-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  font-family: 'Lexend Deca', sans-serif;
+  font-size: 13px;
+  color: var(--fg);
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.ol-popup-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.ol-popup-card .detail-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ol-popup-card .detail-value {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+  color: var(--fg);
+}
+
+/* ─── OpenLayers map controls ─── */
+.ol-viewport { border-radius: 12px; }
 
 .ol-control {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  border: 1px solid #cbd5e1 !important;
+  background-color: var(--bg) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 8px !important;
-  padding: 2px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  padding: 4px !important;
+  margin: 6px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
 }
 
 .ol-control button {
-  background-color: #ffffff !important;
-  color: #0d9488 !important;
-  font-weight: bold !important;
+  background-color: var(--surface) !important;
+  color: var(--blue) !important;
   border-radius: 6px !important;
+  font-size: 15px !important;
+  transition: background 0.15s ease !important;
 }
 
 .ol-control button:hover {
-  background-color: #f0fdfa !important;
-  color: #0f766e !important;
+  background-color: rgba(37,99,235,0.1) !important;
 }
 
-.ol-popup-card {
-  background: #ffffff;
-  color: #0f172a;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
-  font-size: 12px;
+/* ─── Status pulse ─── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
-/* Range input slider styling */
-input[type=range] {
-  -webkit-appearance: none;
-  background: transparent;
-}
-input[type=range]:focus {
-  outline: none;
-}
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 8px;
-  cursor: pointer;
-  background: linear-gradient(90deg, #0d9488 0%, #d97706 50%, #dc2626 100%);
-  border-radius: 4px;
-}
-input[type=range]::-webkit-slider-thumb {
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 3px solid #0d9488;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -6px;
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
-}
-input[type=range]::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
 }

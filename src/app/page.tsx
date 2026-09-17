@@ -3,17 +3,22 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { LandingPage } from '@/components/LandingPage';
-import { HeaderNavbar } from '@/components/HeaderNavbar';
+import { HeaderNavbar, AppTab } from '@/components/HeaderNavbar';
 import { TimeSlider } from '@/components/TimeSlider';
 import { RoutingWidget } from '@/components/RoutingWidget';
 import { AlertFeed } from '@/components/AlertFeed';
 import { ReportModal } from '@/components/ReportModal';
 import { AuthorityAuthModal } from '@/components/AuthorityAuthModal';
 import { AuthorityDashboard } from '@/components/AuthorityDashboard';
+import { HydroRoutingPanel } from '@/components/HydroRoutingPanel';
+import { CitizenSignalDesk } from '@/components/CitizenSignalDesk';
+import { AdminModerationQueue } from '@/components/AdminModerationQueue';
+import { WaterBodiesAtlas } from '@/components/WaterBodiesAtlas';
+import { SitRepExporter } from '@/components/SitRepExporter';
 import { CityId, CITIES, INITIAL_CITIZEN_REPORTS, CitizenReport, NavigationRoute } from '@/lib/mock-data';
 import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { HISTORICAL_CLOUDBURST_EVENTS } from '@/lib/openmeteo-service';
-import { Map, Sliders, Navigation, AlertOctagon } from 'lucide-react';
+import { Map, Sliders, Zap, Radio, FileCheck, Anchor, Layers, Compass } from 'lucide-react';
 
 // Dynamically import OpenLayersMapCanvas with SSR disabled
 const OpenLayersMapCanvas = dynamic(
@@ -21,9 +26,9 @@ const OpenLayersMapCanvas = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full bg-white flex flex-col items-center justify-center space-y-3 rounded-2xl border border-slate-200">
-        <div className="w-9 h-9 border-3 border-teal-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-teal-800 font-mono font-bold">
+      <div className="w-full h-full bg-space-900 flex flex-col items-center justify-center space-y-3 rounded-2xl border border-slate-800">
+        <div className="w-9 h-9 border-3 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-cyan-400 font-mono font-bold">
           Loading OpenLayers GIS Vector Engine...
         </p>
       </div>
@@ -37,10 +42,10 @@ const CitizenAppView = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-screen bg-slate-50 flex flex-col items-center justify-center space-y-3">
-        <div className="w-9 h-9 border-3 border-teal-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-teal-800 font-mono font-bold">
-          Loading AquaAlert Citizen App...
+      <div className="w-full h-screen bg-space-950 flex flex-col items-center justify-center space-y-3">
+        <div className="w-9 h-9 border-3 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-cyan-400 font-mono font-bold">
+          Loading VRISHTI Citizen App...
         </p>
       </div>
     )
@@ -49,11 +54,12 @@ const CitizenAppView = dynamic(
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<'landing' | 'citizen_app' | 'citizen_dashboard' | 'authority_dashboard'>('landing');
+  const [activeTab, setActiveTab] = useState<AppTab>('nowcast_gis');
   const [selectedCityId, setSelectedCityId] = useState<CityId>('mumbai');
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [lang, setLang] = useState('en');
   const [timeOffsetMins, setTimeOffsetMins] = useState(0);
-  const [mobileTab, setMobileTab] = useState<'map' | 'panel'>('map');
+  const [mobileGisTab, setMobileGisTab] = useState<'map' | 'panel'>('map');
 
   // Authority Authentication State
   const [authorityAuth, setAuthorityAuth] = useState<{ isLoggedIn: boolean; loginId: string; cityId: CityId } | null>(null);
@@ -69,10 +75,11 @@ export default function Home() {
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isSitRepOpen, setIsSitRepOpen] = useState(false);
   const [authDefaultCity, setAuthDefaultCity] = useState<CityId>('mumbai');
 
   // Active rain timeline from selected event or default
-  const activeEvent = HISTORICAL_CLOUDBURST_EVENTS.find(e => e.id === selectedEventId);
+  const activeEvent = HISTORICAL_CLOUDBURST_EVENTS.find((e) => e.id === selectedEventId);
   const snapshot = getHydraulicSnapshotAtTime(timeOffsetMins, selectedCityId, activeEvent?.timelineMmHr);
 
   const handleSelectCityFromLanding = (cityId: CityId) => {
@@ -146,7 +153,7 @@ export default function Home() {
     );
   }
 
-  // 2. Separate Authority Command Dashboard View
+  // 3. Separate Authority Command Dashboard View
   if (viewMode === 'authority_dashboard' && authorityAuth?.isLoggedIn) {
     return (
       <AuthorityDashboard
@@ -163,10 +170,10 @@ export default function Home() {
     );
   }
 
-  // 3. Dedicated Public Citizen Dashboard (OpenLayers GIS Map)
+  // 4. Dedicated Public Citizen Dashboard (Unified Web3 Hub)
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans overflow-x-hidden">
-      {/* Public Citizen Header Navigation */}
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-space-950 text-slate-900 dark:text-slate-100 font-sans overflow-x-hidden transition-colors duration-200">
+      {/* Public Citizen Header Navigation with Tab Switcher */}
       <HeaderNavbar
         selectedCityId={selectedCityId}
         onSelectCity={(cityId) => {
@@ -188,88 +195,143 @@ export default function Home() {
         surchargingNodesCount={snapshot.criticalSurchargeNodesCount}
         rainfallRateMmHr={snapshot.rainfallRateMmHr}
         onOpenReportModal={() => setIsReportModalOpen(true)}
+        onOpenSitRepModal={() => setIsSitRepOpen(true)}
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
       />
 
-      {/* Mobile View Switcher (Visible on screens < lg) */}
-      <div className="lg:hidden flex justify-center px-4 pt-2.5">
-        <div className="bg-slate-200/90 backdrop-blur-md p-1 rounded-2xl flex space-x-1 border border-slate-300 shadow-2xs w-full max-w-sm">
-          <button
-            onClick={() => setMobileTab('map')}
-            className={`flex-1 py-1.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
-              mobileTab === 'map' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            <Map className="w-3.5 h-3.5" />
-            <span>GIS Map View</span>
-          </button>
-          <button
-            onClick={() => setMobileTab('panel')}
-            className={`flex-1 py-1.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
-              mobileTab === 'panel' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            <Sliders className="w-3.5 h-3.5" />
-            <span>Planner & Alerts</span>
-          </button>
+      {/* Mobile Tab Switcher for Main Views (Screens < xl) */}
+      <div className="xl:hidden flex justify-center px-4 pt-3 pb-1">
+        <div className="glass-panel p-1 rounded-2xl flex flex-wrap gap-1 border border-slate-700 bg-space-900/90 shadow-lg w-full max-w-lg">
+          {[
+            { id: 'nowcast_gis', label: 'GIS Map', icon: Compass },
+            { id: 'hydro_routing', label: 'Routing', icon: Zap },
+            { id: 'citizen_signals', label: 'Signals', icon: Radio },
+            { id: 'admin_moderation', label: 'Triage', icon: FileCheck },
+            { id: 'water_bodies', label: 'Lakes', icon: Anchor }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as AppTab)}
+                className={`flex-1 min-w-[65px] py-1.5 px-2 rounded-xl font-bold text-xs flex items-center justify-center space-x-1 transition-all ${
+                  isActive
+                    ? 'bg-cyan-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span className="text-[11px]">{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Public Citizen Dashboard Responsive Grid Layout */}
-      <main className="flex-1 p-3 md:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1800px] mx-auto w-full lg:h-[calc(100vh-76px)] overflow-y-auto lg:overflow-hidden">
-        {/* Left Side Control Panel (4 Cols on Desktop, Toggled on Mobile) */}
-        <div className={`${mobileTab === 'panel' ? 'flex' : 'hidden'} lg:flex lg:col-span-4 flex-col gap-3.5 overflow-y-auto pr-1`}>
-          {/* Flood Safe Route Planner */}
-          <RoutingWidget
-            selectedCityId={selectedCityId}
-            timeOffsetMins={timeOffsetMins}
-            activeRoute={activeRoute}
-            setActiveRoute={setActiveRoute}
-            routePinMode={routePinMode}
-            setRoutePinMode={setRoutePinMode}
-            pinnedOrigin={pinnedOrigin}
-            pinnedDestination={pinnedDestination}
-          />
+      {/* Main View Container */}
+      <main className="flex-1 p-3 sm:p-5 md:p-6 max-w-[1850px] mx-auto w-full">
+        {/* Tab 1: Spatial GIS Inundation Nowcast */}
+        {activeTab === 'nowcast_gis' && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full lg:h-[calc(100vh-92px)]">
+            {/* Mobile Switcher for Map vs Panels (only inside GIS tab on mobile) */}
+            <div className="lg:hidden flex justify-center col-span-1">
+              <div className="bg-space-850 p-1 rounded-xl flex space-x-1 border border-slate-700 w-full max-w-sm">
+                <button
+                  onClick={() => setMobileGisTab('map')}
+                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
+                    mobileGisTab === 'map' ? 'bg-cyan-600 text-white shadow-xs' : 'text-slate-400'
+                  }`}
+                >
+                  <Map className="w-3.5 h-3.5" />
+                  <span>GIS Canvas</span>
+                </button>
+                <button
+                  onClick={() => setMobileGisTab('panel')}
+                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
+                    mobileGisTab === 'panel' ? 'bg-cyan-600 text-white shadow-xs' : 'text-slate-400'
+                  }`}
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>Route Planner & Alerts</span>
+                </button>
+              </div>
+            </div>
 
-          {/* Live Hazard Alert Stream */}
-          <AlertFeed
-            selectedCityId={selectedCityId}
-            timeOffsetMins={timeOffsetMins}
-            onSelectFeature={(id) => {
-              setSelectedFeatureId(id);
-              setMobileTab('map'); // Auto switch to map on feature click in mobile
-            }}
-          />
-        </div>
+            {/* Left Column Control Panel (4 Cols on Desktop) */}
+            <div className={`${mobileGisTab === 'panel' ? 'flex' : 'hidden'} lg:flex lg:col-span-4 flex-col gap-4 overflow-y-auto pr-1`}>
+              <RoutingWidget
+                selectedCityId={selectedCityId}
+                timeOffsetMins={timeOffsetMins}
+                activeRoute={activeRoute}
+                setActiveRoute={setActiveRoute}
+                routePinMode={routePinMode}
+                setRoutePinMode={setRoutePinMode}
+                pinnedOrigin={pinnedOrigin}
+                pinnedDestination={pinnedDestination}
+              />
 
-        {/* Center/Right OpenLayers GIS Canvas & Forecast Scrubber (8 Cols on Desktop, Toggled on Mobile) */}
-        <div className={`${mobileTab === 'map' ? 'flex' : 'hidden'} lg:flex lg:col-span-8 flex-col gap-3 h-full relative`}>
-          {/* OpenLayers Spatial GIS Canvas */}
-          <div className="flex-1 relative min-h-[420px] md:min-h-[500px]">
-            <OpenLayersMapCanvas
-              selectedCityId={selectedCityId}
-              timeOffsetMins={timeOffsetMins}
-              personaMode="citizen"
-              activeRoute={activeRoute}
-              citizenReports={citizenReports.filter(r => r.cityId === selectedCityId || !r.cityId)}
-              selectedFeatureId={selectedFeatureId}
-              setSelectedFeatureId={setSelectedFeatureId}
-              routePinMode={routePinMode}
-              setRoutePinMode={setRoutePinMode}
-              pinnedOrigin={pinnedOrigin}
-              pinnedDestination={pinnedDestination}
-              onLocationPicked={handleLocationPicked}
-            />
+              <AlertFeed
+                selectedCityId={selectedCityId}
+                timeOffsetMins={timeOffsetMins}
+                onSelectFeature={(id) => {
+                  setSelectedFeatureId(id);
+                  setMobileGisTab('map');
+                }}
+              />
+            </div>
+
+            {/* Right Column OpenLayers Map Canvas & Time Slider (8 Cols on Desktop) */}
+            <div className={`${mobileGisTab === 'map' ? 'flex' : 'hidden'} lg:flex lg:col-span-8 flex-col gap-3.5 h-full relative`}>
+              <div className="flex-1 relative min-h-[460px] md:min-h-[520px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
+                <OpenLayersMapCanvas
+                  selectedCityId={selectedCityId}
+                  timeOffsetMins={timeOffsetMins}
+                  personaMode="citizen"
+                  activeRoute={activeRoute}
+                  citizenReports={citizenReports.filter((r) => r.cityId === selectedCityId || !r.cityId)}
+                  selectedFeatureId={selectedFeatureId}
+                  setSelectedFeatureId={setSelectedFeatureId}
+                  routePinMode={routePinMode}
+                  setRoutePinMode={setRoutePinMode}
+                  pinnedOrigin={pinnedOrigin}
+                  pinnedDestination={pinnedDestination}
+                  onLocationPicked={handleLocationPicked}
+                />
+              </div>
+
+              {/* 0–3 Hour Forecast Scrubber */}
+              <TimeSlider
+                timeOffsetMins={timeOffsetMins}
+                setTimeOffsetMins={setTimeOffsetMins}
+              />
+            </div>
           </div>
+        )}
 
-          {/* 0–3 Hour Forecast Timeline Scrubber */}
-          <TimeSlider
-            timeOffsetMins={timeOffsetMins}
-            setTimeOffsetMins={setTimeOffsetMins}
-          />
-        </div>
+        {/* Tab 2: Dynamic Hydro-Routing with Web3 SCADA Audit Chain */}
+        {activeTab === 'hydro_routing' && (
+          <HydroRoutingPanel selectedCityId={selectedCityId} />
+        )}
+
+        {/* Tab 3: Crowdsourced Citizen Signals Desk */}
+        {activeTab === 'citizen_signals' && (
+          <CitizenSignalDesk selectedCityId={selectedCityId} />
+        )}
+
+        {/* Tab 4: Municipal Admin Moderation Queue */}
+        {activeTab === 'admin_moderation' && (
+          <AdminModerationQueue selectedCityId={selectedCityId} />
+        )}
+
+        {/* Tab 5: Catchment & Water Bodies Atlas */}
+        {activeTab === 'water_bodies' && (
+          <WaterBodiesAtlas selectedCityId={selectedCityId} />
+        )}
       </main>
 
-      {/* Modals */}
+      {/* Global Modals */}
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
@@ -282,6 +344,13 @@ export default function Home() {
         onClose={() => setIsAuthModalOpen(false)}
         defaultCityId={authDefaultCity}
         onSuccessLogin={handleSuccessLogin}
+      />
+
+      <SitRepExporter
+        isOpen={isSitRepOpen}
+        onClose={() => setIsSitRepOpen(false)}
+        selectedCityId={selectedCityId}
+        timeOffsetMins={timeOffsetMins}
       />
     </div>
   );

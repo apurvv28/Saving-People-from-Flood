@@ -68,32 +68,32 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 space-y-5">
+    <div className="fixed inset-0 z-50 bg-gray-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-2xl p-6 space-y-5">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div className="flex items-center space-x-2 text-teal-800">
-            <Shield className="w-5 h-5 text-teal-600" />
-            <h3 className="font-bold text-slate-900 text-sm">
+        <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div className="flex items-center space-x-2 text-blue-800">
+            <Shield className="w-5 h-5 text-blue-600" />
+            <h3 className="font-bold text-gray-900 text-sm">
               {t.authModal.title}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
+            className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Switcher: Login vs Sign Up */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+        <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200 text-xs font-semibold">
           <button
             onClick={() => setAuthTab('login')}
             className={`flex-1 py-1.5 rounded-lg transition-all ${
               authTab === 'login'
-                ? 'bg-teal-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-blue-600 text-white font-bold shadow-xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             {t.landing.authorityLoginBtn}
@@ -102,8 +102,8 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
             onClick={() => setAuthTab('signup')}
             className={`flex-1 py-1.5 rounded-lg transition-all ${
               authTab === 'signup'
-                ? 'bg-teal-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-blue-600 text-white font-bold shadow-xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             Register
@@ -111,21 +111,21 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
         </div>
 
         {/* Credentials Helper Hint Box */}
-        <div className="p-3 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 space-y-1">
+        <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1">
           <div className="flex items-center space-x-1.5 font-bold">
-            <Building2 className="w-4 h-4 text-teal-700" />
+            <Building2 className="w-4 h-4 text-blue-700" />
             <span>{t.authModal.demoNote}</span>
           </div>
-          <p className="text-[11px] text-slate-600">
-            ID: <code className="font-mono text-teal-800 font-bold bg-white px-1 py-0.5 rounded border border-teal-200">{selectedCity}.aqua.gov.in</code>
+          <p className="text-[11px] text-gray-600">
+            ID: <code className="font-mono text-blue-800 font-bold bg-white px-1 py-0.5 rounded border border-blue-200">{selectedCity}.aqua.gov.in</code>
             <br />
-            Passcode: <code className="font-mono text-teal-800 font-bold bg-white px-1 py-0.5 rounded border border-teal-200">12345678</code>
+            Passcode: <code className="font-mono text-blue-800 font-bold bg-white px-1 py-0.5 rounded border border-blue-200">12345678</code>
           </p>
         </div>
 
         {errorMsg && (
-          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 flex items-start space-x-2">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+          <div className="p-3 rounded-xl bg-orange-50 border border-orange-200 text-xs text-orange-800 flex items-start space-x-2">
+            <AlertCircle className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -134,11 +134,11 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
         <form onSubmit={handleAuthSubmit} className="space-y-4 text-xs">
           {/* Target City Selection */}
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">{t.nav.selectCity}:</label>
+            <label className="block text-gray-700 font-semibold mb-1">{t.nav.selectCity}:</label>
             <select
               value={selectedCity}
               onChange={(e) => handleCityChange(e.target.value as CityId)}
-              className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold focus:outline-none focus:border-teal-600 cursor-pointer"
+              className="w-full p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 font-semibold focus:outline-none focus:border-blue-600 cursor-pointer"
             >
               <option value="mumbai">Mumbai (mumbai.aqua.gov.in)</option>
               <option value="delhi">Delhi NCR (delhi.aqua.gov.in)</option>
@@ -148,46 +148,46 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
 
           {authTab === 'signup' && (
             <div>
-              <label className="block text-slate-700 font-semibold mb-1">Officer Name / Designation:</label>
+              <label className="block text-gray-700 font-semibold mb-1">Officer Name / Designation:</label>
               <input
                 type="text"
                 value={officerName}
                 onChange={(e) => setOfficerName(e.target.value)}
                 placeholder="e.g. Chief Hydraulic Engineer"
                 required
-                className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-teal-600"
+                className="w-full p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-blue-600"
               />
             </div>
           )}
 
           {/* Login ID */}
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">{t.authModal.domainLabel}:</label>
+            <label className="block text-gray-700 font-semibold mb-1">{t.authModal.domainLabel}:</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
               <input
                 type="text"
                 value={loginId}
                 onChange={(e) => setLoginId(e.target.value)}
                 placeholder={t.authModal.domainPlaceholder}
                 required
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-teal-600"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 font-mono focus:outline-none focus:border-blue-600"
               />
             </div>
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-slate-700 font-semibold mb-1">{t.authModal.passcodeLabel}:</label>
+            <label className="block text-gray-700 font-semibold mb-1">{t.authModal.passcodeLabel}:</label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t.authModal.passcodePlaceholder}
                 required
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono focus:outline-none focus:border-teal-600"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 font-mono focus:outline-none focus:border-blue-600"
               />
             </div>
           </div>
@@ -196,7 +196,7 @@ export const AuthorityAuthModal: React.FC<AuthorityAuthModalProps> = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center space-x-2 active:scale-95"
+            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center space-x-2 active:scale-95"
           >
             <span>{isSubmitting ? t.authModal.loggingIn : t.authModal.loginBtn}</span>
             <ArrowRight className="w-4 h-4" />

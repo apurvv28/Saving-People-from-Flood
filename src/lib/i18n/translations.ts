@@ -303,7 +303,7 @@ export interface TranslationSchema {
 export const translations: Record<SupportedLanguage, TranslationSchema> = {
   en: {
     nav: {
-      brand: 'AquaAlert',
+      brand: 'VRISHTI',
       subTitle: 'Public Citizen Urban Flood Nowcasting Portal',
       backToLanding: 'Back to Landing Page',
       openMeteoApi: 'Open-Meteo API',
@@ -349,8 +349,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       capacityAdequate: 'Drainage network capacity adequate. Water flowing via gravity.',
       faqTitle: 'Frequently Asked Questions',
       faqBadge: 'Frequently Asked Questions',
-      faqMainHeading: 'Everything You Need to Know About AquaAlert',
-      footerTitle: 'AquaAlert • Urban Flood Hydro-Dynamic Prediction System',
+      faqMainHeading: 'Everything You Need to Know About VRISHTI',
+      footerTitle: 'VRISHTI • Urban Flood Hydro-Dynamic Prediction System',
       footerSub: 'Ministry of Earth Sciences (MoES) • National Centre for Medium Range Weather Forecasting (NCMRWF)',
       feature1Title: 'Coupled 1D + 2D Hydraulics',
       feature1Sub: 'Integrates Doppler radar rain nowcasts with 2D DEM surface runoff & 1D subterranean pipe graphs.',
@@ -365,16 +365,16 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
         a: 'Official municipal control room officers log in using their city authority domain: cityname.aqua.gov.in (e.g., mumbai.aqua.gov.in, delhi.aqua.gov.in, chennai.aqua.gov.in) with passcode: 12345678. Authority access unlocks 1D subterranean drainage telemetry, outfall dewatering pump controls, and executive SitRep PDF generators.'
       },
       {
-        q: 'How does AquaAlert predict street flooding 0–3 hours in advance?',
-        a: 'Traditional weather models only forecast volume of rain. AquaAlert couples live Doppler Radar rainfall nowcasts with a 2D Digital Elevation Model (DEM) and a 1D directed graph representation of subterranean stormwater drains to pinpoint street inundation depths in centimeters.'
+        q: 'How does VRISHTI predict street flooding 0–3 hours in advance?',
+        a: 'Traditional weather models only forecast volume of rain. VRISHTI couples live Doppler Radar rainfall nowcasts with a 2D Digital Elevation Model (DEM) and a 1D directed graph representation of subterranean stormwater drains to pinpoint street inundation depths in centimeters.'
       },
       {
         q: 'Which Indian metropolitan cities are currently active?',
-        a: 'AquaAlert currently features high-resolution spatial models for Mumbai (Hindmata, Dadar, Kurla, Andheri), Delhi NCR (Minto Bridge, ITO Junction, Pul Prahladpur), and Chennai (Velachery, T. Nagar, Saidapet).'
+        a: 'VRISHTI currently features high-resolution spatial models for Mumbai (Hindmata, Dadar, Kurla, Andheri), Delhi NCR (Minto Bridge, ITO Junction, Pul Prahladpur), and Chennai (Velachery, T. Nagar, Saidapet).'
       },
       {
         q: 'How does the Flood-Safe Emergency Navigation API work?',
-        a: 'Standard navigation apps use static road speed limits. AquaAlert dynamically increases travel-time weights when predicted water depth exceeds vehicle clearance thresholds (e.g., >15cm for sedans, >25cm for ambulances), routing vehicles safely around flooded underpasses.'
+        a: 'Standard navigation apps use static road speed limits. VRISHTI dynamically increases travel-time weights when predicted water depth exceeds vehicle clearance thresholds (e.g., >15cm for sedans, >25cm for ambulances), routing vehicles safely around flooded underpasses.'
       },
       {
         q: 'How can citizens contribute ground-truth report corrections?',
@@ -411,7 +411,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       hatchback: 'Hatchback',
       suv: 'SUV 4x4',
       bus: 'Bus / Heavy Vehicle',
-      realRoadSafeRoute: 'AquaAlert Real Road Flood-Safe Route',
+      realRoadSafeRoute: 'VRISHTI Real Road Flood-Safe Route',
       noSafeRouteFor: 'NO SAFE ROUTE FOR',
       selectHazardZone: 'Select Flood Hazard Zone:',
       nearestShelter: 'Nearest Safe Assembly Shelter',
@@ -562,7 +562,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       closeBtn: 'Close Evacuation Plan',
     },
     citizenApp: {
-      appTitle: 'AquaAlert Citizen Portal',
+      appTitle: 'VRISHTI Citizen Portal',
       appSubtitle: 'Public Street Flood Hazards, Live GPS Route Avoidance & Water Logging Reporting',
       tabAlerts: 'Live Hazard Alerts',
       tabRoute: 'Vehicle Route Avoidance',
@@ -609,7 +609,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
 
   hi: {
     nav: {
-      brand: 'AquaAlert',
+      brand: 'VRISHTI',
       subTitle: 'नागरिक शहरी बाढ़ पूर्वाभास पोर्टल',
       backToLanding: 'मुख्य पृष्ठ पर लौटें',
       openMeteoApi: 'ओपन-मीटियो एपीआई',
@@ -655,8 +655,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       capacityAdequate: 'ड्रेनेज नेटवर्क क्षमता पर्याप्त है। पानी गुरुत्वाकर्षण द्वारा बह रहा है।',
       faqTitle: 'अक्सर पूछे जाने वाले प्रश्न',
       faqBadge: 'अक्सर पूछे जाने वाले प्रश्न',
-      faqMainHeading: 'AquaAlert के बारे में वह सब कुछ जो आपको जानना आवश्यक है',
-      footerTitle: 'AquaAlert • शहरी बाढ़ हाइड्रो-डायनामिक पूर्वानुमान प्रणाली',
+      faqMainHeading: 'VRISHTI के बारे में वह सब कुछ जो आपको जानना आवश्यक है',
+      footerTitle: 'VRISHTI • शहरी बाढ़ हाइड्रो-डायनामिक पूर्वानुमान प्रणाली',
       footerSub: 'पृथ्वी विज्ञान मंत्रालय (MoES) • राष्ट्रीय मध्यम अवधि मौसम पूर्वानुमान केंद्र (NCMRWF)',
       feature1Title: 'एकीकृत 1D + 2D हाइड्रोलिक्स',
       feature1Sub: 'डॉपलर रडार वर्षा पूर्वानुमान को 2D सतही पानी और 1D भूमिगत नाले के नेटवर्क के साथ जोड़ता है।',
@@ -671,16 +671,16 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
         a: 'आधिकारिक नगर निगम नियंत्रण कक्ष अधिकारी अपने शहर प्राधिकरण डोमेन का उपयोग करके लॉगिन करते हैं: cityname.aqua.gov.in (जैसे, mumbai.aqua.gov.in, delhi.aqua.gov.in, chennai.aqua.gov.in) पासकोड: 12345678 के साथ।'
       },
       {
-        q: 'AquaAlert 0–3 घंटे पहले सड़क जलभराव का पूर्वानुमान कैसे लगाता है?',
-        a: 'पारंपरिक मौसम मॉडल केवल वर्षा की मात्रा का अनुमान लगाते हैं। AquaAlert लाइव डॉपलर रडार वर्षा को 2D डिजिटल एलिवेशन मॉडल (DEM) और 1D भूमिगत नाले के नेटवर्क के साथ जोड़ता है।'
+        q: 'VRISHTI 0–3 घंटे पहले सड़क जलभराव का पूर्वानुमान कैसे लगाता है?',
+        a: 'पारंपरिक मौसम मॉडल केवल वर्षा की मात्रा का अनुमान लगाते हैं। VRISHTI लाइव डॉपलर रडार वर्षा को 2D डिजिटल एलिवेशन मॉडल (DEM) और 1D भूमिगत नाले के नेटवर्क के साथ जोड़ता है।'
       },
       {
         q: 'वर्तमान में कौन से भारतीय महानगर सक्रिय हैं?',
-        a: 'AquaAlert वर्तमान में मुंबई (हिंदमाता, दादर, कुर्ला, अंधेरी), दिल्ली एनसीआर (मिंटो ब्रिज, आईटीओ, पुल प्रह्लादपुर) और चेन्नई (वेलाचेरी, टी. नगर, सैदापेट) के लिए लाइव मॉडल प्रदान करता है।'
+        a: 'VRISHTI वर्तमान में मुंबई (हिंदमाता, दादर, कुर्ला, अंधेरी), दिल्ली एनसीआर (मिंटो ब्रिज, आईटीओ, पुल प्रह्लादपुर) और चेन्नई (वेलाचेरी, टी. नगर, सैदापेट) के लिए लाइव मॉडल प्रदान करता है।'
       },
       {
         q: 'बाढ़-सुरक्षित आपातकालीन नेविगेशन एपीआई कैसे काम करता है?',
-        a: 'सामान्य नेविगेशन ऐप स्थिर सड़क गति सीमाओं का उपयोग करते हैं। AquaAlert जलभराव गहराई के आधार पर वाहनों को जलमग्न इलाकों से सुरक्षित दूर री-रूट करता है।'
+        a: 'सामान्य नेविगेशन ऐप स्थिर सड़क गति सीमाओं का उपयोग करते हैं। VRISHTI जलभराव गहराई के आधार पर वाहनों को जलमग्न इलाकों से सुरक्षित दूर री-रूट करता है।'
       },
       {
         q: 'नागरिक धरातलीय रिपोर्टिंग में कैसे योगदान दे सकते हैं?',
@@ -717,7 +717,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       hatchback: 'हैचबैक',
       suv: 'एसयूवी 4x4',
       bus: 'बस / भारी वाहन',
-      realRoadSafeRoute: 'AquaAlert रियल रोड बाढ़-सुरक्षित मार्ग',
+      realRoadSafeRoute: 'VRISHTI रियल रोड बाढ़-सुरक्षित मार्ग',
       noSafeRouteFor: 'इसके लिए कोई सुरक्षित मार्ग नहीं:',
       selectHazardZone: 'बाढ़ जोखिम क्षेत्र चुनें:',
       nearestShelter: 'निकटतम सुरक्षित राहत शिविर',
@@ -868,7 +868,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       closeBtn: 'योजना बंद करें',
     },
     citizenApp: {
-      appTitle: 'AquaAlert नागरिक पोर्टल',
+      appTitle: 'VRISHTI नागरिक पोर्टल',
       appSubtitle: 'सड़क जलभराव अलर्ट, लाइव जीपीएस सुरक्षित नेविगेशन एवं रिपोर्टिंग',
       tabAlerts: 'लाइव आपदा अलर्ट',
       tabRoute: 'वाहन-सुरक्षित मार्ग',
@@ -915,7 +915,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
 
   mr: {
     nav: {
-      brand: 'AquaAlert',
+      brand: 'VRISHTI',
       subTitle: 'नागरी पूर पूर्वसूचना पोर्टल',
       backToLanding: 'मुख्य पृष्ठावर जा',
       openMeteoApi: 'ओपन-मिशिओ एपीआय',
@@ -961,8 +961,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       capacityAdequate: 'ड्रेनेज क्षमता पुरेशी आहे.',
       faqTitle: 'सतत विचारले जाणारे प्रश्न',
       faqBadge: 'महत्त्वाचे प्रश्न',
-      faqMainHeading: 'AquaAlert बद्दल सर्व काही',
-      footerTitle: 'AquaAlert • नागरी पूर हायड्रो-डायनॅमिक अंदाज प्रणाली',
+      faqMainHeading: 'VRISHTI बद्दल सर्व काही',
+      footerTitle: 'VRISHTI • नागरी पूर हायड्रो-डायनॅमिक अंदाज प्रणाली',
       footerSub: 'पृथ्वी विज्ञान मंत्रालय (MoES) • राष्ट्रीय मध्यम कालावधी हवामान अंदाज केंद्र (NCMRWF)',
       feature1Title: 'एकात्मिक 1D + 2D हायड्रोलिक्स',
       feature1Sub: 'डॉपलर रडारचा पाऊस अंदाज, 2D रस्ता पातळी व 1D भूगर्भातील गटार नेटवर्क एकत्र करतो.',
@@ -977,8 +977,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
         a: 'अधिकृत अधिकारी त्यांच्या शहर डोमेनने (उदा. mumbai.aqua.gov.in) आणि पासकोड 12345678 वापरून लॉगिन करतात.'
       },
       {
-        q: 'AquaAlert 0–3 तास आधी पुराचा अंदाज कसा लावतो?',
-        a: 'AquaAlert थेट डॉपलर रडार, 2D डिजिटल एलिव्हेशन मॉडेल (DEM) आणि 1D भूगर्भातील गटार नेटवर्क एकत्र करून अचूक अंदाज देतो.'
+        q: 'VRISHTI 0–3 तास आधी पुराचा अंदाज कसा लावतो?',
+        a: 'VRISHTI थेट डॉपलर रडार, 2D डिजिटल एलिव्हेशन मॉडेल (DEM) आणि 1D भूगर्भातील गटार नेटवर्क एकत्र करून अचूक अंदाज देतो.'
       },
       {
         q: 'कोणती भारतीय शहरे समाविष्ट आहेत?',
@@ -986,7 +986,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       },
       {
         q: 'सुरक्षित नेव्हिगेशन कसे कार्य करते?',
-        a: 'AquaAlert पाण्याच्या खोलीनुसार वाहनांना पुराच्या भागातून सुरक्षित वळणावर री-रूट करतो.'
+        a: 'VRISHTI पाण्याच्या खोलीनुसार वाहनांना पुराच्या भागातून सुरक्षित वळणावर री-रूट करतो.'
       },
       {
         q: 'नागरिक माहिती कशी सादर करू शकतात?',
@@ -1023,7 +1023,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       hatchback: 'हॅचबॅक',
       suv: 'एसयूव्ही 4x4',
       bus: 'बस / अवजड वाहन',
-      realRoadSafeRoute: 'AquaAlert रिअल रोड पूर-सुरक्षित मार्ग',
+      realRoadSafeRoute: 'VRISHTI रिअल रोड पूर-सुरक्षित मार्ग',
       noSafeRouteFor: 'या वाहनासाठी सुरक्षित मार्ग उपलब्ध नाही:',
       selectHazardZone: 'पूर धोक्याचा भाग निवडा:',
       nearestShelter: 'जवळचे सुरक्षित आपत्कालीन निवारा केंद्र',
@@ -1174,7 +1174,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       closeBtn: 'योजना बंद करा',
     },
     citizenApp: {
-      appTitle: 'AquaAlert नागरिक पोर्टल',
+      appTitle: 'VRISHTI नागरिक पोर्टल',
       appSubtitle: 'रस्त्यावरील पाणी साचणे इशारे, लाइव्ह जीपीएस सुरक्षित मार्ग व नोंदणी',
       tabAlerts: 'लाइव्ह आपत्कालीन इशारे',
       tabRoute: 'वाहन-सुरक्षित मार्ग',
@@ -1221,7 +1221,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
 
   ta: {
     nav: {
-      brand: 'AquaAlert',
+      brand: 'VRISHTI',
       subTitle: 'நகர்ப்புற வெள்ள முன்னறிவிப்பு போர்ட்டல்',
       backToLanding: 'முகப்புப் பக்கத்திற்குச் செல்',
       openMeteoApi: 'Open-Meteo API',
@@ -1267,8 +1267,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       capacityAdequate: 'வடிகால் கொள்ளளவு போதுமானது.',
       faqTitle: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
       faqBadge: 'முக்கிய வினாக்கள்',
-      faqMainHeading: 'AquaAlert பற்றி நீங்கள் தெரிந்து கொள்ள வேண்டியவை',
-      footerTitle: 'AquaAlert • நகர்ப்புற வெள்ள முன்னறிவிப்பு அமைப்பு',
+      faqMainHeading: 'VRISHTI பற்றி நீங்கள் தெரிந்து கொள்ள வேண்டியவை',
+      footerTitle: 'VRISHTI • நகர்ப்புற வெள்ள முன்னறிவிப்பு அமைப்பு',
       footerSub: 'புவி அறிவியல் அமைச்சகம் (MoES) • தேசிய நடுத்தர வரம்பு வானிலை முன்னறிவிப்பு மையம் (NCMRWF)',
       feature1Title: 'ஒருங்கிணைந்த 1D + 2D ஹைட்ராலிக்ஸ்',
       feature1Sub: 'ரேடார் தரவு, 2D தரைமட்ட நீர் மற்றும் 1D நிலத்தடி வடிகால் வலையமைப்பை இணைக்கிறது.',
@@ -1283,8 +1283,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
         a: 'அதிகாரிகள் தங்கள் அதிகாரப்பூர்வ நகர டொமைன் (எ.கா. chennai.aqua.gov.in) மற்றும் கடவுச்சொல்: 12345678 பயன்படுத்தி உள்நுழைகிறார்கள்.'
       },
       {
-        q: 'AquaAlert 0–3 மணி நேரத்திற்கு முன்பே வெள்ளத்தை எவ்வாறு கணிக்கிறது?',
-        a: 'AquaAlert நேரலை ரேடார் தரவு, 2D நிலப்பரப்பு மாதிரி மற்றும் 1D நிலத்தடி வடிகால் வலையமைப்பை இணைத்து துல்லியமாக கணிக்கிறது.'
+        q: 'VRISHTI 0–3 மணி நேரத்திற்கு முன்பே வெள்ளத்தை எவ்வாறு கணிக்கிறது?',
+        a: 'VRISHTI நேரலை ரேடார் தரவு, 2D நிலப்பரப்பு மாதிரி மற்றும் 1D நிலத்தடி வடிகால் வலையமைப்பை இணைத்து துல்லியமாக கணிக்கிறது.'
       },
       {
         q: 'எந்த இந்திய நகரங்கள் தற்சமயம் சேர்க்கப்பட்டுள்ளன?',
@@ -1329,7 +1329,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       hatchback: 'ஹேட்ச்பேக்',
       suv: 'எஸ்.யு.வி 4x4',
       bus: 'பேருந்து / கனரக வாகனம்',
-      realRoadSafeRoute: 'AquaAlert நிஜ சாலை வெள்ளமில்லா பாதுகாப்பான வழி',
+      realRoadSafeRoute: 'VRISHTI நிஜ சாலை வெள்ளமில்லா பாதுகாப்பான வழி',
       noSafeRouteFor: 'பாதுகாப்பான வழி இல்லை:',
       selectHazardZone: 'வெள்ள அபாயப் பகுதியைத் தேர்ந்தெடுக்கவும்:',
       nearestShelter: 'அருகிலுள்ள பாதுகாப்பான நிவாரண முகாம்',
@@ -1480,7 +1480,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       closeBtn: 'திட்டத்தை மூடு',
     },
     citizenApp: {
-      appTitle: 'AquaAlert பொதுமக்கள் போர்ட்டல்',
+      appTitle: 'VRISHTI பொதுமக்கள் போர்ட்டல்',
       appSubtitle: 'தெரு வெள்ள எச்சரிக்கைகள், நேரலை GPS பாதுகாப்பான வழித்தடம் & புகார் பதிவு',
       tabAlerts: 'நேரலை ஆபத்து எச்சரிக்கைகள்',
       tabRoute: 'பாதுகாப்பான வழித்தடம்',
@@ -1527,7 +1527,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
 
   te: {
     nav: {
-      brand: 'AquaAlert',
+      brand: 'VRISHTI',
       subTitle: 'పట్టణ విపత్తు పూర్వానుమాన పోర్టల్',
       backToLanding: 'ముఖ్య పుటకి వెళ్లండి',
       openMeteoApi: 'Open-Meteo API',
@@ -1573,8 +1573,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       capacityAdequate: 'డ్రైనేజీ సామర్థ్యం సరిపోతుంది.',
       faqTitle: 'తరచుగా అడిగే ప్రశ్నలు',
       faqBadge: 'ముఖ్యమైన ప్రశ్నలు',
-      faqMainHeading: 'AquaAlert గురించి మీరు తెలుసుకోవాల్సిన విషయాలు',
-      footerTitle: 'AquaAlert • పట్టణ విపత్తు హైడ్రో-డైనమిక్ అంచనా వ్యవస్థ',
+      faqMainHeading: 'VRISHTI గురించి మీరు తెలుసుకోవాల్సిన విషయాలు',
+      footerTitle: 'VRISHTI • పట్టణ విపత్తు హైడ్రో-డైనమిక్ అంచనా వ్యవస్థ',
       footerSub: 'భూ విజ్ఞాన మంత్రిత్వ శాఖ (MoES) • జాతీయ మధ్యస్థ వాతావరణ సూచన కేంద్రం (NCMRWF)',
       feature1Title: 'సమగ్ర 1D + 2D హైడ్రాలిక్స్',
       feature1Sub: 'రాడార్ వర్షపాతం, 2D ఉపరితల నీరు మరియు 1D భూగర్భ కాలువల నెట్‌వర్క్‌ను అనుసంధానిస్తుంది.',
@@ -1589,8 +1589,8 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
         a: 'అధికారులు తమ అధికారిక సిటీ డొమైన్ (ఉదా: mumbai.aqua.gov.in, delhi.aqua.gov.in, chennai.aqua.gov.in) మరియు పాస్‌కోడ్: 12345678 ఉపయోగించి లాగిన్ అవుతారు.'
       },
       {
-        q: 'AquaAlert 0–3 గంటల ముందే వరదలను ఎలా అంచనా వేస్తుంది?',
-        a: 'AquaAlert లైవ్ డాప్లర్ రాడార్ వర్షపాతం, 2D డిజిటల్ ఎలివేషన్ మోడల్ (DEM) మరియు 1D భూగర్భ డ్రైనేజీ నెట్‌వర్క్‌ను అనుసంధానించి ఖచ్చితంగా అంచనా వేస్తుంది.'
+        q: 'VRISHTI 0–3 గంటల ముందే వరదలను ఎలా అంచనా వేస్తుంది?',
+        a: 'VRISHTI లైవ్ డాప్లర్ రాడార్ వర్షపాతం, 2D డిజిటల్ ఎలివేషన్ మోడల్ (DEM) మరియు 1D భూగర్భ డ్రైనేజీ నెట్‌వర్క్‌ను అనుసంధానించి ఖచ్చితంగా అంచనా వేస్తుంది.'
       },
       {
         q: 'ప్రస్తుతం ఏ భారతీయ నగరాలు అందుబాటులో ఉన్నాయి?',
@@ -1635,7 +1635,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       hatchback: 'హ్యాచ్‌బ్యాక్',
       suv: 'ఎస్.యు.వి 4x4',
       bus: 'బస్సు / బరువైన వాహనం',
-      realRoadSafeRoute: 'AquaAlert నిజమైన రోడ్డు వరద సురక్షిత మార్గం',
+      realRoadSafeRoute: 'VRISHTI నిజమైన రోడ్డు వరద సురక్షిత మార్గం',
       noSafeRouteFor: 'దీనికి సురక్షిత మార్గం లేదు:',
       selectHazardZone: 'వరద ప్రమాద ప్రాంతాన్ని ఎంచుకోండి:',
       nearestShelter: 'సమీప సురక్షిత పునరావాస కేంద్రం',
@@ -1786,7 +1786,7 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       closeBtn: 'ప్రణాళికను మూసివేయి',
     },
     citizenApp: {
-      appTitle: 'AquaAlert పౌరుల పోర్టల్',
+      appTitle: 'VRISHTI పౌరుల పోర్టల్',
       appSubtitle: 'వీధి నీటి ముంపు హెచ్చరికలు, లైవ్ GPS సురక్షిత నావిగేషన్ & నివేదికలు',
       tabAlerts: 'లైవ్ విపత్తు హెచ్చరికలు',
       tabRoute: 'వాహన సురక్షిత మార్గం',

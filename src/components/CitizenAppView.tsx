@@ -39,9 +39,9 @@ const OpenLayersMapCanvas = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full bg-white flex flex-col items-center justify-center space-y-3 rounded-2xl border border-slate-200">
-        <div className="w-9 h-9 border-3 border-teal-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-teal-800 font-mono font-bold">
+      <div className="w-full h-full bg-white flex flex-col items-center justify-center space-y-3 rounded-2xl border border-gray-200">
+        <div className="w-9 h-9 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-blue-800 font-mono font-bold">
           Loading Public Citizen Map Canvas...
         </p>
       </div>
@@ -163,32 +163,32 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 font-sans overflow-x-hidden">
       {/* Citizen App Header Navbar */}
-      <header className="w-full bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3">
+      <header className="w-full bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
           <button
             onClick={onGoToLanding}
-            className="flex items-center justify-center p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200/80 active:scale-95"
+            className="flex items-center justify-center p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all border border-gray-200/80 active:scale-95"
             title={t.nav.backToLanding}
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
 
           <div className="flex items-center space-x-2.5">
-            <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-600 to-teal-800 text-white shadow-md shadow-teal-700/20">
+            <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-md shadow-blue-700/20">
               <Shield className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-base font-black tracking-tight text-slate-900 font-mono">
+                <h1 className="text-base font-black tracking-tight text-gray-900 font-mono">
                   {t.citizenApp.appTitle}
                 </h1>
-                <span className="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-teal-100 text-teal-800 border border-teal-200">
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800 border border-blue-200">
                   {city.name}
                 </span>
               </div>
-              <p className="text-[10.5px] text-slate-500 font-medium truncate max-w-[280px]">
+              <p className="text-[10.5px] text-gray-500 font-medium truncate max-w-[280px]">
                 {t.citizenApp.appSubtitle}
               </p>
             </div>
@@ -209,12 +209,12 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
           </button>
 
           {/* City Selection Dropdown */}
-          <div className="flex items-center bg-slate-100/90 border border-slate-200 px-2.5 py-1.5 rounded-xl text-xs">
-            <MapPin className="w-3.5 h-3.5 text-teal-600 mr-1 shrink-0" />
+          <div className="flex items-center bg-gray-100/90 border border-gray-200 px-2.5 py-1.5 rounded-xl text-xs">
+            <MapPin className="w-3.5 h-3.5 text-blue-600 mr-1 shrink-0" />
             <select
               value={selectedCityId}
               onChange={(e) => onSelectCity(e.target.value as CityId)}
-              className="bg-transparent font-bold text-slate-800 focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent font-bold text-gray-800 focus:outline-none cursor-pointer pr-1"
             >
               <option value="mumbai">Mumbai</option>
               <option value="delhi">Delhi NCR</option>
@@ -223,12 +223,12 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
           </div>
 
           {/* Language Selector Dropdown */}
-          <div className="relative flex items-center bg-slate-100/90 rounded-xl px-2.5 py-1.5 border border-slate-200 shadow-2xs">
-            <Languages className="w-3.5 h-3.5 text-teal-600 mr-1.5 shrink-0" />
+          <div className="relative flex items-center bg-gray-100/90 rounded-xl px-2.5 py-1.5 border border-gray-200 shadow-2xs">
+            <Languages className="w-3.5 h-3.5 text-blue-600 mr-1.5 shrink-0" />
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value as SupportedLanguage)}
-              className="bg-transparent text-xs text-slate-800 focus:outline-none pr-1 cursor-pointer font-bold"
+              className="bg-transparent text-xs text-gray-800 focus:outline-none pr-1 cursor-pointer font-bold"
             >
               {supportedLanguages.map((l) => (
                 <option key={l.code} value={l.code}>
@@ -242,7 +242,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
 
       {/* GPS Status Toast Banner */}
       {gpsStatusText && (
-        <div className="bg-teal-600 text-white text-xs font-bold py-1.5 px-4 text-center shadow-xs flex items-center justify-center space-x-2">
+        <div className="bg-blue-600 text-white text-xs font-bold py-1.5 px-4 text-center shadow-xs flex items-center justify-center space-x-2">
           <Sparkles className="w-3.5 h-3.5 animate-bounce" />
           <span>{gpsStatusText}</span>
         </div>
@@ -256,7 +256,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'routing'
                 ? 'bg-[#1a73e8] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <Navigation className="w-3.5 h-3.5" />
@@ -268,7 +268,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'alerts'
                 ? 'bg-[#1a73e8] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <AlertOctagon className="w-3.5 h-3.5" />
@@ -280,7 +280,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'report'
                 ? 'bg-[#1a73e8] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
@@ -291,8 +291,8 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             onClick={() => setActiveTab('emergency')}
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'emergency'
-                ? 'bg-red-600 text-white shadow-xs'
-                : 'text-red-700 hover:bg-red-50'
+                ? 'bg-orange-600 text-white shadow-xs'
+                : 'text-orange-700 hover:bg-orange-50'
             }`}
           >
             <PhoneCall className="w-3.5 h-3.5" />
@@ -330,20 +330,20 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
 
           {/* TAB 3: CITIZEN GROUND WATERLOGGING REPORT FORM */}
           {activeTab === 'report' && (
-            <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4 text-xs">
-              <div className="flex items-center space-x-2 border-b border-slate-100 pb-3">
-                <div className="p-2 rounded-xl bg-teal-50 text-teal-600 border border-teal-200">
+            <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-gray-200/80 shadow-xs space-y-4 text-xs">
+              <div className="flex items-center space-x-2 border-b border-gray-100 pb-3">
+                <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
                   <Camera className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-sm">{t.reportModal.title}</h3>
-                  <p className="text-slate-500 text-[11px] font-medium">{t.reportModal.subTitle}</p>
+                  <h3 className="font-extrabold text-gray-900 text-sm">{t.reportModal.title}</h3>
+                  <p className="text-gray-500 text-[11px] font-medium">{t.reportModal.subTitle}</p>
                 </div>
               </div>
 
               {reportSuccessToast && (
-                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center space-x-2 font-bold text-xs">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-900 flex items-center space-x-2 font-bold text-xs">
+                  <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
                   <span>{t.reportModal.successToast}</span>
                 </div>
               )}
@@ -351,12 +351,12 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
               <form onSubmit={handleSubmitGroundReport} className="space-y-3.5">
                 {/* Location Input & Live GPS Trigger */}
                 <div className="space-y-1">
-                  <div className="flex justify-between items-center text-slate-700 font-bold">
+                  <div className="flex justify-between items-center text-gray-700 font-bold">
                     <span>{t.reportModal.locationLabel}</span>
                     <button
                       type="button"
                       onClick={handleAcquireGpsLocation}
-                      className="text-[10.5px] text-teal-700 hover:text-teal-800 font-bold flex items-center gap-1"
+                      className="text-[10.5px] text-blue-700 hover:text-blue-800 font-bold flex items-center gap-1"
                     >
                       <Crosshair className="w-3 h-3" />
                       <span>{t.citizenApp.useLiveGps}</span>
@@ -368,15 +368,15 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
                     value={reportLocation}
                     onChange={(e) => setReportLocation(e.target.value)}
                     placeholder="e.g. Hindmata Junction, Dadar / SV Road Subway"
-                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full p-2.5 rounded-xl bg-gray-50 border border-gray-200 font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 {/* Water Depth Slider */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center font-bold">
-                    <span className="text-slate-700">{t.reportModal.depthLabel}</span>
-                    <span className="font-mono text-teal-800 text-sm font-black bg-teal-50 px-2.5 py-0.5 rounded-lg border border-teal-200">
+                    <span className="text-gray-700">{t.reportModal.depthLabel}</span>
+                    <span className="font-mono text-blue-800 text-sm font-black bg-blue-50 px-2.5 py-0.5 rounded-lg border border-blue-200">
                       {reportDepthCm} cm
                     </span>
                   </div>
@@ -387,19 +387,19 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
                     step={5}
                     value={reportDepthCm}
                     onChange={(e) => setReportDepthCm(parseInt(e.target.value, 10))}
-                    className="w-full h-2 bg-slate-200 rounded-lg cursor-pointer"
+                    className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer"
                   />
                 </div>
 
                 {/* Additional Details */}
                 <div className="space-y-1">
-                  <span className="font-bold text-slate-700">{t.reportModal.obsLabel}</span>
+                  <span className="font-bold text-gray-700">{t.reportModal.obsLabel}</span>
                   <textarea
                     rows={2}
                     value={reportNote}
                     onChange={(e) => setReportNote(e.target.value)}
                     placeholder={t.reportModal.obsPlaceholder}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full p-2.5 rounded-xl bg-gray-50 border border-gray-200 font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -419,17 +419,17 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
           {/* TAB 4: INDIAN EMERGENCY TOLL-FREE HELPLINES */}
           {activeTab === 'emergency' && (
             <div className="bg-white p-5 rounded-2xl border border-[#dadce0] shadow-md space-y-4 text-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                 <div className="flex items-center space-x-2.5">
-                  <div className="p-2.5 rounded-2xl bg-red-50 text-red-600 border border-red-200">
+                  <div className="p-2.5 rounded-2xl bg-orange-50 text-orange-600 border border-orange-200">
                     <PhoneCall className="w-5 h-5 animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-slate-900 text-sm">{t.emergencyServices.title}</h3>
-                    <p className="text-slate-500 text-[11px] font-medium">{t.emergencyServices.subTitle}</p>
+                    <h3 className="font-extrabold text-gray-900 text-sm">{t.emergencyServices.title}</h3>
+                    <p className="text-gray-500 text-[11px] font-medium">{t.emergencyServices.subTitle}</p>
                   </div>
                 </div>
-                <span className="text-[10.5px] px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                <span className="text-[10.5px] px-2.5 py-0.5 rounded-full font-bold bg-green-100 text-green-800 border border-green-200">
                   {t.emergencyServices.tollFree}
                 </span>
               </div>
@@ -449,15 +449,15 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
                           <span className={`text-[10px] px-2 py-0.5 rounded-md font-extrabold uppercase border ${srv.badgeColor}`}>
                             {srv.badgeText}
                           </span>
-                          <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1 font-mono">
+                          <span className="text-[10px] text-green-700 font-bold flex items-center gap-1 font-mono">
                             <Clock className="w-3 h-3" />
                             24x7 Active
                           </span>
                         </div>
-                        <h4 className="font-bold text-slate-900 text-xs group-hover:text-[#1a73e8] transition-colors">
+                        <h4 className="font-bold text-gray-900 text-xs group-hover:text-[#1a73e8] transition-colors">
                           {title}
                         </h4>
-                        <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                        <p className="text-[11px] text-gray-500 leading-relaxed font-medium">
                           {desc}
                         </p>
                       </div>
