@@ -283,12 +283,14 @@ export const MUMBAI_REAL_ROADS: ExtendedRoadSegment[] = [
     borough: 'Churchgate / Nariman Point',
     highwayCategory: 'Arterial Expressway',
     coordinates: [
-      [18.9225, 72.8212],
-      [18.9280, 72.8220],
-      [18.9340, 72.8228],
-      [18.9410, 72.8235],
-      [18.9480, 72.8242],
-      [18.9550, 72.8250]
+      [18.9248, 72.8242],
+      [18.9282, 72.8238],
+      [18.9342, 72.8232],
+      [18.9395, 72.8228],
+      [18.9440, 72.8218],
+      [18.9490, 72.8198],
+      [18.9525, 72.8178],
+      [18.9548, 72.8155]
     ],
     demElevationMeters: 3.5,
     drainNodeId: 'node-mh-marine-01',

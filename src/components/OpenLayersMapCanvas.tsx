@@ -28,6 +28,7 @@ import { getHydraulicSnapshotAtTime } from '@/lib/hydraulic-engine';
 import { getEvacuationZonesForCity, SAFE_ASSEMBLY_SHELTERS } from '@/lib/evacuation-service';
 import { EnhancedNavigationRoute, RouteRiskSegment } from '@/lib/routing-engine';
 import { getGroundwaterColor } from '@/lib/groundwater-service';
+import { getCitizenSignals, CitizenSignal, ISSUE_TYPE_CONFIG } from '@/lib/citizen-signals-service';
 import {
   Layers,
   Compass,
@@ -102,18 +103,19 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     setRoutePinModeRef.current = setRoutePinMode;
   }, [setRoutePinMode]);
 
-  // GIS Layer Toggle States - Layers start disabled until requested by user
+  // GIS Layer Toggle States - Core operational layers enabled by default
   const [baseLayerType, setBaseLayerType] = useState<'osm' | 'topo' | 'hot' | 'satellite'>('osm');
   const [showDemLayer, setShowDemLayer] = useState(true);
-  const [showRoadsLayer, setShowRoadsLayer] = useState(false);
-  const [showRouteLayer, setShowRouteLayer] = useState(false);
+  const [showRoadsLayer, setShowRoadsLayer] = useState(true);
+  const [showRouteLayer, setShowRouteLayer] = useState(true);
   const [showDrainageLayer, setShowDrainageLayer] = useState(false);
   const [showManholesLayer, setShowManholesLayer] = useState(true);
   const [showEvacuationLayer, setShowEvacuationLayer] = useState(false);
-  const [showReportsLayer, setShowReportsLayer] = useState(false);
-  const [showHotspotsLayer, setShowHotspotsLayer] = useState(false);
+  const [showReportsLayer, setShowReportsLayer] = useState(true);
+  const [showHotspotsLayer, setShowHotspotsLayer] = useState(true);
   const [showDeluge2005Layer, setShowDeluge2005Layer] = useState(false);
   const [showGroundwaterLayer, setShowGroundwaterLayer] = useState(false);
+  const [showSignalsLayer, setShowSignalsLayer] = useState(true);
 
   // Automatically enable route layer when user calculates a route or deploys evacuation path
   useEffect(() => {
@@ -168,15 +170,16 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     showReportsLayer,
     showHotspotsLayer,
     showDeluge2005Layer,
-    showGroundwaterLayer
+    showGroundwaterLayer,
+    showSignalsLayer
   ].filter(Boolean).length;
 
-  // 100% Free Open-Access Base Tile Layers
-  const osmStandardLayerRef = useRef<TileLayer<OSM>>(
+  // 100% Free Open-Access Base Tile Layers (Zero API Key Required)
+  const osmStandardLayerRef = useRef<TileLayer<XYZ>>(
     new TileLayer({
-      source: new OSM({
-        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        attributions: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      source: new XYZ({
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        attributions: 'Tiles &copy; Esri World Street Map'
       }),
       visible: true
     })
@@ -212,6 +215,29 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     })
   );
 
+  // Transparent Reference Tile Layer for Location Names, Streets & Boundaries (Visible on Satellite & Topo)
+  const labelsReferenceLayerRef = useRef<TileLayer<XYZ>>(
+    new TileLayer({
+      source: new XYZ({
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+        attributions: 'Labels &copy; Esri'
+      }),
+      zIndex: 10,
+      visible: true
+    })
+  );
+
+  const placesReferenceLayerRef = useRef<TileLayer<XYZ>>(
+    new TileLayer({
+      source: new XYZ({
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+        attributions: 'Places &copy; Esri'
+      }),
+      zIndex: 11,
+      visible: true
+    })
+  );
+
   // Vector Sources
   const demVectorSourceRef = useRef(new VectorSource());
   const roadsVectorSourceRef = useRef(new VectorSource());
@@ -224,6 +250,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   const hotspotsVectorSourceRef = useRef(new VectorSource());
   const deluge2005VectorSourceRef = useRef(new VectorSource());
   const groundwaterVectorSourceRef = useRef(new VectorSource());
+  const signalsVectorSourceRef = useRef(new VectorSource());
   const pinsVectorSourceRef = useRef(new VectorSource());
 
   // Cluster Sources for Manholes & Citizen Pins (Zoom-based clustering)
@@ -269,7 +296,38 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
 
     const roadsVectorLayer = new VectorLayer({
       source: roadsVectorSourceRef.current,
-      zIndex: 25
+      zIndex: 25,
+      style: (feature) => {
+        const props = feature.getProperties();
+        const depthCm = props.waterDepthCm || 0;
+        const isGalli = props.isGalli || ['residential', 'service', 'unclassified', 'living_street'].includes(props.highway);
+
+        const zoom = mapRef.current ? mapRef.current.getView().getZoom() || 14 : 14;
+
+        let strokeWidth = isGalli ? 2.5 : 4.2;
+        if (zoom >= 16) strokeWidth = isGalli ? 4.5 : 7.0;
+        else if (zoom >= 14) strokeWidth = isGalli ? 3.2 : 5.0;
+
+        // 4 Distinct Severity Color Tiers
+        let strokeColor = '#059669'; // Safe Emerald (<8cm)
+        if (depthCm >= 40) {
+          strokeColor = '#dc2626'; // Impassable Dark Red (>=40cm)
+        } else if (depthCm >= 20) {
+          strokeColor = '#ea580c'; // Critical Bright Orange (20-40cm)
+        } else if (depthCm >= 8) {
+          strokeColor = '#f59e0b'; // Warning Amber Gold (8-20cm)
+        }
+
+        return new Style({
+          stroke: new Stroke({
+            color: strokeColor,
+            width: strokeWidth,
+            lineDash: isGalli ? [6, 4] : undefined,
+            lineCap: 'round',
+            lineJoin: 'round'
+          })
+        });
+      }
     });
 
     // Manholes Cluster Layer with Dynamic Severity Styling
@@ -470,6 +528,11 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
       zIndex: 33
     });
 
+    const signalsVectorLayer = new VectorLayer({
+      source: signalsVectorSourceRef.current,
+      zIndex: 48
+    });
+
     const pinsVectorLayer = new VectorLayer({
       source: pinsVectorSourceRef.current,
       zIndex: 50
@@ -482,6 +545,8 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         openTopoLayerRef.current,
         osmHotLayerRef.current,
         esriSatLayerRef.current,
+        labelsReferenceLayerRef.current,
+        placesReferenceLayerRef.current,
         demVectorLayer,
         groundwaterVectorLayer,
         drainageVectorLayer,
@@ -490,6 +555,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         manholesVectorLayer,
         hotspotsVectorLayer,
         deluge2005VectorLayer,
+        signalsVectorLayer,
         routeVectorLayer,
         sheltersVectorLayer,
         reportsVectorLayer,
@@ -617,6 +683,24 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         }
 
         const props = feature.getProperties();
+
+        if (props.type === 'citizen_signal') {
+          featureFound = true;
+          const issueInfo = ISSUE_TYPE_CONFIG[props.issueType as keyof typeof ISSUE_TYPE_CONFIG] || { label: props.issueType };
+          setPopupContent({
+            title: props.title,
+            subtitle: `Nearest Drain: ${props.nearestManholeId}`,
+            badge: { text: props.status.toUpperCase(), color: 'bg-orange-100 text-orange-800' },
+            details: [
+              { label: 'Issue Category', value: issueInfo.label, color: 'text-orange-700 font-bold' },
+              { label: 'Description', value: props.description },
+              { label: 'Capacity Drag', value: `${Math.round((props.severityRatio || 0.5) * 100)}% degraded`, color: 'text-orange-600 font-bold' },
+              { label: 'Community Upvotes', value: `${props.upvotes} validations` }
+            ]
+          });
+          overlay.setPosition(evt.coordinate);
+          return;
+        }
 
         if (props.type === 'road') {
           featureFound = true;
@@ -1004,7 +1088,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     });
   }, [selectedCityId, timeOffsetMins, showDrainageLayer]);
 
-  // Update Road Network Flood Overlay
+  // Update Authentic OSM Road Network Flood Overlay
   useEffect(() => {
     const source = roadsVectorSourceRef.current;
     source.clear();
@@ -1012,58 +1096,80 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     if (!showRoadsLayer) return;
 
     const snapshotData = getHydraulicSnapshotAtTime(timeOffsetMins, selectedCityId);
-    const { roads } = getCityDataset(selectedCityId);
 
-    roads.forEach(road => {
-      const roadState = snapshotData.roadStates.find(r => r.roadId === road.id);
-      const depthCm = roadState ? roadState.waterDepthCm : 0;
-      const severity = roadState ? roadState.severity : 'safe';
-      const isGalli = road.highwayCategory === 'Galli / Local Lane' || road.id.startsWith('galli-');
+    fetch(`/data/${selectedCityId}-osm-roads.geojson`)
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (!data || !data.features) return;
 
-      // Consistent 4-Tier Severity Palette
-      let strokeColor = '#059669'; // Safe Emerald (<8cm)
-      let strokeWidth = isGalli ? 4.5 : 6;
+        const format = new GeoJSON();
+        const features = format.readFeatures(data, {
+          dataProjection: 'EPSG:4326',
+          featureProjection: mapRef.current?.getView().getProjection() || 'EPSG:3857'
+        });
 
-      if (depthCm >= 40) {
-        strokeColor = '#dc2626'; // Severe Red (>=40cm)
-        strokeWidth = isGalli ? 6.5 : 8;
-      } else if (depthCm >= 20) {
-        strokeColor = '#ea580c'; // Critical Orange (20-40cm)
-        strokeWidth = isGalli ? 5.5 : 7;
-      } else if (depthCm >= 8) {
-        strokeColor = '#d97706'; // Warning Amber (8-20cm)
-        strokeWidth = isGalli ? 5 : 6.5;
-      }
+        features.forEach(f => {
+          const props = f.getProperties();
+          const roadName = props.name || 'Local Corridor';
+          const isGalli = props.isGalli || ['residential', 'service', 'unclassified', 'living_street'].includes(props.highway);
 
-      const coordinates = road.coordinates.map(coord => fromLonLat([coord[1], coord[0]]));
-      const roadFeature = new Feature({
-        geometry: new LineString(coordinates),
-        type: 'road',
-        id: road.id,
-        name: road.name,
-        borough: road.borough,
-        highwayCategory: road.highwayCategory,
-        isGalli,
-        demElevationMeters: road.demElevationMeters,
-        waterDepthCm: depthCm,
-        severity,
-        drainNodeId: road.drainNodeId
-      });
+          // Sample flood depth from simulation matching road name or near hydraulic manholes
+          let waterDepthCm = 0;
+          const { roads: cityRoads } = getCityDataset(selectedCityId);
+          const matchedState = snapshotData.roadStates.find(r => r.roadId === String(props.osmid));
 
-      roadFeature.setStyle(
-        new Style({
-          stroke: new Stroke({
-            color: strokeColor,
-            width: strokeWidth,
-            lineDash: isGalli ? [8, 4] : undefined,
-            lineCap: 'round',
-            lineJoin: 'round'
-          })
-        })
-      );
+          if (matchedState) {
+            waterDepthCm = matchedState.waterDepthCm;
+          } else {
+            const matchedRoad = cityRoads.find(r =>
+              r.id === String(props.osmid) ||
+              r.name.toLowerCase().includes(roadName.toLowerCase()) ||
+              (roadName.length > 4 && roadName.toLowerCase().includes(r.name.toLowerCase()))
+            );
+            if (matchedRoad) {
+              const state = snapshotData.roadStates.find(r => r.roadId === matchedRoad.id);
+              if (state) waterDepthCm = state.waterDepthCm;
+            }
+          }
 
-      source.addFeature(roadFeature);
-    });
+          if (waterDepthCm === 0) {
+            // Check proximity to overflowing physics manholes
+            const extent = f.getGeometry()?.getExtent();
+            if (extent) {
+              const center = [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
+              const lonLat = toLonLat(center);
+              for (const mh of snapshotData.physicsManholes || []) {
+                if (mh.surfaceOverflowDepthCm > 0) {
+                  const d = Math.abs(mh.lat - lonLat[1]) + Math.abs(mh.lng - lonLat[0]);
+                  if (d < 0.005) { // ~500m radius
+                    waterDepthCm = Math.max(waterDepthCm, Math.round(mh.surfaceOverflowDepthCm * 0.7));
+                  }
+                }
+              }
+            }
+          }
+
+          let severity: 'safe' | 'warning' | 'critical' | 'severe' = 'safe';
+          if (waterDepthCm >= 40) severity = 'severe';
+          else if (waterDepthCm >= 20) severity = 'critical';
+          else if (waterDepthCm >= 8) severity = 'warning';
+
+          f.setProperties({
+            type: 'road',
+            id: String(props.osmid || Math.random()),
+            name: roadName,
+            borough: 'Municipal District',
+            highwayCategory: props.highwayCategory || (isGalli ? 'Galli / Local Lane' : 'Municipal Thoroughfare'),
+            isGalli,
+            waterDepthCm,
+            severity,
+            demElevationMeters: 2.5
+          });
+        });
+
+        source.addFeatures(features);
+      })
+      .catch(() => {});
   }, [selectedCityId, timeOffsetMins, showRoadsLayer]);
 
   // Update Physics-Derived Manholes Vector Layer
@@ -1578,6 +1684,62 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     });
   }, [citizenReports, showReportsLayer]);
 
+  // Update Citizen Signals & Traffic Desk Vector Layer Features
+  useEffect(() => {
+    const source = signalsVectorSourceRef.current;
+    source.clear();
+
+    if (!showSignalsLayer) return;
+
+    const signals = getCitizenSignals(selectedCityId);
+
+    signals.forEach(sig => {
+      const feature = new Feature({
+        geometry: new Point(fromLonLat([sig.longitude, sig.latitude])),
+        type: 'citizen_signal',
+        id: sig.id,
+        title: sig.title,
+        description: sig.description,
+        issueType: sig.issueType,
+        status: sig.status,
+        upvotes: sig.upvotes,
+        nearestManholeId: sig.nearestManholeId,
+        severityRatio: sig.severityRatio
+      });
+
+      let pinColor = '#ea580c';
+      if (sig.issueType === 'blocked_inlet') pinColor = '#dc2626';
+      else if (sig.issueType === 'drain_overflow') pinColor = '#991b1b';
+      else if (sig.issueType === 'sewer_backflow') pinColor = '#7e22ce';
+
+      feature.setStyle([
+        new Style({
+          image: new CircleStyle({
+            radius: 12,
+            fill: new Fill({ color: 'rgba(239, 68, 68, 0.2)' }),
+            stroke: new Stroke({ color: pinColor, width: 1.5, lineDash: [3, 3] })
+          })
+        }),
+        new Style({
+          image: new CircleStyle({
+            radius: 7,
+            fill: new Fill({ color: pinColor }),
+            stroke: new Stroke({ color: '#ffffff', width: 2 })
+          }),
+          text: new Text({
+            text: sig.title.split(' ')[0],
+            font: 'bold 9.5px sans-serif',
+            fill: new Fill({ color: '#7f1d1d' }),
+            stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
+            offsetY: -14
+          })
+        })
+      ]);
+
+      source.addFeature(feature);
+    });
+  }, [selectedCityId, showSignalsLayer]);
+
   // Render Interactive Pinned Markers (Start Origin A & Destination Refuge B)
   useEffect(() => {
     const source = pinsVectorSourceRef.current;
@@ -1851,7 +2013,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
           <Layers className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
           <span className="hidden sm:inline">Layers & Legend</span>
           <span className="px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-mono text-[10px] font-bold">
-            {activeLayersCount}/7
+            {activeLayersCount}/11
           </span>
           <ChevronLeft className="w-3.5 h-3.5 text-gray-400" />
         </button>
@@ -1868,7 +2030,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-[10px] font-mono px-2 py-0.5 bg-blue-50 text-blue-700 font-bold rounded-full border border-blue-200">
-                {activeLayersCount}/7 Active
+                {activeLayersCount}/11 Active
               </span>
               <button
                 onClick={() => setIsDrawerOpen(false)}
@@ -2120,20 +2282,20 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                   <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-2 text-[10.5px]">
                     <div className="grid grid-cols-2 gap-1.5">
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-green-600 shrink-0" />
+                        <span className="w-3 h-1.5 rounded-full bg-emerald-600 shrink-0" />
                         <span className="text-gray-600">&lt;8cm Safe</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                        <span className="text-gray-600">8-20cm Warning</span>
-                      </div>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="w-3 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                        <span className="text-gray-600">20-40cm Critical</span>
+                        <span className="w-3 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                        <span className="text-amber-700 font-medium">8-20cm Warning</span>
                       </div>
                       <div className="flex items-center space-x-1.5">
                         <span className="w-3 h-1.5 rounded-full bg-orange-600 shrink-0" />
-                        <span className="text-orange-600 font-bold">&gt;40cm Impassable</span>
+                        <span className="text-orange-700 font-semibold">20-40cm Critical</span>
+                      </div>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-3 h-1.5 rounded-full bg-red-600 shrink-0" />
+                        <span className="text-red-700 font-bold">&gt;40cm Impassable</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-gray-500 pt-1 border-t border-gray-200/60 font-mono">
@@ -2437,6 +2599,57 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                     <div className="flex items-center space-x-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-orange-500 border border-white shrink-0" />
                       <span className="text-gray-700">Crowdsourced waterlogged depth pin</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 7. Citizen Signals & Traffic Desk Layer */}
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
+                  <div className="flex items-center space-x-2">
+                    <Activity className="w-4 h-4 text-red-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Citizen Signals & Traffic</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={showSignalsLayer}
+                      onChange={(e) => setShowSignalsLayer(e.target.checked)}
+                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
+                    />
+                    <button
+                      onClick={() => toggleAccordion('signals')}
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
+                    >
+                      {expandedAccordion === 'signals' ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {expandedAccordion === 'signals' && (
+                  <div className="px-3 pb-3 pt-1 border-t border-gray-100 bg-gray-50/50 space-y-1.5 text-[10.5px]">
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-600 shrink-0" />
+                        <span className="text-gray-700">Choked Catchpit</span>
+                      </div>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-purple-700 shrink-0" />
+                        <span className="text-gray-700">Sewer Backflow</span>
+                      </div>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-orange-600 shrink-0" />
+                        <span className="text-gray-700">Waterlogging</span>
+                      </div>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-800 shrink-0" />
+                        <span className="text-gray-700">Overbank Spill</span>
+                      </div>
                     </div>
                   </div>
                 )}

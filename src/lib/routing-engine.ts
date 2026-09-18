@@ -226,9 +226,9 @@ function buildCityRoadGraph(
   const adjacency = new Map<string, GraphEdge[]>();
 
   function getOrCreateNode(lat: number, lng: number): string {
-    // Snap close vertices within 350m into shared intersection junctions
+    // Snap close vertices within 60m into shared intersection junctions
     for (const [existingId, n] of Array.from(nodes.entries())) {
-      if (getDistanceMeters(lat, lng, n.lat, n.lng) < 350) {
+      if (getDistanceMeters(lat, lng, n.lat, n.lng) < 60) {
         return existingId;
       }
     }
@@ -283,14 +283,14 @@ function buildCityRoadGraph(
     }
   });
 
-  // Interconnect terminal nodes of nearby roads (<800m) to form a fully connected road network
+  // Interconnect terminal nodes of nearby roads (<120m) to form immediate street junctions only
   const nodeArray = Array.from(nodes.values());
   for (let i = 0; i < nodeArray.length; i++) {
     for (let j = i + 1; j < nodeArray.length; j++) {
       const u = nodeArray[i];
       const v = nodeArray[j];
       const dist = getDistanceMeters(u.lat, u.lng, v.lat, v.lng);
-      if (dist > 0 && dist < 800) {
+      if (dist > 0 && dist < 120) {
         const edgeForward: GraphEdge = {
           from: u.id,
           to: v.id,
