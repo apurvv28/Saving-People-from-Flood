@@ -27,12 +27,14 @@ import {
   executeManualGateOverride,
   triggerAutomatedDiversionMatrix
 } from '@/lib/hydro-routing-service';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface HydroRoutingPanelProps {
   selectedCityId: string;
 }
 
 export const HydroRoutingPanel: React.FC<HydroRoutingPanelProps> = ({ selectedCityId }) => {
+  const { t } = useLanguage();
   const [sinks, setSinks] = useState<RoutingSink[]>(() => getRoutingSinks(selectedCityId));
   const [auditChain, setAuditChain] = useState<ScadaAuditLogEntry[]>(() => getScadaAuditChain(selectedCityId));
   const [chainStatus, setChainStatus] = useState(() => verifyAuditChain(selectedCityId));
@@ -77,7 +79,7 @@ export const HydroRoutingPanel: React.FC<HydroRoutingPanelProps> = ({ selectedCi
   const totalIntakeLps = sinks.reduce((sum, s) => sum + s.current_intake_lps, 0);
   const activeGatesCount = sinks.filter((s) => s.gate_open_pct > 0).length;
 
-  const filteorangeSinks = filterType === 'ALL'
+  const filteredSinks = filterType === 'ALL'
     ? sinks
     : sinks.filter((s) => s.sink_type === filterType);
 
@@ -226,7 +228,7 @@ export const HydroRoutingPanel: React.FC<HydroRoutingPanelProps> = ({ selectedCi
               onChange={(e) => setFilterType(e.target.value)}
               className="bg-transparent text-base font-bold text-gray-900 dark:text-gray-100 focus:outline-none cursor-pointer pr-1"
             >
-              <option value="ALL" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">All Registeorange Sinks</option>
+              <option value="ALL" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">All Registered Sinks</option>
               <option value="STP_EQUALIZATION_TANK" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">STPs / WWTPs</option>
               <option value="GROUNDWATER_MAR_WELL" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">MAR Injection Boreholes</option>
               <option value="URBAN_LAKE" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">Urban Retention Lakes</option>
@@ -236,7 +238,7 @@ export const HydroRoutingPanel: React.FC<HydroRoutingPanelProps> = ({ selectedCi
 
         {/* Sinks Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteorangeSinks.map((sink) => {
+          {filteredSinks.map((sink) => {
             const usedM3 = sink.max_capacity_m3 - sink.current_available_m3;
             const fillPct = Math.round((usedM3 / sink.max_capacity_m3) * 100);
 

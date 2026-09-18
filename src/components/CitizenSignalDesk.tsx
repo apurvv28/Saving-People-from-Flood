@@ -29,12 +29,14 @@ import {
   calculateNearestManhole,
   getActiveBlockagePenalty
 } from '@/lib/citizen-signals-service';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface CitizenSignalDeskProps {
   selectedCityId: string;
 }
 
 export const CitizenSignalDesk: React.FC<CitizenSignalDeskProps> = ({ selectedCityId }) => {
+  const { t } = useLanguage();
   const [signals, setSignals] = useState<CitizenSignal[]>(() => getCitizenSignals(selectedCityId));
   const [selectedIssue, setSelectedIssue] = useState<SignalIssueType>('blocked_inlet');
   const [severityPct, setSeverityPct] = useState(75);
@@ -109,7 +111,7 @@ export const CitizenSignalDesk: React.FC<CitizenSignalDeskProps> = ({ selectedCi
     setSignals(getCitizenSignals(selectedCityId));
   };
 
-  const filteorangeSignals = filterStatus === 'ALL'
+  const filteredSignals = filterStatus === 'ALL'
     ? signals
     : signals.filter((s) => s.status === filterStatus);
 
@@ -371,7 +373,7 @@ export const CitizenSignalDesk: React.FC<CitizenSignalDeskProps> = ({ selectedCi
 
             {/* Cards Feed */}
             <div className="space-y-4 max-h-[640px] overflow-y-auto pr-1">
-              {filteorangeSignals.map((sig) => {
+              {filteredSignals.map((sig) => {
                 const cfg = ISSUE_TYPE_CONFIG[sig.issueType];
                 return (
                   <div

@@ -163,13 +163,13 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 font-sans overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans overflow-x-hidden transition-colors">
       {/* Citizen App Header Navbar */}
-      <header className="w-full bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3">
+      <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-3 sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center space-x-3">
           <button
             onClick={onGoToLanding}
-            className="flex items-center justify-center p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all border border-gray-200/80 active:scale-95"
+            className="flex items-center justify-center p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all border border-gray-200/80 dark:border-gray-700 active:scale-95"
             title={t.nav.backToLanding}
           >
             <ArrowLeft className="w-4 h-4" />
@@ -181,14 +181,14 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-base font-black tracking-tight text-gray-900 font-mono">
+                <h1 className="text-base font-black tracking-tight text-gray-900 dark:text-white font-mono">
                   {t.citizenApp.appTitle}
                 </h1>
-                <span className="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                   {city.name}
                 </span>
               </div>
-              <p className="text-[10.5px] text-gray-500 font-medium truncate max-w-[280px]">
+              <p className="text-[10.5px] text-gray-500 dark:text-gray-400 font-medium truncate max-w-[280px]">
                 {t.citizenApp.appSubtitle}
               </p>
             </div>
@@ -202,36 +202,36 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
           <button
             onClick={handleAcquireGpsLocation}
             disabled={isLocating}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#1a73e8]/10 hover:bg-[#1a73e8]/20 text-[#1a73e8] border border-[#1a73e8]/30 font-bold text-xs shadow-2xs transition-all active:scale-95"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30 font-bold text-xs shadow-2xs transition-all active:scale-95"
           >
-            <Crosshair className={`w-3.5 h-3.5 text-[#1a73e8] ${isLocating ? 'animate-spin' : ''}`} />
-            <span>{isLocating ? 'Locating...' : t.citizenApp.useLiveGps}</span>
+            <Crosshair className={`w-3.5 h-3.5 text-blue-600 dark:text-blue-400 ${isLocating ? 'animate-spin' : ''}`} />
+            <span>{isLocating ? (t.citizenApp.acquiringGps || 'Locating...') : t.citizenApp.useLiveGps}</span>
           </button>
 
           {/* City Selection Dropdown */}
-          <div className="flex items-center bg-gray-100/90 border border-gray-200 px-2.5 py-1.5 rounded-xl text-xs">
-            <MapPin className="w-3.5 h-3.5 text-blue-600 mr-1 shrink-0" />
+          <div className="flex items-center bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-2.5 py-1.5 rounded-xl text-xs">
+            <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 mr-1 shrink-0" />
             <select
               value={selectedCityId}
               onChange={(e) => onSelectCity(e.target.value as CityId)}
-              className="bg-transparent font-bold text-gray-800 focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent font-bold text-gray-800 dark:text-gray-200 focus:outline-none cursor-pointer pr-1"
             >
-              <option value="mumbai">Mumbai</option>
-              <option value="delhi">Delhi NCR</option>
-              <option value="chennai">Chennai</option>
+              <option value="mumbai" className="dark:bg-gray-900 dark:text-gray-100">Mumbai</option>
+              <option value="delhi" className="dark:bg-gray-900 dark:text-gray-100">Delhi NCR</option>
+              <option value="chennai" className="dark:bg-gray-900 dark:text-gray-100">Chennai</option>
             </select>
           </div>
 
           {/* Language Selector Dropdown */}
-          <div className="relative flex items-center bg-gray-100/90 rounded-xl px-2.5 py-1.5 border border-gray-200 shadow-2xs">
-            <Languages className="w-3.5 h-3.5 text-blue-600 mr-1.5 shrink-0" />
+          <div className="relative flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl px-2.5 py-1.5 border border-gray-200 dark:border-gray-700 shadow-2xs">
+            <Languages className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 mr-1.5 shrink-0" />
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value as SupportedLanguage)}
-              className="bg-transparent text-xs text-gray-800 focus:outline-none pr-1 cursor-pointer font-bold"
+              className="bg-transparent text-xs text-gray-800 dark:text-gray-200 focus:outline-none pr-1 cursor-pointer font-bold"
             >
               {supportedLanguages.map((l) => (
-                <option key={l.code} value={l.code}>
+                <option key={l.code} value={l.code} className="dark:bg-gray-900 dark:text-gray-100">
                   {l.nativeName}
                 </option>
               ))}
@@ -248,15 +248,15 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
         </div>
       )}
 
-      {/* Citizen App 4-Tab Pill Selector (Google Maps Floating Navigation) */}
+      {/* Citizen App 4-Tab Pill Selector (Floating Navigation Bar) */}
       <div className="px-4 pt-3 max-w-5xl mx-auto w-full">
-        <div className="bg-white p-1.5 rounded-2xl flex space-x-1 border border-[#dadce0] shadow-md">
+        <div className="bg-white dark:bg-gray-900 p-1.5 rounded-2xl flex space-x-1 border border-gray-200 dark:border-gray-800 shadow-md">
           <button
             onClick={() => setActiveTab('routing')}
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'routing'
                 ? 'bg-[#1a73e8] text-white shadow-xs'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
             }`}
           >
             <Navigation className="w-3.5 h-3.5" />
@@ -268,7 +268,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'alerts'
                 ? 'bg-[#1a73e8] text-white shadow-xs'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
             }`}
           >
             <AlertOctagon className="w-3.5 h-3.5" />
@@ -280,7 +280,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'report'
                 ? 'bg-[#1a73e8] text-white shadow-xs'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
@@ -292,7 +292,7 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
             className={`flex-1 py-2 px-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'emergency'
                 ? 'bg-orange-600 text-white shadow-xs'
-                : 'text-orange-700 hover:bg-orange-50'
+                : 'text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30'
             }`}
           >
             <PhoneCall className="w-3.5 h-3.5" />
@@ -330,20 +330,20 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
 
           {/* TAB 3: CITIZEN GROUND WATERLOGGING REPORT FORM */}
           {activeTab === 'report' && (
-            <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-gray-200/80 shadow-xs space-y-4 text-xs">
-              <div className="flex items-center space-x-2 border-b border-gray-100 pb-3">
-                <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
+            <div className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xs space-y-4 text-xs">
+              <div className="flex items-center space-x-2 border-b border-gray-100 dark:border-gray-800 pb-3">
+                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                   <Camera className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-gray-900 text-sm">{t.reportModal.title}</h3>
-                  <p className="text-gray-500 text-[11px] font-medium">{t.reportModal.subTitle}</p>
+                  <h3 className="font-extrabold text-gray-900 dark:text-white text-sm">{t.reportModal.title}</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-[11px] font-medium">{t.reportModal.subTitle}</p>
                 </div>
               </div>
 
               {reportSuccessToast && (
-                <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-900 flex items-center space-x-2 font-bold text-xs">
-                  <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                <div className="p-3 rounded-xl bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-800 text-green-900 dark:text-green-300 flex items-center space-x-2 font-bold text-xs">
+                  <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
                   <span>{t.reportModal.successToast}</span>
                 </div>
               )}
@@ -351,12 +351,12 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
               <form onSubmit={handleSubmitGroundReport} className="space-y-3.5">
                 {/* Location Input & Live GPS Trigger */}
                 <div className="space-y-1">
-                  <div className="flex justify-between items-center text-gray-700 font-bold">
+                  <div className="flex justify-between items-center text-gray-700 dark:text-gray-300 font-bold">
                     <span>{t.reportModal.locationLabel}</span>
                     <button
                       type="button"
                       onClick={handleAcquireGpsLocation}
-                      className="text-[10.5px] text-blue-700 hover:text-blue-800 font-bold flex items-center gap-1"
+                      className="text-[10.5px] text-blue-600 dark:text-blue-400 hover:underline font-bold flex items-center gap-1"
                     >
                       <Crosshair className="w-3 h-3" />
                       <span>{t.citizenApp.useLiveGps}</span>
@@ -368,15 +368,15 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
                     value={reportLocation}
                     onChange={(e) => setReportLocation(e.target.value)}
                     placeholder="e.g. Hindmata Junction, Dadar / SV Road Subway"
-                    className="w-full p-2.5 rounded-xl bg-gray-50 border border-gray-200 font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-medium text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 {/* Water Depth Slider */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center font-bold">
-                    <span className="text-gray-700">{t.reportModal.depthLabel}</span>
-                    <span className="font-mono text-blue-800 text-sm font-black bg-blue-50 px-2.5 py-0.5 rounded-lg border border-blue-200">
+                    <span className="text-gray-700 dark:text-gray-300">{t.reportModal.depthLabel}</span>
+                    <span className="font-mono text-blue-800 dark:text-blue-300 text-sm font-black bg-blue-50 dark:bg-blue-900/40 px-2.5 py-0.5 rounded-lg border border-blue-200 dark:border-blue-800">
                       {reportDepthCm} cm
                     </span>
                   </div>
@@ -387,19 +387,19 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
                     step={5}
                     value={reportDepthCm}
                     onChange={(e) => setReportDepthCm(parseInt(e.target.value, 10))}
-                    className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer"
+                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer"
                   />
                 </div>
 
                 {/* Additional Details */}
                 <div className="space-y-1">
-                  <span className="font-bold text-gray-700">{t.reportModal.obsLabel}</span>
+                  <span className="font-bold text-gray-700 dark:text-gray-300">{t.reportModal.obsLabel}</span>
                   <textarea
                     rows={2}
                     value={reportNote}
                     onChange={(e) => setReportNote(e.target.value)}
                     placeholder={t.reportModal.obsPlaceholder}
-                    className="w-full p-2.5 rounded-xl bg-gray-50 border border-gray-200 font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-medium text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -418,18 +418,18 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
 
           {/* TAB 4: INDIAN EMERGENCY TOLL-FREE HELPLINES */}
           {activeTab === 'emergency' && (
-            <div className="bg-white p-5 rounded-2xl border border-[#dadce0] shadow-md space-y-4 text-xs">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <div className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-md space-y-4 text-xs">
+              <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3">
                 <div className="flex items-center space-x-2.5">
-                  <div className="p-2.5 rounded-2xl bg-orange-50 text-orange-600 border border-orange-200">
+                  <div className="p-2.5 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800">
                     <PhoneCall className="w-5 h-5 animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-gray-900 text-sm">{t.emergencyServices.title}</h3>
-                    <p className="text-gray-500 text-[11px] font-medium">{t.emergencyServices.subTitle}</p>
+                    <h3 className="font-extrabold text-gray-900 dark:text-white text-sm">{t.emergencyServices.title}</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-[11px] font-medium">{t.emergencyServices.subTitle}</p>
                   </div>
                 </div>
-                <span className="text-[10.5px] px-2.5 py-0.5 rounded-full font-bold bg-green-100 text-green-800 border border-green-200">
+                <span className="text-[10.5px] px-2.5 py-0.5 rounded-full font-bold bg-green-100 dark:bg-green-950/50 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800">
                   {t.emergencyServices.tollFree}
                 </span>
               </div>
@@ -442,22 +442,22 @@ export const CitizenAppView: React.FC<CitizenAppViewProps> = ({
                   return (
                     <div
                       key={srv.id}
-                      className="p-3.5 rounded-2xl border border-[#dadce0] bg-[#f8f9fa] hover:border-[#1a73e8] hover:bg-white transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs group"
+                      className="p-3.5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/60 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-white dark:hover:bg-gray-800 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs group"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center space-x-2">
                           <span className={`text-[10px] px-2 py-0.5 rounded-md font-extrabold uppercase border ${srv.badgeColor}`}>
                             {srv.badgeText}
                           </span>
-                          <span className="text-[10px] text-green-700 font-bold flex items-center gap-1 font-mono">
+                          <span className="text-[10px] text-green-700 dark:text-green-400 font-bold flex items-center gap-1 font-mono">
                             <Clock className="w-3 h-3" />
-                            24x7 Active
+                            {t.emergencyServices.active24x7 || '24x7 Active'}
                           </span>
                         </div>
-                        <h4 className="font-bold text-gray-900 text-xs group-hover:text-[#1a73e8] transition-colors">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-xs group-hover:text-[#1a73e8] dark:group-hover:text-blue-400 transition-colors">
                           {title}
                         </h4>
-                        <p className="text-[11px] text-gray-500 leading-relaxed font-medium">
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
                           {desc}
                         </p>
                       </div>

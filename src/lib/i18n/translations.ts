@@ -266,12 +266,15 @@ export interface TranslationSchema {
     locateMe: string;
     launchCitizenApp: string;
     tabEmergency: string;
+    loadingMap: string;
+    acquiringGps: string;
   };
   emergencyServices: {
     title: string;
     subTitle: string;
     callNow: string;
     tollFree: string;
+    active24x7: string;
     ndrfTitle: string;
     ndrfDesc: string;
     national112Title: string;
@@ -297,6 +300,45 @@ export interface TranslationSchema {
     proceedStraight: string;
     hazardWarning: string;
     destinationArrived: string;
+  };
+  admin: {
+    portalBadge: string;
+    portalTitle: string;
+    portalSub: string;
+    syncQueue: string;
+    pendingReview: string;
+    awaitingTriage: string;
+    validatedHotspots: string;
+    clogsResolved: string;
+    hydraulicMultiplier: string;
+    triageStream: string;
+    tabPending: string;
+    tabValidated: string;
+    tabResolved: string;
+    tabAll: string;
+    verifyRestrict: string;
+    dispatchResolve: string;
+    clogCleared: string;
+    noReports: string;
+  };
+  waterbodies: {
+    atlasBadge: string;
+    outfallSyncBadge: string;
+    atlasTitle: string;
+    atlasSub: string;
+    highTidePeak: string;
+    flapLockoutNote: string;
+    reservoirsTitle: string;
+    totalBufferHeadroom: string;
+    fullTankLevel: string;
+    storageLabel: string;
+    cushionLabel: string;
+    encroachmentLabel: string;
+    priorityLabel: string;
+    coastalOutfallsTitle: string;
+    coastalOutfallsSub: string;
+    dischargeRate: string;
+    seaInvertHead: string;
   };
 }
 
@@ -573,12 +615,15 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       locateMe: 'Locate Me',
       launchCitizenApp: 'Open Citizen Mobile App',
       tabEmergency: 'Emergency Contacts',
+      loadingMap: 'Loading Public Citizen Map Canvas...',
+      acquiringGps: 'Acquiring GPS Signal...',
     },
     emergencyServices: {
       title: 'Indian Emergency Helplines',
       subTitle: '1-Tap Toll-Free Direct Lines for Disaster Response & Medical Triage',
       callNow: 'Call',
       tollFree: '24x7 Toll-Free',
+      active24x7: '24x7 Active',
       ndrfTitle: 'NDRF Disaster Response Control Room',
       ndrfDesc: 'National Disaster Response Force (NDRF) flood rescue, boat evacuation, and heavy cloudburst operations.',
       national112Title: 'All-India Unified Emergency Line',
@@ -604,6 +649,45 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       proceedStraight: 'proceed straight along',
       hazardWarning: 'Warning! Submerged underpass ahead. Detour recommended.',
       destinationArrived: 'You have arrived at your safe high-elevation destination shelter.',
+    },
+    admin: {
+      portalBadge: 'Municipal Command & Moderation Portal',
+      portalTitle: 'Stormwater Drain Moderation & Crew Dispatch Desk',
+      portalSub: 'Verify citizen-reported clogs and sewer backflows. Approving a report automatically applies a dynamic head-loss penalty to the corresponding node.',
+      syncQueue: 'Sync Queue',
+      pendingReview: 'Pending Operator Review',
+      awaitingTriage: 'Awaiting triage',
+      validatedHotspots: 'Validated Bottlenecks',
+      clogsResolved: 'Clogs Cleared & Resolved',
+      hydraulicMultiplier: 'Hydraulic Mesh Multiplier',
+      triageStream: 'Triage & Dispatch Stream',
+      tabPending: 'Pending',
+      tabValidated: 'Validated',
+      tabResolved: 'Resolved',
+      tabAll: 'All Reports',
+      verifyRestrict: 'Verify & Restrict',
+      dispatchResolve: 'Dispatch Crew & Resolve',
+      clogCleared: 'Clog Cleared',
+      noReports: 'No reports in this category. System operations operating nominally.',
+    },
+    waterbodies: {
+      atlasBadge: 'Catchments & Water Bodies Atlas',
+      outfallSyncBadge: 'Coastal Outfall Flap Gate Sync',
+      atlasTitle: 'Urban Lake Retention & Coastal Tidal Gating',
+      atlasSub: 'Real-time Full Tank Level (FTL) headroom across urban retention water bodies, encroachment indices, and automated coastal storm flap gates.',
+      highTidePeak: 'High Tide Peak (Mumbai Port)',
+      flapLockoutNote: 'Flap Gate Lockout: Prevents marine surge backflow',
+      reservoirsTitle: 'Urban Retention Reservoirs & Lake Capacities',
+      totalBufferHeadroom: 'Total Flood Buffer Headroom:',
+      fullTankLevel: 'Full Tank Level (FTL)',
+      storageLabel: 'Storage',
+      cushionLabel: 'Cushion',
+      encroachmentLabel: 'Encroachment:',
+      priorityLabel: 'Priority:',
+      coastalOutfallsTitle: 'Coastal Stormwater Outfalls & Marine Backflow Lockout',
+      coastalOutfallsSub: 'Tidal flap gates automatically close during high tide to prevent seawater backflow into low-lying urban areas.',
+      dischargeRate: 'Discharge Rate',
+      seaInvertHead: 'Sea Invert Head',
     },
   },
 
@@ -723,6 +807,18 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       nearestShelter: 'निकटतम सुरक्षित राहत शिविर',
       rescueVehicleRoute: 'बचाव वाहन मार्ग',
     },
+    slider: {
+      title: '0-3 घंटे का जलभराव पूर्वाभास इंजन',
+      subTitle: 'अनुमानित जल स्तर की प्रगति देखने के लिए समय स्लाइडर चलाएं',
+      play: 'पूर्वाभास चलाएं',
+      pause: 'सिमुलेशन रोकें',
+      reset: 'वर्तमान समय पर रीसेट करें',
+      nowLive: 'अभी (लाइव)',
+      plusMin: 'मिनट',
+      plusHour: 'घंटा',
+      rainRateLabel: 'वर्षा की तीव्रता:',
+      forecastDepthLabel: 'अधिकतम जलभराव:',
+    },
     alerts: {
       title: 'लाइव आपदा अलर्ट',
       subTitle: 'वास्तविक समय में जलभराव और ड्रेनेज ओवरफ़्लो अलर्ट',
@@ -747,23 +843,11 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       hydraulicBackflow: 'हाइड्रोलिक बैकफ़्लो',
       noAlerts: 'इस समय अंतराल के लिए कोई गंभीर जलभराव अनुमानित नहीं है।',
     },
-    slider: {
-      title: '0–3 घंटे का जलभराव पूर्वाभास टाइमलाइन',
-      subTitle: 'जलभराव का पूर्वावलोकन करने के लिए टाइमलाइन स्लाइड करें',
-      play: 'सिम्युलेशन चलाएं',
-      pause: 'रोकें',
-      reset: 'वर्तमान समय',
-      nowLive: 'अभी (लाइव)',
-      plusMin: 'मिनट',
-      plusHour: 'घंटा',
-      rainRateLabel: 'वर्षा की तीव्रता:',
-      forecastDepthLabel: 'अधिकतम जलभराव:',
-    },
     reportModal: {
-      title: 'जलभराव की रिपोर्ट दर्ज करें',
-      subTitle: 'नगर निगम को वास्तविक समय की जानकारी प्रदान करने में सहायता करें',
-      locationLabel: 'स्थान / प्रमुख स्थल',
-      depthLabel: 'अनुमानित पानी की गहराई (सेमी)',
+      title: 'जल स्तर और बाढ़ की रिपोर्ट करें',
+      subTitle: 'नगर निगम कंट्रोल रूम को वास्तविक समय में सड़क जलभराव को सत्यापित करने में मदद करें',
+      locationLabel: 'स्थान / लैंडमार्क',
+      depthLabel: 'देखा गया जल स्तर (सेमी)',
       photoLabel: 'तस्वीर अपलोड करें (वैकल्पिक)',
       photoNote: 'जलभराव की तस्वीर क्लिक करें या ड्रैग करें',
       obsLabel: 'अतिरिक्त विवरण',
@@ -879,12 +963,15 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       locateMe: 'मेरी स्थिति खोजें',
       launchCitizenApp: 'सिटीजन ऐप खोलें',
       tabEmergency: 'आपातकालीन संपर्क',
+      loadingMap: 'सार्वजनिक नागरिक मानचित्र लोड हो रहा है...',
+      acquiringGps: 'जीपीएस सिग्नल प्राप्त किया जा रहा है...',
     },
     emergencyServices: {
       title: 'भारतीय आपातकालीन हेल्पलाइन',
       subTitle: 'आपदा राहत और चिकित्सा सहायता के लिए 1-टैप टोल-फ्री नंबर',
       callNow: 'कॉल करें',
       tollFree: '24x7 टोल-फ्री',
+      active24x7: '24x7 सक्रिय',
       ndrfTitle: 'एनडीआरएफ आपदा प्रतिक्रिया नियंत्रण कक्ष',
       ndrfDesc: 'राष्ट्रीय आपदा मोचन बल (NDRF) बाढ़ बचाव, नाव निकासी और क्लाउडबर्स्ट राहत कार्य।',
       national112Title: 'अखिल भारतीय एकीकृत आपातकालीन नंबर',
@@ -910,6 +997,45 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       proceedStraight: 'सीधे चलें',
       hazardWarning: 'चेतावनी! आगे जलमग्न अंडरपास है। वैकल्पिक मार्ग लें।',
       destinationArrived: 'आप अपने सुरक्षित उच्च-ऊंचाई वाले आश्रय स्थल पर पहुँच गए हैं।',
+    },
+    admin: {
+      portalBadge: 'नगर निगम कमांड एवं मॉडरेशन पोर्टल',
+      portalTitle: 'ड्रेनेज नाला मॉडरेशन और क्रू प्रेषण डेस्क',
+      portalSub: 'नागरिकों द्वारा रिपोर्ट की गई रुकावटों और सीवर ओवरफ्लो को सत्यापित करें।',
+      syncQueue: 'कतार सिंक करें',
+      pendingReview: 'समीक्षा लंबित',
+      awaitingTriage: 'समीक्षा की प्रतीक्षा में',
+      validatedHotspots: 'सत्यापित हॉटस्पॉट',
+      clogsResolved: 'रुकावटें हल की गईं',
+      hydraulicMultiplier: 'हाइड्रोलिक मेष गुणक',
+      triageStream: 'प्राथमिकता और प्रेषण स्ट्रीम',
+      tabPending: 'लंबित',
+      tabValidated: 'सत्यापित',
+      tabResolved: 'हल किया गया',
+      tabAll: 'सभी रिपोर्ट',
+      verifyRestrict: 'सत्यापित करें और सीमित करें',
+      dispatchResolve: 'टीम भेजें और हल करें',
+      clogCleared: 'रुकावट साफ की गई',
+      noReports: 'इस श्रेणी में कोई रिपोर्ट नहीं है।',
+    },
+    waterbodies: {
+      atlasBadge: 'जल निकाय एवं कैचमेंट एटलस',
+      outfallSyncBadge: 'तटीय आउटफॉल फ्लैप गेट सिंक',
+      atlasTitle: 'शहरी झील प्रतिधारण और तटीय ज्वार गेटिंग',
+      atlasSub: 'शहरी जल निकायों में वास्तविक समय फुल टैंक लेवल (FTL) और तटीय फ्लैप गेट्स स्थिति।',
+      highTidePeak: 'उच्च ज्वार शिखर (मुंबई पोर्ट)',
+      flapLockoutNote: 'फ्लैप गेट लॉकआउट: समुद्री पानी के बैकफ़्लो को रोकता है',
+      reservoirsTitle: 'शहरी प्रतिधारण जलाशय और झील क्षमताएं',
+      totalBufferHeadroom: 'कुल बाढ़ बफर हेडरूम:',
+      fullTankLevel: 'पूर्ण टैंक स्तर (FTL)',
+      storageLabel: 'भंडारण',
+      cushionLabel: 'कुशन',
+      encroachmentLabel: 'अतिक्रमण:',
+      priorityLabel: 'प्राथमिकता:',
+      coastalOutfallsTitle: 'तटीय तूफानी जल आउटफॉल और बैकफ़्लो लॉकआउट',
+      coastalOutfallsSub: 'उच्च ज्वार के दौरान तटीय फ्लैप गेट अपने आप बंद हो जाते हैं।',
+      dischargeRate: 'निकासी दर',
+      seaInvertHead: 'समुद्री स्तर हेड',
     },
   },
 
@@ -1185,12 +1311,15 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       locateMe: 'माझे स्थान शोधा',
       launchCitizenApp: 'सिटीझन ॲप उघडा',
       tabEmergency: 'तातडीचे संपर्क',
+      loadingMap: 'सार्वजनिक नागरिक नकाशा लोड होत आहे...',
+      acquiringGps: 'जीपीएस सिग्नल मिळवला जात आहे...',
     },
     emergencyServices: {
       title: 'भारतीय आपत्कालीन हेल्पलाइन',
-      subTitle: 'आपत्ती निवारण आणि वैद्यकीय मदतीसाठी १-टॅप टोल-फ्री संपर्क',
+      subTitle: 'आपत्ती निवारण आणि वैद्यकीय मदतीसाठी १-टैप टोल-फ्री संपर्क',
       callNow: 'कॉल करा',
       tollFree: '२४x७ टोल-फ्री',
+      active24x7: '२४x७ कार्यरत',
       ndrfTitle: 'एनडीआरएफ आपत्ती प्रतिसाद नियंत्रण कक्ष',
       ndrfDesc: 'राष्ट्रीय आपत्ती प्रतिसाद दल (NDRF) पूर बचाव, नाव सुटका आणि अतिवृष्टी मदत कार्य.',
       national112Title: 'सर्व-भारतीय एकत्रित आपत्कालीन क्रमांक',
@@ -1216,6 +1345,45 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       proceedStraight: 'सरळ पुढे जा',
       hazardWarning: 'सावधान! पुढे पाण्यात बुडालेला सबवे आहे. पर्यायी मार्ग वापरा.',
       destinationArrived: 'तुम्ही तुमच्या सुरक्षित उंच आसरा केंद्रावर पोहोचला आहात.',
+    },
+    admin: {
+      portalBadge: 'महानगरपालिका कमांड आणि नियंत्रण पोर्टल',
+      portalTitle: 'गटार नाला नियंत्रण आणि क्रू डिस्पॅच डेस्क',
+      portalSub: 'नागरिकांनी नोंदवलेले पाण्याचा प्रवाह रोखणारे अडथळे तपासा आणि कर्मचाऱ्यांची नियुक्ती करा.',
+      syncQueue: 'रांग सिंक करा',
+      pendingReview: 'पेंडिंग पुनरावलोकन',
+      awaitingTriage: 'समीक्षेची वाट पाहत आहे',
+      validatedHotspots: 'सत्यापित हॉटस्पॉट्स',
+      clogsResolved: 'सोडवलेले अडथळे',
+      hydraulicMultiplier: 'हायड्रोलिक मेष गुणक',
+      triageStream: 'प्राधान्य आणि डिस्पॅच प्रवाह',
+      tabPending: 'पेंडिंग',
+      tabValidated: 'सत्यापित',
+      tabResolved: 'सोडवलेले',
+      tabAll: 'सर्व नोंदी',
+      verifyRestrict: 'सत्यापित करा आणि मर्यादित करा',
+      dispatchResolve: 'टीम पाठवा आणि सोडवा',
+      clogCleared: 'अडथळा दूर झाला',
+      noReports: 'या श्रेणीमध्ये कोणत्याही नोंदी नाहीत.',
+    },
+    waterbodies: {
+      atlasBadge: 'जलसाठे आणि कॅचमेंट ॲटलास',
+      outfallSyncBadge: 'सागरी आऊटफॉल फ्लॅप गेट सिंक',
+      atlasTitle: 'शहरी तलाव साठवणूक आणि सागरी भरती गेट्स',
+      atlasSub: 'शहरी तलाव पातळी (FTL) आणि आपयोजित सागरी फ्लॅप गेट्सची रिअल-टाइम माहिती.',
+      highTidePeak: 'उच्च भरती शिखर (मुंबई पोर्ट)',
+      flapLockoutNote: 'फ्लॅप गेट लॉकआऊट: समुद्राचे पाणी शहरात येण्यापासून रोखते',
+      reservoirsTitle: 'शहरी जलाशय आणि तलाव क्षमता',
+      totalBufferHeadroom: 'एकूण पूर बफर क्षमता:',
+      fullTankLevel: 'पूर्ण तलाव पातळी (FTL)',
+      storageLabel: 'साठा',
+      cushionLabel: 'बफर',
+      encroachmentLabel: 'अतिक्रमण:',
+      priorityLabel: 'प्राधान्य:',
+      coastalOutfallsTitle: 'सागरी पर्जन्य जल आऊटफॉल्स आणि बॅकफ्लो लॉकआऊट',
+      coastalOutfallsSub: 'उधाणाच्या भरतीच्या वेळी फ्लॅप गेट आपोआप बंद होतात.',
+      dischargeRate: 'पाण्याचा उपसा दर',
+      seaInvertHead: 'समुद्र पातळी हेड',
     },
   },
 
@@ -1491,12 +1659,15 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       locateMe: 'என் இடத்தை கண்டறி',
       launchCitizenApp: 'குடிமகன் செயலியைத் திற',
       tabEmergency: 'அவசர தொடர்புகள்',
+      loadingMap: 'பொதுமக்கள் வரைபடம் ஏற்றப்படுகிறது...',
+      acquiringGps: 'GPS சிக்னல் பெறப்படுகிறது...',
     },
     emergencyServices: {
       title: 'இந்திய அவசர உதவி எண்கள்',
       subTitle: 'பேரிடர் மீட்பு & மருத்துவ உதவிக்கான 1-டேப் கட்டணமில்லா நேரடி எண்கள்',
       callNow: 'அழைக்கவும்',
       tollFree: '24x7 கட்டணமில்லா எண்',
+      active24x7: '24x7 செயல்படுகிறது',
       ndrfTitle: 'NDRF பேரிடர் மீட்புக் கட்டுப்பாட்டு அறை',
       ndrfDesc: 'தேசிய பேரிடர் மீட்புப் படை (NDRF) வெள்ள மீட்பு மற்றும் படகு வெளியேற்றப் பணிகள்.',
       national112Title: 'அகில இந்திய ஒருங்கிணைந்த அவசர எண்',
@@ -1522,6 +1693,45 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       proceedStraight: 'நேராகச் செல்லவும்',
       hazardWarning: 'எச்சரிக்கை! முன்னால் நீரில் மூழ்கிய சுரங்கப்பாதை உள்ளது. மாற்றுப் பாதையைப் பயன்படுத்தவும்.',
       destinationArrived: 'நீங்கள் பாதுகாப்பான உயர் நில தங்குமிடத்திற்கு வந்து சேர்ந்தீர்கள்.',
+    },
+    admin: {
+      portalBadge: 'மாநகராட்சி கட்டளை மற்றும் சரிபார்ப்பு போர்ட்டல்',
+      portalTitle: 'வடிகால் அடைப்பு மேலாண்மை & குழு அனுப்பும் மையம்',
+      portalSub: 'பொதுமக்கள் புகாரளித்த அடைப்புகளை சரிபார்த்து ஊழியர்களை அனுப்பவும்.',
+      syncQueue: 'வரிசையைப் புதுப்பி',
+      pendingReview: 'ஆய்வு நிலுவையில் உள்ளது',
+      awaitingTriage: 'வரிசைப்படுத்தலுக்கு காத்திருக்கிறது',
+      validatedHotspots: 'உறுதிசெய்யப்பட்ட இடங்கள்',
+      clogsResolved: 'தீர்வு காணப்பட்ட அடைப்புகள்',
+      hydraulicMultiplier: 'நீரியல் கடத்தல் காரணி',
+      triageStream: 'முன்னுரிமை & மீட்புக் குழுக்கள்',
+      tabPending: 'நிலுவையில்',
+      tabValidated: 'உறுதிசெய்யப்பட்டது',
+      tabResolved: 'தீர்வு காணப்பட்டது',
+      tabAll: 'அனைத்து புகார்கள்',
+      verifyRestrict: 'உறுதிசெய் & கட்டுப்படுத்து',
+      dispatchResolve: 'குழுவை அனுப்பு & தீர்வு காண்',
+      clogCleared: 'அடைப்பு நீக்கப்பட்டது',
+      noReports: 'இந்தப் பிரிவில் புகார்கள் ஏதுமில்லை.',
+    },
+    waterbodies: {
+      atlasBadge: 'நீர்நிலைகள் & வடிகால் வரைபடம்',
+      outfallSyncBadge: 'கடல் நீர் வெளியேற்றக் கதவு இணைப்பு',
+      atlasTitle: 'நகர்ப்புற ஏரி நீர்ப்பிடிப்பு & கடலலை கதவுகள்',
+      atlasSub: 'நகர்ப்புற ஏரிகளின் கொள்ளளவு (FTL) மற்றும் தானியங்கி கடல் கதவுகளின் நேரலை நிலை.',
+      highTidePeak: 'உயர் கடல் அலை உச்சம் (மும்பை துறைமுகம்)',
+      flapLockoutNote: 'கடல் கதவு தடுப்பு: கடல் நீர் நகருக்குள் நுழைவதைத் தடுக்கிறது',
+      reservoirsTitle: 'நகர்ப்புற நீர் தேக்கங்கள் & ஏரி கொள்ளளவு',
+      totalBufferHeadroom: 'மொத்த வெள்ளப் சேமிப்பு இடம்:',
+      fullTankLevel: 'முழு நீர் மட்டம் (FTL)',
+      storageLabel: 'சேமிப்பு',
+      cushionLabel: 'பாதுகாப்பு',
+      encroachmentLabel: 'ஆக்கிரமிப்பு:',
+      priorityLabel: 'முன்னுரிமை:',
+      coastalOutfallsTitle: 'கடலோர மழைநீர் வெளியேற்றக் கதவுகள்',
+      coastalOutfallsSub: 'உயர் கடலலை நேரங்களில் கடல் கதவுகள் தானாகவே மூடிக்கொள்ளும்.',
+      dischargeRate: 'வெளியேற்ற வேகம்',
+      seaInvertHead: 'கடல் நீர் மட்ட அளவு',
     },
   },
 
@@ -1797,12 +2007,15 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       locateMe: 'నా స్థానాన్ని గుర్తించు',
       launchCitizenApp: 'సిటిజన్ యాప్ తెరవండి',
       tabEmergency: 'అత్యవసర పరిచయాలు',
+      loadingMap: 'పౌరుల డిజిటల్ మ్యాప్ లోడ్ అవుతోంది...',
+      acquiringGps: 'GPS సిగ్నల్ గ్రహించబడుతోంది...',
     },
     emergencyServices: {
       title: 'భారతీయ అత్యవసర హెల్ప్‌లైన్లు',
       subTitle: 'విపత్తు సహాయం మరియు వైద్య సహాయం కోసం 1-ట్యాప్ టోల్-ఫ్రీ నంబర్లు',
       callNow: 'కాల్ చేయండి',
       tollFree: '24x7 టోల్-ఫ్రీ',
+      active24x7: '24x7 అందుబాటులో ఉంది',
       ndrfTitle: 'NDRF విపత్తు సహాయ నియంత్రణ గది',
       ndrfDesc: 'జాతీయ విపత్తు ప్రతిస్పందన దళం (NDRF) వరద రక్షణ, పడవల ద్వారా తరలింపు మరియు భారీ వర్ష సహాయ చర్యలు.',
       national112Title: 'అఖిల భారత సమగ్ర అత్యవసర సంఖ్య',
@@ -1828,6 +2041,45 @@ export const translations: Record<SupportedLanguage, TranslationSchema> = {
       proceedStraight: 'నేరుగా ముందుకు వెళ్లండి',
       hazardWarning: 'హెచ్చరిక! ముందు నీటిలో మునిగిన అండర్‌పాస్ ఉంది. ప్రత్యామ్నాయ మార్గం తీసుకోండి.',
       destinationArrived: 'మీరు సురక్షితమైన ఎత్తైన ఆశ్రయ కేంద్రానికి చేరుకున్నారు.',
+    },
+    admin: {
+      portalBadge: 'మున్సిపల్ కమాండ్ మరియు నియంత్రణ పోర్టల్',
+      portalTitle: 'డ్రైనేజీ అవరోధాల నియంత్రణ & బృందాల రవాణా డెస్క్',
+      portalSub: 'ప్రజలు నివేదించిన డ్రైనేజీ అవరోధాలను పరిశీలించి బృందాలను పంపండి.',
+      syncQueue: 'జాబితాను రిఫ్రెష్ చేయండి',
+      pendingReview: 'సమీక్ష పెండింగ్‌లో ఉంది',
+      awaitingTriage: 'పరి పరిశీలనలో ఉంది',
+      validatedHotspots: 'ధృవీకరించబడిన అవరోధాలు',
+      clogsResolved: 'పరిష్కరించబడిన అవరోధాలు',
+      hydraulicMultiplier: 'హైడ్రాలిక్ ఫ్లో ఫ్యాక్టర్',
+      triageStream: 'ప్రాధాన్యత & నిర్వహణ క్రమం',
+      tabPending: 'పెండింగ్',
+      tabValidated: 'ధృవీకరించబడింది',
+      tabResolved: 'పరిష్కరించబడింది',
+      tabAll: 'అన్ని నివేదికలు',
+      verifyRestrict: 'ధృవీకరించు & పరిమితం చేయి',
+      dispatchResolve: 'బృందాన్ని పంపు & పరిష్కరించు',
+      clogCleared: 'అవరోధం తొలగించబడింది',
+      noReports: 'ఈ విభాగంలో నివేదికలు లేవు.',
+    },
+    waterbodies: {
+      atlasBadge: 'జలాశయాలు & క్యాచ్‌మెంట్ అట్లాస్',
+      outfallSyncBadge: 'తీర ప్రాంత డ్రైనేజ్ గేట్ల సమన్వయం',
+      atlasTitle: 'పట్టణ చెరువుల నిల్వ & తీరప్రాంత అలల గేట్లు',
+      atlasSub: 'పట్టణ చెరువుల నీటి మట్టాలు (FTL) మరియు ఆటోమేటిక్ కోస్టల్ గేట్ల లైవ్ సమాచారం.',
+      highTidePeak: 'గరిష్ట అలల ఎత్తు (ముంబై పోర్ట్)',
+      flapLockoutNote: 'కోస్టల్ గేట్ లాకౌట్: సముద్రపు నీరు నగరంలోకి రాకుండా నిరోధిస్తుంది',
+      reservoirsTitle: 'పట్టణ జలాశయాలు మరియు చెరువుల సామర్థ్యం',
+      totalBufferHeadroom: 'మొత్తం వరద నిల్వ సామర్థ్యం:',
+      fullTankLevel: 'పూర్తి నీటి మట్టం (FTL)',
+      storageLabel: 'నిల్వ',
+      cushionLabel: 'బఫర్',
+      encroachmentLabel: 'ఆక్రమణ:',
+      priorityLabel: 'ప్రాధాన్యత:',
+      coastalOutfallsTitle: 'తీరప్రాంత వర్షపు నీటి గేట్లు & సముద్రపు నీటి నిరోధం',
+      coastalOutfallsSub: 'అలల ఉధృతి సమయంలో కోస్టల్ గేట్లు ఆటోమేటిక్‌గా మూసుకుంటాయి.',
+      dischargeRate: 'నీటి విడుదల వేగం',
+      seaInvertHead: 'సముద్ర మట్టం ఎత్తు',
     },
   },
 };

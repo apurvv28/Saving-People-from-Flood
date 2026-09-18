@@ -65,18 +65,18 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
               setIsPlaying(false);
               setTimeOffsetMins(0);
             }}
-            className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200/80 transition-all active:scale-95"
+            className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200/80 dark:border-gray-700 transition-all active:scale-95"
             title={t.slider.reset}
           >
             <RotateCcw className="w-4 h-4" />
           </button>
 
           <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-blue-600 shrink-0" />
-            <span className="text-xs font-bold text-gray-700">
+            <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+            <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
               {t.landing.metricLeadTimeSub}:
             </span>
-            <span className="text-xs font-mono font-bold text-blue-900 bg-blue-50/90 border border-blue-200 dark:border-blue-800/80 px-2.5 py-0.5 rounded-lg shadow-2xs">
+            <span className="text-xs font-mono font-bold text-blue-900 dark:text-blue-200 bg-blue-50/90 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 px-2.5 py-0.5 rounded-lg shadow-2xs">
               {timeLabel} ({timeOffsetMins} {t.slider.plusMin})
             </span>
           </div>
@@ -84,8 +84,8 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
 
         {/* Live Rainfall Intensity */}
         <div className="hidden sm:flex items-center space-x-2 text-xs">
-          <CloudRain className="w-4 h-4 text-blue-600 shrink-0" />
-          <span className="text-gray-500 font-semibold">{t.slider.rainRateLabel}</span>
+          <CloudRain className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+          <span className="text-gray-500 dark:text-gray-400 font-semibold">{t.slider.rainRateLabel}</span>
           <span className="font-mono font-bold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-lg border border-blue-200 dark:border-blue-800">{rainIntensity} mm/h</span>
         </div>
       </div>
@@ -99,11 +99,11 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
           step={15}
           value={timeOffsetMins}
           onChange={(e) => setTimeOffsetMins(parseInt(e.target.value, 10))}
-          className="w-full h-2.5 bg-gray-200 rounded-lg cursor-pointer"
+          className="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer"
         />
 
         {/* Ticks and preset buttons */}
-        <div className="flex justify-between items-center text-[11px] font-mono text-gray-500 pt-2">
+        <div className="flex justify-between items-center text-[11px] font-mono text-gray-500 dark:text-gray-400 pt-2">
           {presetTimes.map((presetTime) => (
             <button
               key={presetTime}
@@ -111,7 +111,7 @@ export const TimeSlider: React.FC<TimeSliderProps> = ({
               className={`px-2.5 py-0.5 rounded-lg transition-all ${
                 timeOffsetMins === presetTime
                   ? 'bg-blue-600 text-white font-bold shadow-2xs'
-                  : 'hover:text-gray-900 hover:bg-gray-100 font-medium'
+                  : 'hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium'
               }`}
             >
               {presetTime === 0 ? t.slider.nowLive : `+${presetTime}${t.slider.plusMin}`}
