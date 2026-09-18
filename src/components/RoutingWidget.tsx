@@ -164,16 +164,16 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
   const currentProfile = VEHICLE_PROFILES[vehicle];
 
   return (
-    <div className="w-full bg-white dark:bg-gray-900 p-4.5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-md space-y-3.5 text-xs text-gray-900 dark:text-gray-100 transition-colors">
+    <div className="w-full bg-white dark:bg-gray-900 p-4.5 rounded-2xl border border-gray-200 dark:border-gray-700 dark:border-gray-800 shadow-md space-y-3.5 text-xs text-gray-900 dark:text-gray-100">
       {/* Tab Switcher: Flood-Safe Navigation vs Emergency Evacuation Mode */}
-      <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
-        <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl w-full border border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+        <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl w-full border border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setActiveTab('vehicle_routing')}
             className={`flex-1 py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'vehicle_routing'
                 ? 'bg-[#1a73e8] text-white shadow-xs'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <Navigation className="w-3.5 h-3.5 text-white" />
@@ -184,7 +184,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
             className={`flex-1 py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center space-x-1.5 transition-all ${
               activeTab === 'evacuation_mode'
                 ? 'bg-orange-600 text-white shadow-xs'
-                : 'text-gray-600 dark:text-gray-400 hover:text-orange-700 dark:hover:text-orange-400'
+                : 'text-gray-600 hover:text-orange-700'
             }`}
           >
             <LifeBuoy className="w-3.5 h-3.5" />
@@ -203,17 +203,17 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
             <div
               className={`flex items-center space-x-2 p-2.5 rounded-xl border transition-all ${
                 routePinMode === 'origin'
-                  ? 'bg-green-50 dark:bg-green-950/40 border-green-500 ring-2 ring-green-400'
-                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                  ? 'bg-green-50 border-green-500 ring-2 ring-green-400'
+                  : 'bg-gray-50 border-gray-200'
               }`}
             >
-              <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
+              <MapPin className="w-4 h-4 text-green-600 shrink-0" />
               <input
                 type="text"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
                 placeholder={t.routing.originPlaceholder}
-                className="w-full bg-transparent text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 font-medium focus:outline-none text-xs"
+                className="w-full bg-transparent text-gray-800 font-medium focus:outline-none text-xs"
               />
               {setRoutePinMode && (
                 <button
@@ -222,7 +222,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                   className={`px-2 py-1 rounded-lg text-[10.5px] font-bold flex items-center space-x-1 transition-all shrink-0 ${
                     routePinMode === 'origin'
                       ? 'bg-green-600 text-white shadow-xs animate-pulse'
-                      : 'bg-green-100 dark:bg-green-900/60 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-900'
+                      : 'bg-green-100 text-green-800 hover:bg-green-200'
                   }`}
                   title="Pin origin on map"
                 >
@@ -235,17 +235,17 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
             <div
               className={`flex items-center space-x-2 p-2.5 rounded-xl border transition-all ${
                 routePinMode === 'destination'
-                  ? 'bg-orange-50 dark:bg-orange-950/40 border-orange-500 ring-2 ring-orange-400'
-                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                  ? 'bg-orange-50 border-orange-500 ring-2 ring-orange-400'
+                  : 'bg-gray-50 border-gray-200'
               }`}
             >
-              <MapPin className="w-4 h-4 text-orange-500 dark:text-orange-400 shrink-0" />
+              <MapPin className="w-4 h-4 text-orange-500 shrink-0" />
               <input
                 type="text"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder={t.routing.destPlaceholder}
-                className="w-full bg-transparent text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 font-medium focus:outline-none text-xs"
+                className="w-full bg-transparent text-gray-800 font-medium focus:outline-none text-xs"
               />
               {setRoutePinMode && (
                 <button
@@ -254,7 +254,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                   className={`px-2 py-1 rounded-lg text-[10.5px] font-bold flex items-center space-x-1 transition-all shrink-0 ${
                     routePinMode === 'destination'
                       ? 'bg-orange-600 text-white shadow-xs animate-pulse'
-                      : 'bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-200 hover:bg-orange-200 dark:hover:bg-orange-900'
+                      : 'bg-orange-100 text-orange-800 hover:bg-orange-200'
                   }`}
                   title="Pin destination on map"
                 >
@@ -267,9 +267,9 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
 
           {/* Vehicle Profiles Selector */}
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+            <div className="flex justify-between items-center text-[11px] text-gray-500 font-medium">
               <span>{t.routing.vehicleProfileClearance}</span>
-              <span className="text-blue-700 dark:text-blue-400 font-bold font-mono">{t.routing.maxSafe} {currentProfile.maxSafeDepthCm}cm</span>
+              <span className="text-blue-700 font-bold font-mono">{t.routing.maxSafe} {currentProfile.maxSafeDepthCm}cm</span>
             </div>
 
             <div className="grid grid-cols-4 gap-1">
@@ -282,7 +282,7 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                     className={`flex flex-col items-center justify-center p-1.5 rounded-xl border text-center transition-all ${
                       isSelected
                         ? 'bg-[#1a73e8] text-white border-[#1a73e8] shadow-xs font-bold'
-                        : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium'
+                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 font-medium'
                     }`}
                     title={`${v.label} (Clearance: ${VEHICLE_PROFILES[v.type].maxSafeDepthCm}cm)`}
                   >
@@ -304,15 +304,15 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
 
           {/* Route Results & Comparison */}
           {routesResult && (
-            <div className="space-y-2 pt-1 border-t border-gray-100 dark:border-gray-800">
+            <div className="space-y-2 pt-1 border-t border-gray-100">
               {/* If Route is HARD BLOCKED */}
               {routesResult.safeRoute.isBlocked ? (
-                <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-900 dark:text-orange-200 space-y-2">
-                  <div className="flex items-center space-x-2 text-orange-700 dark:text-orange-300 font-bold text-xs">
+                <div className="p-3 rounded-xl bg-orange-50 border border-orange-200 text-orange-900 space-y-2">
+                  <div className="flex items-center space-x-2 text-orange-700 font-bold text-xs">
                     <AlertTriangle className="w-4 h-4 shrink-0" />
                     <span>{t.routing.noSafeRouteFor} {currentProfile.name.toUpperCase()}</span>
                   </div>
-                  <p className="text-[11px] text-orange-700 dark:text-orange-300 leading-relaxed">
+                  <p className="text-[11px] text-orange-700 leading-relaxed">
                     {routesResult.safeRoute.blockedReason || t.routing.noRouteFound}
                   </p>
                 </div>
@@ -322,26 +322,26 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
                   onClick={() => setActiveRoute(routesResult.safeRoute)}
                   className={`p-3 rounded-xl border cursor-pointer transition-all ${
                     activeRoute?.id === routesResult.safeRoute.id
-                      ? 'bg-green-50/80 dark:bg-green-950/40 border-green-400 dark:border-green-600 ring-1 ring-green-400'
-                      : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                      ? 'bg-green-50/80 border-green-400 ring-1 ring-green-400'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   <div className="flex items-center justify-between font-semibold">
-                    <div className="flex items-center space-x-1.5 text-green-900 dark:text-green-300">
-                      <ShieldCheck className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <div className="flex items-center space-x-1.5 text-green-900">
+                      <ShieldCheck className="w-4 h-4 text-green-600" />
                       <span className="text-xs font-bold">
                         {routesResult.safeRoute.name === 'AquaAlert Real Road Flood-Safe Route'
                           ? t.routing.realRoadSafeRoute
                           : routesResult.safeRoute.name}
                       </span>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/60 text-green-800 dark:text-green-200 text-[10px] font-bold">
+                    <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-[10px] font-bold">
                       {t.routing.riskSafe}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-[11px] text-gray-600 dark:text-gray-400 mt-1.5 font-medium">
+                  <div className="flex justify-between items-center text-[11px] text-gray-600 mt-1.5 font-medium">
                     <span>{routesResult.safeRoute.distanceKm} km • {routesResult.safeRoute.durationMins} {t.slider.plusMin}</span>
-                    <span className="text-green-700 dark:text-green-400 font-mono font-bold">
+                    <span className="text-green-700 font-mono font-bold">
                       {t.nav.maxDepth}: {routesResult.safeRoute.maxWaterDepthCm} cm
                     </span>
                   </div>
@@ -353,28 +353,28 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
       ) : (
         /* EMERGENCY EVACUATION MODE */
         <div className="space-y-3 text-xs">
-          <div className="p-2.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-900 dark:text-orange-200">
-            <div className="flex items-center space-x-2 font-bold text-xs text-orange-800 dark:text-orange-300">
-              <Siren className="w-4 h-4 text-orange-600 dark:text-orange-400 animate-pulse" />
+          <div className="p-2.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-900">
+            <div className="flex items-center space-x-2 font-bold text-xs text-orange-800">
+              <Siren className="w-4 h-4 text-orange-600 animate-pulse" />
               <span>{t.dashboard.evacRouteBtn}</span>
             </div>
-            <p className="text-[10.5px] text-orange-700 dark:text-orange-300 mt-1 leading-relaxed">
+            <p className="text-[10.5px] text-orange-700 mt-1 leading-relaxed">
               Auto-detects residents in extreme flood depressions and charts safest path to high-elevation relief centers.
             </p>
           </div>
 
           {/* Evacuation Zone Selector */}
           <div className="space-y-1">
-            <span className="text-[10.5px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="text-[10.5px] font-bold text-gray-500 uppercase tracking-wider">
               {t.routing.selectHazardZone}
             </span>
             <select
               value={selectedEvacZoneId}
               onChange={(e) => setSelectedEvacZoneId(e.target.value)}
-              className="w-full p-2 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-semibold text-gray-800 dark:text-gray-100 text-xs focus:outline-none"
+              className="w-full p-2 rounded-xl bg-gray-50 border border-gray-200 font-semibold text-gray-800 text-xs focus:outline-none"
             >
               {evacZones.map((z) => (
-                <option key={z.id} value={z.id} className="dark:bg-gray-900 dark:text-gray-100">
+                <option key={z.id} value={z.id}>
                   {z.active ? '[Active] ' : '[Advisory] '} {z.name} ({z.waterDepthCm}cm)
                 </option>
               ))}
@@ -384,18 +384,18 @@ export const RoutingWidget: React.FC<RoutingWidgetProps> = ({
           {evacuationPlan && (
             <div className="space-y-2.5 pt-1">
               {/* Nearest Safe Shelter Details */}
-              <div className="p-3 rounded-xl bg-green-50 dark:bg-green-950/40 border border-green-300 dark:border-green-800 text-green-950 dark:text-green-200 space-y-1.5">
+              <div className="p-3 rounded-xl bg-green-50 border border-green-300 text-green-950 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-green-800 dark:text-green-300 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-green-800 uppercase tracking-wider flex items-center gap-1">
                     <Home className="w-3.5 h-3.5" />
                     {t.routing.nearestShelter}
                   </span>
-                  <span className="text-[10px] font-mono font-bold bg-green-200/70 dark:bg-green-900/60 text-green-900 dark:text-green-200 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-mono font-bold bg-green-200/70 text-green-900 px-1.5 py-0.5 rounded">
                     +{evacuationPlan.elevationGainMeters}m Elevation
                   </span>
                 </div>
-                <h4 className="font-bold text-xs text-green-900 dark:text-green-100">{evacuationPlan.nearestShelter.name}</h4>
-                <p className="text-[10.5px] text-green-800 dark:text-green-300">{evacuationPlan.nearestShelter.address}</p>
+                <h4 className="font-bold text-xs text-green-900">{evacuationPlan.nearestShelter.name}</h4>
+                <p className="text-[10.5px] text-green-800">{evacuationPlan.nearestShelter.address}</p>
               </div>
 
               {/* Action Buttons to Deploy Evacuation Path */}
