@@ -2,6 +2,14 @@ import { CityId, getCityDataset, RoadSegment, DrainageNode } from './mock-data';
 import { getCityTideData, CityTideData } from './tide-service';
 import { getPumpingStationsForCity, getTotalCityPumpingCapacityLps } from './pumping-station-service';
 import { getPhysicsDerivedManholes, PhysicsManhole } from './physics-manhole-engine';
+import {
+  computeSolverIntegrationHook,
+  getWindCardinalDirection,
+  getWindSpeedBand,
+  getCloudCoverBand,
+  WindSpeedBand,
+  CloudCoverBand
+} from './wind-cloud-service';
 
 export interface NowcastTimeStep {
   timeOffsetMins: number; // 0, 15, 30, 45, 60, 90, 120, 150, 180
@@ -25,6 +33,21 @@ export interface NowcastTimeStep {
   physicsManholes?: import('./physics-manhole-engine').PhysicsManhole[];
   overflowingManholesCount?: number;
   totalManholeOverflowRateLps?: number;
+  // Live Wind & Cloud Cover Contextual Data for 2D Hydraulic Model Coupling
+  windCloudData?: {
+    windSpeedKmh: number;
+    windDirectionDeg: number;
+    windDirectionCardinal: string;
+    cloudCoverPct: number;
+    windBand: WindSpeedBand;
+    cloudBand: CloudCoverBand;
+    // Solver Integration Hook: Future wind-driven rain & coastal wave setup adjustment factor
+    solverIntegrationHook: {
+      windDrivenRainMultiplier: number;
+      coastalSurgeSetupMeters: number;
+      notes: string;
+    };
+  };
 }
 
 export function getRadarPrecipitationForTime(timeOffsetMins: number): number {
@@ -155,6 +178,28 @@ export function getHydraulicSnapshotAtTime(
   const mins = closestTime % 60;
   const timeLabel = `+${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')} (T+${closestTime}m)`;
 
+  // 7. Contextual Wind & Cloud Cover Metadata for 2D Hydraulic Model Coupling
+  // Default values derived for city context (e.g. monsoon SW winds for Mumbai, Easterly for Chennai)
+  const defaultWindByCity: Record<CityId, { speed: number; dir: number; cloud: number }> = {
+    mumbai: { speed: 28.5, dir: 240, cloud: 82 },
+    delhi: { speed: 14.2, dir: 110, cloud: 45 },
+    chennai: { speed: 34.0, dir: 95, cloud: 88 }
+  };
+  const cityWind = defaultWindByCity[cityId] || defaultWindByCity.mumbai;
+  const windSpeedKmh = Number((cityWind.speed + (idx - 2) * 1.5).toFixed(1));
+  const windDirectionDeg = cityWind.dir;
+  const cloudCoverPct = Math.min(100, Math.max(0, cityWind.cloud + (idx - 2) * 2));
+
+  const windCloudData = {
+    windSpeedKmh,
+    windDirectionDeg,
+    windDirectionCardinal: getWindCardinalDirection(windDirectionDeg),
+    cloudCoverPct,
+    windBand: getWindSpeedBand(windSpeedKmh),
+    cloudBand: getCloudCoverBand(cloudCoverPct),
+    solverIntegrationHook: computeSolverIntegrationHook(windSpeedKmh, windDirectionDeg, cloudCoverPct, cityId)
+  };
+
   return {
     timeOffsetMins: closestTime,
     timeLabel,
@@ -168,6 +213,7 @@ export function getHydraulicSnapshotAtTime(
     nodeStates,
     physicsManholes,
     overflowingManholesCount,
-    totalManholeOverflowRateLps
+    totalManholeOverflowRateLps,
+    windCloudData
   };
 }

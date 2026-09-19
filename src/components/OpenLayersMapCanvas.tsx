@@ -29,6 +29,7 @@ import { getEvacuationZonesForCity, SAFE_ASSEMBLY_SHELTERS } from '@/lib/evacuat
 import { EnhancedNavigationRoute, RouteRiskSegment } from '@/lib/routing-engine';
 import { getGroundwaterColor } from '@/lib/groundwater-service';
 import { getCitizenSignals, CitizenSignal, ISSUE_TYPE_CONFIG } from '@/lib/citizen-signals-service';
+import { fetchLiveWindCloudData, getWindBandColor, WindCloudData } from '@/lib/wind-cloud-service';
 import {
   Layers,
   Compass,
@@ -48,7 +49,11 @@ import {
   AlertCircle,
   ShieldAlert,
   ShieldCheck,
-  Home
+  Home,
+  Wind,
+  Cloud,
+  CloudRain,
+  Sun
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -106,6 +111,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   // GIS Layer Toggle States - Core operational layers enabled by default
   const [baseLayerType, setBaseLayerType] = useState<'osm' | 'topo' | 'hot' | 'satellite'>('osm');
   const [showDemLayer, setShowDemLayer] = useState(true);
+  const [showWindCloudLayer, setShowWindCloudLayer] = useState(true);
   const [showRoadsLayer, setShowRoadsLayer] = useState(true);
   const [showRouteLayer, setShowRouteLayer] = useState(true);
   const [showDrainageLayer, setShowDrainageLayer] = useState(false);
@@ -116,6 +122,10 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   const [showDeluge2005Layer, setShowDeluge2005Layer] = useState(false);
   const [showGroundwaterLayer, setShowGroundwaterLayer] = useState(false);
   const [showSignalsLayer, setShowSignalsLayer] = useState(true);
+
+  // Live Wind & Cloud Telemetry State
+  const [windCloudData, setWindCloudData] = useState<WindCloudData | null>(null);
+  const [currentZoom, setCurrentZoom] = useState(13);
 
   // Automatically enable route layer when user calculates a route or deploys evacuation path
   useEffect(() => {
@@ -162,6 +172,7 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
 
   const activeLayersCount = [
     showDemLayer,
+    showWindCloudLayer,
     showRoadsLayer,
     showDrainageLayer,
     showManholesLayer,
@@ -240,6 +251,8 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
 
   // Vector Sources
   const demVectorSourceRef = useRef(new VectorSource());
+  const windVectorSourceRef = useRef(new VectorSource());
+  const cloudVectorSourceRef = useRef(new VectorSource());
   const roadsVectorSourceRef = useRef(new VectorSource());
   const drainageVectorSourceRef = useRef(new VectorSource());
   const manholesVectorSourceRef = useRef(new VectorSource());
@@ -252,6 +265,9 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
   const groundwaterVectorSourceRef = useRef(new VectorSource());
   const signalsVectorSourceRef = useRef(new VectorSource());
   const pinsVectorSourceRef = useRef(new VectorSource());
+
+  const windVectorLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
+  const cloudVectorLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
 
   // Cluster Sources for Manholes & Citizen Pins (Zoom-based clustering)
   const manholesClusterSourceRef = useRef(
@@ -288,6 +304,19 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
       zIndex: 5,
       opacity: 0.55
     });
+
+    const cloudVectorLayer = new VectorLayer({
+      source: cloudVectorSourceRef.current,
+      zIndex: 4,
+      opacity: 0.85
+    });
+    cloudVectorLayerRef.current = cloudVectorLayer;
+
+    const windVectorLayer = new VectorLayer({
+      source: windVectorSourceRef.current,
+      zIndex: 34
+    });
+    windVectorLayerRef.current = windVectorLayer;
 
     const drainageVectorLayer = new VectorLayer({
       source: drainageVectorSourceRef.current,
@@ -547,12 +576,14 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         esriSatLayerRef.current,
         labelsReferenceLayerRef.current,
         placesReferenceLayerRef.current,
+        cloudVectorLayer,
         demVectorLayer,
         groundwaterVectorLayer,
         drainageVectorLayer,
         evacuationVectorLayer,
         roadsVectorLayer,
         manholesVectorLayer,
+        windVectorLayer,
         hotspotsVectorLayer,
         deluge2005VectorLayer,
         signalsVectorLayer,
@@ -570,6 +601,12 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     });
 
     mapRef.current = map;
+
+    // View resolution change listener for zoom-throttled animation controls
+    map.getView().on('change:resolution', () => {
+      const zoom = map.getView().getZoom() || 13;
+      setCurrentZoom(zoom);
+    });
 
     // Pointer move listener for coordinates telemetry
     map.on('pointermove', (evt) => {
@@ -683,6 +720,29 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
         }
 
         const props = feature.getProperties();
+
+        if (props.type === 'wind_vector') {
+          featureFound = true;
+          setPopupContent({
+            title: 'Live Wind & Cloud Vector Point',
+            subtitle: `${props.speedKmh} km/h ${props.directionCardinal} (${props.directionDeg}°)`,
+            badge: {
+              text: (props.windBand || 'Breezy').toUpperCase(),
+              color: props.windBand === 'calm' ? 'bg-emerald-100 text-emerald-800' :
+                     props.windBand === 'breezy' ? 'bg-sky-100 text-sky-800' :
+                     props.windBand === 'strong' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+            },
+            details: [
+              { label: 'Wind Velocity', value: `${props.speedKmh} km/h`, color: 'text-gray-800 font-bold font-mono' },
+              { label: 'Flow Direction', value: `${props.directionDeg}° (${props.directionCardinal})` },
+              { label: 'Cloud Density', value: `${props.cloudCoverPct}%` },
+              { label: 'Surge Setup Hook', value: `+${props.coastalSurgeSetupMeters || 0}m Coastal Setup`, color: 'text-cyan-700 font-bold font-mono' },
+              { label: 'Data Feed', value: 'Windy API / Open-Meteo Nowcast' }
+            ]
+          });
+          overlay.setPosition(evt.coordinate);
+          return;
+        }
 
         if (props.type === 'citizen_signal') {
           featureFound = true;
@@ -906,6 +966,137 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
     osmHotLayerRef.current.setVisible(baseLayerType === 'hot');
     esriSatLayerRef.current.setVisible(baseLayerType === 'satellite');
   }, [baseLayerType]);
+
+  // Fetch & Synchronize Live Wind Vectors and Semi-Transparent Cloud Overlay
+  useEffect(() => {
+    let isMounted = true;
+    fetchLiveWindCloudData(selectedCityId)
+      .then(data => {
+        if (isMounted) {
+          setWindCloudData(data);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, [selectedCityId, timeOffsetMins]);
+
+  // Update Wind Flow Vectors & Cloud Cover Vector Overlay Features
+  useEffect(() => {
+    const windSource = windVectorSourceRef.current;
+    const cloudSource = cloudVectorSourceRef.current;
+    windSource.clear();
+    cloudSource.clear();
+
+    if (!showWindCloudLayer || !windCloudData) return;
+
+    // 1. Semi-transparent Cloud Cover Overlay Polygon over city extent
+    const centerLat = city.center[0];
+    const centerLng = city.center[1];
+    const latSpan = 0.35;
+    const lngSpan = 0.35;
+
+    const minPt = fromLonLat([centerLng - lngSpan, centerLat - latSpan]);
+    const maxPt = fromLonLat([centerLng + lngSpan, centerLat + latSpan]);
+
+    const ring = [
+      [minPt[0], minPt[1]],
+      [maxPt[0], minPt[1]],
+      [maxPt[0], maxPt[1]],
+      [minPt[0], maxPt[1]],
+      [minPt[0], minPt[1]]
+    ];
+
+    const cloudFeature = new Feature({
+      geometry: new Polygon([ring]),
+      type: 'cloud_cover_overlay',
+      cloudCoverPct: windCloudData.cloudCoverPct
+    });
+
+    const opacity = Math.min(0.38, Math.max(0.04, (windCloudData.cloudCoverPct / 100) * 0.38));
+    cloudFeature.setStyle(
+      new Style({
+        fill: new Fill({ color: `rgba(71, 85, 105, ${opacity})` }),
+        stroke: new Stroke({ color: 'rgba(148, 163, 184, 0.25)', width: 1.2, lineDash: [8, 6] })
+      })
+    );
+    cloudSource.addFeature(cloudFeature);
+
+    // 2. Wind Flow Vector Arrows across Grid
+    windCloudData.vectorGrid.forEach((pt) => {
+      const coord = fromLonLat([pt.lng, pt.lat]);
+      const rad = (pt.directionDeg * Math.PI) / 180;
+      const bandColor = getWindBandColor(pt.speedKmh < 15 ? 'calm' : pt.speedKmh < 30 ? 'breezy' : pt.speedKmh < 50 ? 'strong' : 'severe');
+
+      const arrowFeature = new Feature({
+        geometry: new Point(coord),
+        type: 'wind_vector',
+        id: pt.id,
+        speedKmh: pt.speedKmh,
+        directionDeg: pt.directionDeg,
+        directionCardinal: pt.directionCardinal,
+        cloudCoverPct: windCloudData.cloudCoverPct,
+        windBand: windCloudData.windBand,
+        coastalSurgeSetupMeters: windCloudData.solverIntegrationHook.coastalSurgeSetupMeters
+      });
+
+      arrowFeature.setStyle([
+        new Style({
+          text: new Text({
+            text: '➤',
+            font: 'bold 17px sans-serif',
+            fill: new Fill({ color: bandColor }),
+            stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
+            rotation: rad,
+            rotateWithView: true
+          })
+        }),
+        new Style({
+          text: new Text({
+            text: `${pt.speedKmh} km/h ${pt.directionCardinal}`,
+            font: 'bold 9px sans-serif',
+            fill: new Fill({ color: '#0f172a' }),
+            stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
+            offsetY: 15
+          })
+        })
+      ]);
+
+      windSource.addFeature(arrowFeature);
+
+      // Flow Polyline Segment for vector stream
+      const endLng = pt.lng + (pt.uComponent / 100) * 0.04;
+      const endLat = pt.lat + (pt.vComponent / 100) * 0.04;
+      const lineCoords = [coord, fromLonLat([endLng, endLat])];
+
+      const lineFeature = new Feature({
+        geometry: new LineString(lineCoords),
+        type: 'wind_stream_line'
+      });
+
+      lineFeature.setStyle(
+        new Style({
+          stroke: new Stroke({
+            color: bandColor,
+            width: Math.max(1.8, Math.min(4.5, pt.speedKmh / 10)),
+            lineDash: [5, 4]
+          })
+        })
+      );
+
+      windSource.addFeature(lineFeature);
+    });
+  }, [selectedCityId, timeOffsetMins, showWindCloudLayer, windCloudData]);
+
+  // Zoom-Throttled Performance: Automatically disable wind particle animation layer at far zoom levels (<10.5)
+  useEffect(() => {
+    if (windVectorLayerRef.current) {
+      const isVisible = showWindCloudLayer && currentZoom >= 10.5;
+      windVectorLayerRef.current.setVisible(isVisible);
+    }
+    if (cloudVectorLayerRef.current) {
+      cloudVectorLayerRef.current.setVisible(showWindCloudLayer);
+    }
+  }, [showWindCloudLayer, currentZoom]);
 
   // Update DEM Surface Model Layer Features
   useEffect(() => {
@@ -2099,7 +2290,126 @@ export const OpenLayersMapCanvas: React.FC<OpenLayersMapCanvasProps> = ({
                 Map Layers & Legends
               </span>
 
-              {/* 0. BMC Chronic Flood Hotspots & Subways */}
+              {/* 0a. Wind & Cloud Cover Layer */}
+              <div className="border border-cyan-200 rounded-xl overflow-hidden bg-white">
+                <div className="flex items-center justify-between p-2.5 hover:bg-cyan-50/50 transition-colors">
+                  <div className="flex items-center space-x-2">
+                    <Wind className="w-4 h-4 text-cyan-600" />
+                    <span className="font-semibold text-gray-800 text-[11.5px]">Wind & Cloud Cover</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={showWindCloudLayer}
+                      onChange={(e) => setShowWindCloudLayer(e.target.checked)}
+                      className="accent-cyan-600 w-4 h-4 rounded cursor-pointer"
+                    />
+                    <button
+                      onClick={() => toggleAccordion('wind_cloud')}
+                      className="text-gray-400 hover:text-gray-700 p-0.5"
+                    >
+                      {expandedAccordion === 'wind_cloud' ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {expandedAccordion === 'wind_cloud' && (
+                  <div className="px-3 pb-3 pt-1.5 border-t border-cyan-100 bg-cyan-50/30 space-y-2 text-[10.5px]">
+                    {/* Live Telemetry Summary */}
+                    {windCloudData && (
+                      <div className="flex items-center justify-between bg-white/90 p-2 rounded-lg border border-cyan-200 shadow-2xs">
+                        <div className="flex items-center space-x-1.5">
+                          <Wind className="w-3.5 h-3.5 text-cyan-700" />
+                          <span className="font-mono font-bold text-cyan-950">
+                            {windCloudData.windSpeedKmh} km/h {windCloudData.windDirectionCardinal} ({windCloudData.windDirectionDeg}°)
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-1 text-slate-700 font-mono font-bold">
+                          <Cloud className="w-3.5 h-3.5 text-slate-500" />
+                          <span>{windCloudData.cloudCoverPct}% Cloud</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Wind Speed Bands Key */}
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-gray-500 uppercase">Wind Speed Bands</span>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <div className="flex items-center space-x-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
+                          <span className="text-gray-600">&lt;15 km/h Calm</span>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-sky-600 shrink-0" />
+                          <span className="text-gray-600">15-30 km/h Breezy</span>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+                          <span className="text-gray-600">30-50 km/h Strong</span>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-red-600 shrink-0" />
+                          <span className="text-red-700 font-bold">&gt;50 km/h Severe</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Cloud Cover Bands Key */}
+                    <div className="space-y-1 pt-1 border-t border-cyan-200/60">
+                      <span className="text-[10px] font-bold text-gray-500 uppercase">Cloud Cover Bands</span>
+                      <div className="grid grid-cols-3 gap-1">
+                        <div className="flex items-center space-x-1 text-[10px] text-gray-600">
+                          <Sun className="w-3 h-3 text-amber-500 shrink-0" />
+                          <span>Clear (&lt;20%)</span>
+                        </div>
+                        <div className="flex items-center space-x-1 text-[10px] text-gray-600">
+                          <Cloud className="w-3 h-3 text-sky-500 shrink-0" />
+                          <span>Partly (20-70%)</span>
+                        </div>
+                        <div className="flex items-center space-x-1 text-[10px] text-gray-600">
+                          <CloudRain className="w-3 h-3 text-slate-600 shrink-0" />
+                          <span>Overcast (&gt;70%)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Data Feed Status Badge */}
+                    <div className="pt-1.5 border-t border-cyan-200/60 space-y-1">
+                      <div className="flex items-center justify-between text-[10px]">
+                        <span className="font-bold text-gray-600">API Source:</span>
+                        <span className={`px-1.5 py-0.5 rounded font-mono font-bold text-[9px] ${
+                          windCloudData?.dataSourceStatus === 'live_windy' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                          windCloudData?.dataSourceStatus === 'fallback_openmeteo' ? 'bg-sky-100 text-sky-800 border border-sky-300' :
+                          windCloudData?.dataSourceStatus === 'offline_demo' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                          'bg-red-100 text-red-800 border border-red-300'
+                        }`}>
+                          {windCloudData?.dataSourceStatus === 'live_windy' ? 'WINDY API (ACTIVE)' :
+                           windCloudData?.dataSourceStatus === 'fallback_openmeteo' ? 'OPEN-METEO FALLBACK' :
+                           windCloudData?.dataSourceStatus === 'offline_demo' ? 'WEATHER DATA BACKUP' : 'DATA UNAVAILABLE'}
+                        </span>
+                      </div>
+
+                      {/* Solver Integration Hook Info */}
+                      {windCloudData?.solverIntegrationHook && (
+                        <div className="text-[9.5px] font-mono text-cyan-900 bg-white/90 p-1.5 rounded border border-cyan-200 space-y-0.5">
+                          <div className="font-bold text-cyan-800">2D Hydraulic Solver Hook:</div>
+                          <div>Wind-Driven Rain: x{windCloudData.solverIntegrationHook.windDrivenRainMultiplier}</div>
+                          <div>Storm Surge Setup: +{windCloudData.solverIntegrationHook.coastalSurgeSetupMeters}m MSL</div>
+                        </div>
+                      )}
+                      <div className="text-[9.5px] text-gray-400 font-mono italic">
+                        Particle animation throttled at zoom &lt; 10.5 for 60 FPS performance.
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 0b. BMC Chronic Flood Hotspots & Subways */}
               <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
                 <div className="flex items-center justify-between p-2.5 hover:bg-gray-50/80 transition-colors">
                   <div className="flex items-center space-x-2">

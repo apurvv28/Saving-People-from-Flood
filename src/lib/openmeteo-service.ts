@@ -12,6 +12,9 @@ export interface OpenMeteoPrecipitationData {
   // 0-3h Nowcast step values at t = [0, 15, 30, 45, 60, 90, 120, 150, 180] mins
   nowcastTimelineMmHr: number[];
   source: string;
+  windSpeedKmh?: number;
+  windDirectionDeg?: number;
+  cloudCoverPct?: number;
 }
 
 // Preset Historical Extreme Events for Backtesting
@@ -61,7 +64,7 @@ export async function fetchOpenMeteoLivePrecipitation(cityId: CityId): Promise<O
   const lng = city.center[1];
 
   try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=precipitation,rain,showers,weather_code&hourly=precipitation,precipitation_probability&forecast_days=1&timezone=auto`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=precipitation,rain,showers,weather_code,wind_speed_10m,wind_direction_10m,cloud_cover&hourly=precipitation,precipitation_probability,wind_speed_10m,wind_direction_10m,cloud_cover&forecast_days=1&timezone=auto`;
     const res = await fetch(url, { next: { revalidate: 300 } }); // Cache 5 mins
 
     if (!res.ok) {
@@ -72,6 +75,10 @@ export async function fetchOpenMeteoLivePrecipitation(cityId: CityId): Promise<O
     const currentRain = data.current?.precipitation || 0;
     const weatherCode = data.current?.weather_code || 0;
     const hourlyRainArray: number[] = data.hourly?.precipitation || [];
+
+    const windSpeedKmh = Number((data.current?.wind_speed_10m || 22.0).toFixed(1));
+    const windDirectionDeg = Math.round(data.current?.wind_direction_10m || 240);
+    const cloudCoverPct = Math.round(data.current?.cloud_cover ?? 80);
 
     // Extract next 3 hours of precipitation from Open-Meteo hourly array
     const h0 = hourlyRainArray[0] ?? currentRain;
@@ -102,7 +109,10 @@ export async function fetchOpenMeteoLivePrecipitation(cityId: CityId): Promise<O
       weatherDescription: getWeatherCodeDescription(weatherCode),
       isDrySpell: currentRain === 0 && Math.max(...nowcastTimelineMmHr) === 0,
       nowcastTimelineMmHr,
-      source: 'Open-Meteo Live API (api.open-meteo.com)'
+      source: 'Open-Meteo Live API (api.open-meteo.com)',
+      windSpeedKmh,
+      windDirectionDeg,
+      cloudCoverPct
     };
   } catch (err) {
     console.warn(`[OpenMeteo] Fallback for ${cityId}:`, err);
@@ -116,7 +126,10 @@ export async function fetchOpenMeteoLivePrecipitation(cityId: CityId): Promise<O
       weatherDescription: 'Clear / Dry Spell',
       isDrySpell: true,
       nowcastTimelineMmHr: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      source: 'Open-Meteo API (Offline Mode)'
+      source: 'Open-Meteo API (Offline Mode)',
+      windSpeedKmh: 15.0,
+      windDirectionDeg: 240,
+      cloudCoverPct: 50
     };
   }
 }

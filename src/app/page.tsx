@@ -194,6 +194,8 @@ export default function Home() {
         floodedRoadsCount={snapshot.totalFloodedRoadsCount}
         surchargingNodesCount={snapshot.criticalSurchargeNodesCount}
         rainfallRateMmHr={snapshot.rainfallRateMmHr}
+        windSpeedKmh={snapshot.windCloudData?.windSpeedKmh}
+        windDirectionCardinal={snapshot.windCloudData?.windDirectionCardinal}
         onOpenReportModal={() => setIsReportModalOpen(true)}
         onOpenSitRepModal={() => setIsSitRepOpen(true)}
         activeTab={activeTab}

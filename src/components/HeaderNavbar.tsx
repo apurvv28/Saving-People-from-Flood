@@ -10,7 +10,8 @@ import {
   Compass,
   FileCheck,
   Zap,
-  Activity
+  Activity,
+  Wind
 } from 'lucide-react';
 import { CITIES, CityId } from '@/lib/mock-data';
 import { useLanguage } from '@/context/LanguageContext';
@@ -41,6 +42,8 @@ interface HeaderNavbarProps {
   floodedRoadsCount: number;
   surchargingNodesCount: number;
   rainfallRateMmHr: number;
+  windSpeedKmh?: number;
+  windDirectionCardinal?: string;
   openMeteoSource?: string;
   onOpenReportModal: () => void;
   onOpenSitRepModal?: () => void;
@@ -63,6 +66,8 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
   floodedRoadsCount,
   surchargingNodesCount,
   rainfallRateMmHr,
+  windSpeedKmh = 28.5,
+  windDirectionCardinal = 'SW',
   openMeteoSource,
   onOpenReportModal,
   onOpenSitRepModal,
@@ -151,6 +156,12 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
             <div className="hidden md:flex items-center px-3 py-2 bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/30 rounded-xl space-x-2 font-mono font-bold text-base m-1">
               <CloudRain className="w-4 h-4" />
               <span>{rainfallRateMmHr.toFixed(1)} mm/hr</span>
+            </div>
+
+            {/* Live Wind Indication */}
+            <div className="hidden md:flex items-center px-3 py-2 bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/30 rounded-xl space-x-2 font-mono font-bold text-base m-1">
+              <Wind className="w-4 h-4" />
+              <span>{windSpeedKmh.toFixed(1)} km/h {windDirectionCardinal}</span>
             </div>
 
             {/* Action Buttons */}

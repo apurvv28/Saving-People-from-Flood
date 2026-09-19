@@ -50,6 +50,7 @@ export async function GET(request: Request) {
       floodedRoadsCount: snapshot.totalFloodedRoadsCount,
       surchargingManholesCount: snapshot.criticalSurchargeNodesCount
     },
+    windCloudTelemetry: snapshot.windCloudData,
     roadStates: snapshot.roadStates
   });
 }
